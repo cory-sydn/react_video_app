@@ -1,13 +1,40 @@
+@font-face {
+  font-family: 'Roboto Condensed';
+  src: url(../src/fonts/RobotoCondensed-Regular.ttf);
+}
+
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+body, main, section {
+  margin: 0;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+*{
+  padding: 0;
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+html::-webkit-scrollbar{
+  width: 8px;
+  background: #232323;
+}
+html::-webkit-scrollbar-thumb {
+  background: #909090;
+  border-radius: 6px;
 }

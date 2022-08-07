@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Logo from '../img/logo.png'
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -19,11 +19,14 @@ import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import SettingsBrightnessOutlinedIcon from "@mui/icons-material/SettingsBrightnessOutlined";
 import MenuSharpIcon from '@mui/icons-material/MenuSharp';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
 
 const MenuContainer = styled.div`
     display: flex;
     position: fixed;
-    background: #0005;
+    background:  ${(props) => props.close === true ? "#0001" : "#0005" };
+    transition: all 0.5s;
     width: 100vw;
     min-height: 100vh;
     height:100%;
@@ -49,14 +52,31 @@ const Sidebar = styled.menu`
     display: flex;
     padding-top: 56px;
     margin: 0;
-    width: 0px;
+    width: 0;
     height: 100vh;
     position: relative;
     top: 0;
     left:0;
     background: ${({theme}) => theme.bgLighter};
     color: ${({theme}) => theme.text};
-    transition: all 2s both;
+    animation: 0.3s both ease-in-out ${(props) => props.close === true ? "close" : "open" };
+
+    @keyframes open {
+        0% {
+            width: 0;
+        }
+        100% {
+            width: 240px;
+        }
+    }
+    @keyframes close {
+        0% {
+            width: 240px;
+        }
+        100% {
+            width: 0;
+        }
+    }
 `
 
 const Container = styled.div`
@@ -68,16 +88,14 @@ const Container = styled.div`
     margin-right: 4px;
     &::-webkit-scrollbar {
         background: transparent; 
+        width: 8px;
     }
     &:hover {
-        &::-webkit-scrollbar{
-            width: 8px;
-        }
         &::-webkit-scrollbar-thumb {
-                border-radius: 4px;
-                background: #666666;        
-            }
+            border-radius: 4px;
+            background: ${({theme}) => theme.scroll};
         }
+    }
 `
 
 const Wrapper = styled.div`
@@ -102,7 +120,8 @@ const Item = styled.div`
 const Hr = styled.hr`
     margin: 12px 0;
     height: 1px;
-    border: 0.1px solid ${({theme})=>theme.soft};
+    border: none;
+    border-bottom: 1px solid ${({theme})=>theme.soft};
 `
 
 const Login =styled.div`
@@ -131,32 +150,72 @@ const Title =styled.h2`
     margin-bottom: 20px;
 `
 
-const Menu = ({darkMode, setDarkMode,sidebar, setSidebar}) => {    
+const Img = styled.img`
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: scale-down;
+`
+
+const Outside = styled.div`
+    min-width: calc(100vw - 240px);
+    min-height: 100vh;
+`
+
+const Menu = ({darkMode, setDarkMode, sidebar, setSidebar}) => {
+    const [close, setClose] = useState(false)
+    const [channels, setChannels] = useState(null)
+    const user = useSelector(state => state.user.currentUser)
+
+    const handleClose = () => {
+        setClose(true)
+        setTimeout(()=> {
+            setSidebar(!sidebar)            
+        }, 500 )
+    };
+
+    const getChannels = async() => {
+        try {
+            const res = await axios.get("/users/subs")
+            setChannels( res.data)
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    useEffect(()=>{
+        if(user) getChannels()
+    },[]);
+    
     return (
-    <MenuContainer >
-        <Sidebar style={sidebar ? {width:240} : {width: 0}}>
+    <MenuContainer close={close} >
+        <Sidebar tabIndex={0} close={close}>
             <Header >
-                <MenuSharpIcon onClick={()=>setSidebar(!sidebar)} />
+                <MenuSharpIcon onClick={handleClose} />
                 <Link to="/" className="logo">
-                    <img src={Logo} className="img" alt='logo' />FrogTube
+                    <img src={Logo} className="img" alt='' />YouTube
                 </Link>
             </Header>
             <Container>        
                 <Wrapper >
                     <Link to="/" >   
-                    <Item >
-                        <HomeOutlinedIcon />
-                        Home
-                    </Item>
+                        <Item >
+                            <HomeOutlinedIcon />
+                            Home
+                        </Item>
                     </Link>
-                    <Item >
-                        <ExploreOutlinedIcon />
-                        Explore
-                    </Item>
-                    <Item>
-                        <SubscriptionsOutlinedIcon />
-                        Subscriptions
-                    </Item>
+                    <Link to="trends" >
+                        <Item >
+                            <ExploreOutlinedIcon />
+                            Explore
+                        </Item>
+                    </Link>
+                    <Link to="subscriptions" >
+                        <Item>
+                            <SubscriptionsOutlinedIcon />
+                            Subscriptions
+                        </Item>
+                    </Link>
                     <Hr />
                     <Item>
                         <VideoLibraryOutlinedIcon />
@@ -167,16 +226,32 @@ const Menu = ({darkMode, setDarkMode,sidebar, setSidebar}) => {
                         History
                     </Item>
                     <Hr />
-                    <Login>
-                    Sign in to like videos, comment, and subscribe.
-                    <Link to="signin" >
-                        <Button>
-                            <AccountCircleOutlinedIcon />
-                            SIGN IN
-                        </Button>
-                    </Link>
-                    </Login>
-                    <Hr />
+                    {!user && (
+                        <>               
+                            <Login>
+                                Sign in to like videos, comment, and subscribe.
+                                <Link to="signin" >
+                                    <Button>
+                                        <AccountCircleOutlinedIcon />
+                                        SIGN IN
+                                    </Button>
+                                </Link>
+                            </Login>
+                            <Hr />
+                        </>
+                    )}                    
+                    {channels && (
+                        <>
+                            <Title>SUBSCRIPTIONS</Title>
+                            {channels.map((channel) => (
+                                <Item key={channel._id} >
+                                    {channel.img && (<Img src={channel.img} alt=""/>)}
+                                    {channel.name}
+                                </Item>
+                            ))}
+                            <Hr />
+                        </>
+                    )}                    
                     <Title>EXPLORE</Title>
                     <Item>
                         <LibraryMusicOutlinedIcon />
@@ -222,6 +297,7 @@ const Menu = ({darkMode, setDarkMode,sidebar, setSidebar}) => {
                 </Wrapper>
             </Container>
         </Sidebar>
+        <Outside onClick={handleClose}/>
     </MenuContainer>
   )
 }

@@ -13,6 +13,7 @@ body {
 
 body, main, section {
   margin: 0;
+  padding: 0;
 }
 
 code {
@@ -22,6 +23,7 @@ code {
 
 *{
   padding: 0;
+  margin: 0;
   box-sizing: border-box;
 }
 

@@ -6,7 +6,8 @@ export const darkTheme = {
     soft:"#373737",
     commentLine: "#ffffff",
     commentButton: {bg:"rgba(255,255,255,0.1)", color: "#717171" },
-    bar: "#151515"
+    bar: "#151515",
+    scroll: "#606060"
 }
 
 export const lightTheme = {
@@ -17,5 +18,6 @@ export const lightTheme = {
     soft:"#dfdfdf",
     commentLine: "#030303",
     commentButton: {bg:"rgba(0,0,0,0.05)", color: "#909090" },
-    bar:"#acacac"
+    bar:"#fcfcfc",
+    scroll: "#717171"
 }

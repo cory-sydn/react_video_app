@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from "react-redux";
 import styled from 'styled-components'
 import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
 import ThumbDownOffAltOutlinedIcon from "@mui/icons-material/ThumbDownOffAltOutlined";
@@ -8,6 +9,10 @@ import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
 import NotificationsActiveOutlinedIcon from '@mui/icons-material/NotificationsActiveOutlined';
 import Comments from '../components/Comments';
 import Card from '../components/Card';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
+import { fetchStart, fetchSuccessful } from '../redux/videoSlice';
+import { format } from 'timeago.js';
 
 const Container = styled.div`
     width: 100%;
@@ -142,18 +147,41 @@ const More = styled.div`
 `
 
 const Video = () => {
+    const [channel, setChannel] = useState(null)
     const [showMore, setShowMore] = useState(false)
+    const { currentUser } = useSelector(state => state.user)
+    const { currentVideo} = useSelector(state => state.video)
+    const dispatch = useDispatch()
+    const videoId = useParams().id
+    
+    useEffect(() => {
+        const getVideo = async() => {
+            dispatch(fetchStart())
+            try {
+                const videoRes = await axios.get(`/videos/find/${videoId}`)
+                const channelRes = await axios.get(`/users/find/${videoRes.data.userId}`)
+                setChannel(channelRes.data)
+                dispatch(fetchSuccessful(videoRes.data))
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        getVideo()
+    },[videoId, dispatch])
+
+    
+
   return (
     <Container>
         <Content>
             <VideoWrapper>
             <iframe width="1351" height="503" src="https://www.youtube.com/embed/yIaXoop8gl4" title="React Video Sharing App UI Design | Youtube UI Clone with React" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </VideoWrapper>
-            <Title>Test Video</Title>
+            <Title>{currentVideo.title} </Title>
             <Details>
-                <Info>23,373 views &bull; Jun 30, 2022</Info>
+                <Info>{currentVideo.views} &bull; {format(currentVideo.createdAt)} </Info>
                 <Buttons>
-                    <Button><ThumbUpOutlinedIcon/>&nbsp;1K</Button>
+                    <Button><ThumbUpOutlinedIcon/>&nbsp;{currentVideo.likes?.length} </Button>
                     <Button><ThumbDownOffAltOutlinedIcon/>&nbsp;DISLIKE</Button>
                     <Button><ReplyOutlinedIcon/>&nbsp;SHARE</Button>
                     <Button><PlaylistAddOutlinedIcon/></Button>
@@ -162,13 +190,13 @@ const Video = () => {
             </Details>           
             <Details>
                 <ChannelImg >
-                    <Img src='https://yt3.ggpht.com/ytc/AKedOLT4zDPT-ysv1Qb6xlFJwtTOfwx_uNG-T5LWcCKR=s48-c-k-c0x00ffffff-no-rj'/>
+                    <Img src={channel?.img} />
                 </ChannelImg>
                 <ChannelLine>
                     <ChannelInfo>
                         <ChannelName>
-                            Viva La Dirt League
-                            <Info style={{margin:0, fontSize:12, fontWeight:400   }} >113K subscribers</Info>
+                            {channel?.name.toUpperCase()}
+                            <Info style={{margin:0, fontSize:12, fontWeight:400   }} >{channel?.subscribers} </Info>
                         </ChannelName>
                     </ChannelInfo>
                     <SubsDiv>
@@ -178,16 +206,13 @@ const Video = () => {
                     </SubsDiv>
                 </ChannelLine>
                 <Desc>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia neque quaerat minima incidunt nemo. Nesciunt, corporis. Fugiat distinctio, alias asperiores placeat veniam harum, neque voluptate tempore aut quia accusantium praesentium.
-                    Cupiditate cum tenetur earum facilis debitis sint necessitatibus saepe, quia suscipit facere recusandae sunt magnam voluptate assumenda voluptatum officia minus laudantium, dolores, aut nostrum ab excepturi. Repellendus aut labore dolore.
-                    <br/><br/> Dolorem deleniti ipsa, necessitatibus aspernatur nemo doloremque soluta earum suscipit eveniet, molestias dolor quisquam minus rem perferendis eos sunt praesentium modi ex maiores molestiae corrupti laudantium, inventore esse? Vitae, consequuntur!
-                    Quasi quae sint ipsam vero possimus iure magnam incidunt beatae mollitia perspiciatis consequatur sequi quos nulla, est quisquam illum! Doloremque consequuntur iusto atque tempore vero temporibus quae, debitis tempora nobis?
+                    {currentVideo.desc}
                 </Desc>
                 <More onClick={()=>setShowMore(true)}>SHOW MORE</More>
             </Details>
             <Comments/> 
         </Content>
-        <RecommendationsSection>
+        {/* <RecommendationsSection>
             <Card type="sm" />
             <Card type="sm" />
             <Card type="sm" />
@@ -203,7 +228,7 @@ const Video = () => {
             <Card type="sm" />
             <Card type="sm" />
             <Card type="sm" />
-        </RecommendationsSection>
+        </RecommendationsSection> */}
     </Container>
   )
 }

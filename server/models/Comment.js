@@ -10,10 +10,22 @@ const CommentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    parent: {
+      type: String,
+    },
+    childs: {
+      type: [String],
+    },
     desc: {
       type: String,
       required: true,
-    }, 
+    },
+    likes: {
+      type: [String],
+    },
+    dislikes: {
+      type: [String],
+    }
   },
   { timestamps: true }
 );

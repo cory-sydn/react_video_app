@@ -12,6 +12,15 @@ export const getAllComments = async(req, res, next) => {
   }
 };
 
+export const getAllReplies = async(req, res, next) => {
+  try {
+    const allReplies = await Comment.find({parent: req.params.parentId}).limit(10)
+    res.status(200).json(allReplies)
+  } catch (err) {
+    next(err)
+  }
+};
+
 export const addComment = async(req, res, next) => {
   try {
     const newComment = new Comment({
@@ -37,6 +46,48 @@ export const deleteComment = async(req, res, next) => {
   } else {
       next(createError(403, "You can only delete your own comment!"))
     }
+  } catch (err) {
+    next(err)
+  }
+};
+
+
+export const likeComment = async(req, res, next) => {
+  try {
+    const userId = req.user.id
+    const {commentId}  = req.params
+    const likedCom = await Comment.findByIdAndUpdate(commentId, {
+      $addToSet:{likes: userId},
+      $pull: {dislikes: userId}
+    }, {new:true})
+    res.status(200).json(likedCom)
+  } catch (err) {
+    next(err)
+  }
+};
+
+export const dislikeComment = async(req, res, next) => {
+  try {
+    const userId = req.user.id
+    const {commentId}  = req.params
+    const dislikedCom = await Comment.findByIdAndUpdate(commentId, {
+      $addToSet:{dislikes: userId},
+      $pull: {likes: userId}
+    }, {new:true})
+    res.status(200).json(dislikedCom)
+  } catch (err) {
+    next(err)
+  }
+};
+
+export const reply = async(req, res, next) => {
+  try {
+    const {commentId}  = req.params
+    const {childId} = req.body
+    const parentComment = await Comment.findByIdAndUpdate(commentId, {
+      $addToSet:{childs: childId},
+    }, {new:true})
+    res.status(200).json(parentComment)
   } catch (err) {
     next(err)
   }

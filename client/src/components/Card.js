@@ -63,24 +63,9 @@ const Info = styled.span`
 	color: ${({ theme }) => theme.textSoft};
 `;
 
-const BlankImg = styled.button`
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: grid;
-  place-content: center;
-  color: white;
-  background: #0a413c;
-  border: transparent;
-  cursor: pointer;
-  &:focus {
-    border  : 1px solid #2c7ef3;
-  }
-`
-
 const Card = ({ type, video }) => {
 	const [channel, setChannel] = useState([]);
-console.log(video);
+
 	useEffect(() => {
 		try {
 			const fetchChannel = async () => {
@@ -94,22 +79,19 @@ console.log(video);
 			console.error(err);
 		}
 	}, [video.userId]);
+	
 	return (
 		<Container type={type}>
 			<VideoLink to={`/video/${video._id}`}>
 				<Img type={type} src={video.imgUrl} />
 			</VideoLink>
 			<Details type={type}>
-				<ChannelImg src={channel.imgUrl} alt=""/>
-				{/* {channel.imgUrl === undefined 
-					? (<BlankImg>{(channel?.name[0]).toUpperCase()}</BlankImg>)
-					: (<ChannelImg src={channel.imgUrl} alt=""/>)
-				} */}
+				<ChannelImg src={channel?.imgUrl} alt=""/>
 				<Texts type={type}>
 					<VideoLink to={`/video/${video._id}`}>
 						<Title type={type}>{video.title} </Title>
 					</VideoLink>
-					<ChannelName type={type}> {channel.name} </ChannelName>
+					<ChannelName type={type}> {channel?.name} </ChannelName>
 					<Info>
 						{" "}
 						{video.views} &bull; {format(video.createdAt)}{" "}

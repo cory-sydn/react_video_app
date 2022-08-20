@@ -6,19 +6,10 @@ import commentRoutes from './routes/comments.js'
 import videoRoutes from './routes/videos.js'
 import auth from './routes/authentication.js'
 import cookieParser from "cookie-parser";
-import cors from "cors"
 
 const app = express();
 dotenv.config();
 
-// app.use(
-// 	function(req, res, next) {
-// 		res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-// 		res.header("Access-Control-Expose-Headers", "Set-Cookie",)
-// 		res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-// 		next();
-// 	}
-// )
 app.use(cookieParser())
 
 app.use(function(req, res, next) {
@@ -43,7 +34,6 @@ const connect = () => {
 
 app.use(express.json())
 
-// app.use(dbConnect())
 app.use("/api/auth", auth)
 app.use("/api/users", userRoutes)
 app.use("/api/comments", commentRoutes)

@@ -10,7 +10,7 @@ import {
   Route,
 } from "react-router-dom";
 import Home from './pages/Home.jsx'
-import Video from './pages/Video.jsx'
+import Video from './pages/video/[id].jsx'
 import SignIn from './pages/SignIn';
 
 const Container = styled.div`

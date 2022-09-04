@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import DropDown from "./DropDown";
+import Upload from "../../upload/Upload";
 
 const Container = styled.div`
 	display: flex;
@@ -62,11 +63,32 @@ const BlankImg = styled.button`
 	}
 `;
 
-const User = () => {
+const UploadSectionButton = styled.div`
+	margin-left: 16px;
+	cursor: pointer;
+	position: relative;
+	&:hover {
+		&::after {
+			content: "Upload Video";
+			background: ${({ theme }) => theme.bgDarker};
+			font-size: 12px;
+			padding: 6px 10px;
+			border-radius: 3px;
+			position: absolute;
+			right: -20px;
+			bottom: -60px;
+			z-index: 999;
+		}
+	}
+`
+
+const Profile = () => {
   const [open, setOpen] = useState(false)
-	const user = useSelector((state) => state.user.currentUser);
-	const buttonRef = useRef()
-  const menuRef = useRef()
+	const [openUpload, setOpenUpload] = useState(false)
+	const [activeUpload, setActiveUpload] = useState(false)
+	const {currentUser} = useSelector((state) => state.user);
+	const buttonRef = useRef(null)
+  const menuRef = useRef(null)
 
 	const handleDropDown = (e) => {
 		if(buttonRef.current && buttonRef.current.contains(e.target)) return
@@ -76,12 +98,20 @@ const User = () => {
   };
 
   useEffect(()=> {
+		let isCancelled = false
+		if(isCancelled) return
     document.addEventListener("mousedown", handleDropDown)
+		return ()=>{isCancelled=true}
   }, [menuRef, buttonRef]);
+
+	const activateUploading = () => {
+		setOpenUpload(true) 
+		setActiveUpload(true)	
+	}
 
 	return (
 		<Container>
-			{user === null ? (
+			{currentUser === null ? (
 				<Section>
 					<MoreVertSharpIcon cursor="pointer" style={{ marginInline: 16 }} />
 					<Link to="signin">
@@ -93,21 +123,26 @@ const User = () => {
 				</Section>
 			) : (
 				<Section>
-					<VideoCallOutlinedIcon style={{ marginLeft: 16 }} />
+					<UploadSectionButton>
+						<VideoCallOutlinedIcon onClick={activateUploading} />
+					</UploadSectionButton>
+					{openUpload && 
+						<Upload setOpenUpload={setOpenUpload} activeUpload={activeUpload} setActiveUpload={setActiveUpload} />
+					}
 					<NotificationsNoneIcon
 						cursor="pointer"
 						style={{ marginInline: 28 }}
 					/>
-					{user && (user.imgUrl === undefined ? (
-						<BlankImg ref={buttonRef} onClick={()=>setOpen(!open)} >{(user?.name[0]).toUpperCase()}</BlankImg>
+					{currentUser && (currentUser?.imgUrl === undefined ? (
+						<BlankImg ref={buttonRef} onClick={()=>setOpen(!open)} >{(currentUser?.name[0]).toUpperCase()}</BlankImg>
 					) : (
-						<Img ref={buttonRef} onClick={()=>setOpen(!open)} src={user.img} alt="" />
+						<Img ref={buttonRef} onClick={()=>setOpen(!open)} src={currentUser?.img} alt="" />
 					))}
-					{open && <DropDown setOpen={setOpen} menuRef={menuRef} /> }				
+					{open && <DropDown setOpen={setOpen} menuRef={menuRef} /> }		
 				</Section>
 			)}
 		</Container>
 	);
 };
 
-export default User;
+export default Profile;

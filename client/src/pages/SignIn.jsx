@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Logo from "../img/logo.png";
 import PersonIcon from "@mui/icons-material/Person";
@@ -7,15 +7,19 @@ import KeyIcon from "@mui/icons-material/Key";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { loginFailed, loginStart, loginSuccessful } from "../redux/userSlice";
-import { auth, googleProvider } from "../firebase";
+import { auth, googleProvider } from "../firebase.config";
 import { signInWithPopup } from "firebase/auth";
 import googleSvg from "../img/google.svg";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.section`
 	min-height: calc(100vh - 56px);
+	width: 100%;
 	display: grid;
 	flex-direction: column;
 	place-content: center;
+	background: ${({ theme }) => theme.bg};
+	z-index: 3;
 `;
 
 const Form = styled.form`
@@ -159,6 +163,7 @@ const SignIn = () => {
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const navigate = useNavigate()
 	const dispatch = useDispatch();
 	const user = useSelector((state) => state.user);
 
@@ -176,6 +181,7 @@ const SignIn = () => {
 				}
 			);
 			dispatch(loginSuccessful(res.data));
+			navigate("/")
 		} catch (err) {
 			dispatch(loginFailed(err.response.data.message));
 		}
@@ -186,7 +192,6 @@ const SignIn = () => {
 
 		signInWithPopup(auth, googleProvider)
 			.then( async(result) => {
-				console.log(result)
 				await axios.post("/auth/google", {
 					name: result.user.displayName,
 					email: result.user.email,
@@ -194,10 +199,11 @@ const SignIn = () => {
 				})
 				.then((res) => {
 					dispatch(loginSuccessful(res.data))
+					navigate("/")
 				})
 			})
 			.catch((err) => {
-				dispatch(loginFailed(err.response.data.message))
+				dispatch(loginFailed(err.response))
 				console.log(err);
 			})
 	};
@@ -210,11 +216,16 @@ const SignIn = () => {
 			const newUser = {	name, email, password,};
 			const res = await axios.post("/auth/signup", newUser, {withCredentials: true, })
 			dispatch(loginSuccessful(res.data))
+			navigate("/")
 		} catch (err) {
 			console.log(err);
 			dispatch(loginFailed(err))
 		}
 	};
+
+	useEffect(()=> {
+		document.title = "YouTube"
+	}, [])
 
 	return (
 		<Container>

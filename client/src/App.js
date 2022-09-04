@@ -12,6 +12,8 @@ import {
 import Home from './pages/Home.jsx'
 import Video from './pages/video/[id].jsx'
 import SignIn from './pages/SignIn';
+import Channel from './pages/channel/[id].jsx'
+import MiniGuide from './components/MiniGuide';
 
 const Container = styled.div`
   display: flex;
@@ -19,15 +21,15 @@ const Container = styled.div`
   color: #ffffff;
 `
 
-const Main = styled.div`
+const Main = styled.main`
   background: ${({theme})=>theme.bg};
   color: ${({theme}) => theme.text};
   flex: 7;
-`
+  `
 
 const Wrapper = styled.div`
   display: flex;
-  width: calc(100vw - 8px);
+  width: 100%;
   place-content: center;
 `
 
@@ -45,7 +47,8 @@ function App() {
         }
         <Main >
           <Navbar setSidebar={setSidebar}/>
-          <Wrapper >
+          <Wrapper name="Wrapper" >
+            <MiniGuide />
             <Routes>
               <Route path='/'>
                 <Route index element={<Home type="random" />}/>
@@ -55,6 +58,7 @@ function App() {
                 <Route path='video'>
                   <Route path=':id' element={<Video/>}/>
                 </Route>
+                <Route path='channel/:id/*'element={<Channel />} />
               </Route>
             </Routes>
           </Wrapper>

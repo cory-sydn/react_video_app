@@ -6,7 +6,7 @@ import MdiLightMessageText from '../../icons/MdiLightMessageText.jsx'
 import CommentCard from "./CommentCard.jsx";
 
 const Container = styled.div`
-	margin: 40px 50px;
+	margin: 40px 30px;
 	height: 100%;
 	min-width: 300px;
 	display: flex;
@@ -46,10 +46,16 @@ const Hr = styled.hr`
 `;
 
 const Display = styled.div`
-	padding: 20px 40px 20px 50px;
+	padding: 20px 50px 20px 50px;
 	width: 100%;
 	display: flex;
 	flex-direction: column;
+	@media (max-width:1120px){
+		padding: 20px 40px 20px 30px;
+  };
+	@media (max-width:950px){
+		padding: 20px 30px 20px 0;
+  };
 `;
 
 const CommentIcon = styled(MdiLightMessageText)`
@@ -86,10 +92,14 @@ const About = ({ channel }) => {
   return (
 		<Container>
 			<Display>
-				{open &&
-					userComments.map((comment) => (
-						<CommentCard key={comment._id} comment={comment} userComments={userComments} setUserComments={setUserComments} />
-					))}
+				{open && (
+						<>
+							<Title style={{ marginBottom:20}} >Your YouTube Comments</Title>
+							{userComments.map((comment) => (
+								<CommentCard key={comment._id} comment={comment} userComments={userComments} setUserComments={setUserComments} />
+							))}
+						</>
+					)}
 			</Display>
 			<Stats>
 				<Title>Stats</Title>

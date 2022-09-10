@@ -25,9 +25,8 @@ const Wrapper = styled.section`
 	};
 `;
 
-const Title = styled.h2`
-	font-weight: 400;
-	margin-top: 20px;
+const Title = styled.h3`
+	font-weight: 500;
 `;
 
 const Playlist = ({ channel }) => {

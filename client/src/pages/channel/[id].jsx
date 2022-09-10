@@ -125,6 +125,7 @@ const Channel = () => {
 					{ cancelToken: cancelToken.token }
 				);
 				setChannel(channelRes.data);
+				document.title = channelRes.data.name
 			} catch (err) {
 				console.log(err);
 			}

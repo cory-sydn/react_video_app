@@ -12,8 +12,8 @@ const Main = styled.section`
 	margin: 40px 30px 20px 20px;
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-	justify-content: center;
+	align-items: flex-start;
+	justify-content: flex-start;
 `;
 
 const Wrapper = styled.section`
@@ -52,6 +52,11 @@ const Text1 = styled.h2`
 const Text2 = styled(Text1)`
 	font-size: 14px;
 	color: ${({ theme }) => theme.textSoft};
+`;
+
+const Title = styled.h3`
+	font-weight: 500;
+	margin-bottom: 20px;
 `;
 
 const ChannelHome = () => {
@@ -97,6 +102,7 @@ const ChannelHome = () => {
 				</>
 			)}
 			<Main>
+			{videos.length > 0 && (<Title>Uploads</Title>)}
 				<Wrapper>
 					{videos.length > 0 &&
 						videos.map((video) => <Card video={video} key={video._id} />)}

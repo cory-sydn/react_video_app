@@ -11,7 +11,7 @@ import { green } from "@mui/material/colors";
 
 const Item = styled.div`
 	justify-content: flex-start;
-	margin: 25px 0;
+	margin-bottom: 40px;
 	text-align: left;
 `;
 
@@ -72,25 +72,23 @@ const DeleteButton = styled.div`
 
 const Message = styled.div`
   position: absolute;
-  top: -30px;
-  right: 30px;
+  top: -20px;
+  right: 40px;
   width: 300px;
   height: max-content;
-	padding: 20px 10px;
+	padding: 24px;
 	border-radius: 5px;
 	color: ${({ theme }) => theme.text};
 	background: ${({ theme }) => theme.dropDown.hover};
-	box-shadow: 0 0 6px 0 ${({ theme }) => theme.textSoft};
+	box-shadow: 0 0 3px 0 ${({ theme }) => theme.textSoft};
 	white-space: pre-line;
   display: grid;
 	text-align: center;
-	align-items: center;
-  place-content: center;
   z-index: 10;
 `;
 
 const SecondCheck = styled.div`
-	margin-top: 10px;
+	margin-top: 20px;
 	display: flex;
 	justify-content: space-between;
 `;
@@ -143,7 +141,7 @@ const PlayIcon = styled(PlayCircleFilledIcon)`
 
 const VLink = styled.div`
   color: #3ea6ff;
-`
+`;
 
 const CommentCard = ({comment, userComments, setUserComments}) => {
   const [message, setMessage] = useState({status:null, msg: null})
@@ -157,7 +155,7 @@ const CommentCard = ({comment, userComments, setUserComments}) => {
 				const videoRes = await axios.get(`http://localhost:8800/api/videos/find/${comment.videoId}`, {cancelToken: cancelToken.token})				
 				setVideo(videoRes.data);
 			} catch (err) {
-				console.log(err);
+				//console.log(err);
 			}
 		};
 		getCommentsVideoData();
@@ -168,25 +166,22 @@ const CommentCard = ({comment, userComments, setUserComments}) => {
 
   const deleteComment = async() => {
 		if(!comment._id) return
-		if (!secondCheck) {
-			setSecondCheck(true)
-			setMessage({status:null, msg: "Are you sure?\nComment will be irreversibly deleted."})
-		} else {
-			setSecondCheck(false)
-			const res = await DeleteComment(comment._id, null)
-			setMessage({status:res.status, msg: res.data})
-			setTimeout(() =>{
-				setMessage({status:null, msg: null})
-        setUserComments(userComments.filter((otherComment) => otherComment._id !== comment._id ))
-			}, 3000)
-		}
+    setSecondCheck(false)
+    const res = await DeleteComment(comment._id)
+    setMessage({status:res.status, msg: res.data})
+    setTimeout(() =>{
+      setMessage({status:null, msg: null})
+      setUserComments(userComments.filter((otherComment) => otherComment._id !== comment._id ))
+    }, 3000)
   }
 
-	const handleDelete = (e) => {
-		if(!e.target) return
-		setSecondCheck(true)
-		deleteComment(e)
-	}
+  useEffect(() => {
+    if (secondCheck) {
+			setMessage({status:null, msg: "Are you sure?\nComment will be irreversibly deleted."})
+    } else {
+      setMessage({status:null, msg: null})      
+    }
+  }, [secondCheck])
 
   return (
     <Item >
@@ -197,14 +192,14 @@ const CommentCard = ({comment, userComments, setUserComments}) => {
             {message.status !== 200 ? (<IonAlertCircled />) : (<DoneAllIcon sx={{color: green.A700}}/>)}{message.msg}
             {secondCheck && (
               <SecondCheck>
-                <Confirm onClick={handleDelete}>Delete</Confirm>
-                <Cancel onClick={()=> setSecondCheck(false) + setMessage({status:null, msg: null})}>Cancel</Cancel>
+                <Confirm onClick={deleteComment}>Delete</Confirm>
+                <Cancel onClick={()=> setSecondCheck(false)}>Cancel</Cancel>
               </SecondCheck>
             )}
           </Message>
         )}
         <DeleteButton>
-          <IonIosCloseOutline cursor="pointer" onClick={deleteComment} />
+          <IonIosCloseOutline cursor="pointer" onClick={() => setSecondCheck(!secondCheck) } />
         </DeleteButton>
       </DeleteSection>
       <CommentBody>

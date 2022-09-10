@@ -11,6 +11,7 @@ const Container = styled.div`
     display: grid;
     grid-template-columns: ${(props) => (props.reply ? "40px 100%" : "56px 100%")};
     margin-bottom:  ${(props) => (props.reply ? "0px" : "3rem")};
+    
 `
 const AvatarWrapper = styled.div`
     width: ${(props) => (props.reply ? "40px" : "56px")};
@@ -25,7 +26,7 @@ const Avatar = styled.img`
 `
 
 const InputArea = styled.form`
-    width: ${(props) => (props.reply ? "calc(100% - 40px)" : "calc(100% - 56px)")};
+    width: ${(props) => (props.reply ? "calc(100% - 72px)" : "calc(100% - 56px)")};
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
@@ -109,33 +110,25 @@ const CancelButton = styled.button`
     padding: 10px 16px;
     font-size: 14px;
     font-weight: 500;
+    border-radius: 2px;
     cursor: pointer;
 `
 
-const ConfirmButton = styled.button`
+const ConfirmButton = styled(CancelButton)`
     margin-left: 8px;
-    padding: 10px 16px;
-    font-size: 14px;
     font-weight: 600;
-    border: none;
-    border-radius: 2px;
     background: ${({theme})=> theme.commentButton.bg};
     color: ${({theme})=> theme.commentButton.color};
+    cursor: auto;
+`
+
+const ActiveConfirmButton = styled(ConfirmButton)`
+    background:#3ea6ff;
+    color: ${({theme})=>theme.bg};
     cursor: pointer;
 `
 
-const ActiveConfirmButton = styled.button`
-    margin-left: 8px;
-    padding: 10px 16px;
-    font-size: 14px;
-    font-weight: 600;
-    border: none;
-    border-radius: 2px;
-    background:#3ea6ff;
-    color: ${({theme})=>theme.bg};
-`
-
-const NewComment = ({currentUser, videoId, reply, setReply, parent}) => {
+const NewComment = ({currentUser, videoId, reply, setReply, parent }) => {
     const [comment, setComment] = useState("")
     const [focus, setFocus] = useState({ready: false, line: false})
     const [writing, setWriting] = useState(false)
@@ -163,7 +156,6 @@ const NewComment = ({currentUser, videoId, reply, setReply, parent}) => {
 
     const handleInput = (e) => {
         setComment(e.target.value);
-        console.log(e.target.value,  e.target.scrollHeight);        
         e.target.style.removeProperty("height");
         e.target.style.height = e.target.scrollHeight + 2 + "px";
     }
@@ -175,17 +167,16 @@ const NewComment = ({currentUser, videoId, reply, setReply, parent}) => {
         if(reply) return setReply(!reply)
     }
 
-    const handleSendComment = async() => {        
+    const handleSendComment = async() => {
         try {
             if (reply) {
                 const replyResponse = await axios.post("http://localhost:8800/api/comments", {
-                    videoId,
-                    parent,
+                    videoId: parent.videoId,
+                    parent: parent?._id,
                     desc: comment,
                 },{withCredentials: true,})
-                console.log(replyResponse);
                 dispatch(commentSuccessful(replyResponse.data))
-                const updateParent = await axios.put(`http://localhost:8800/api/comments/reply/${parent}`, {
+                const updateParent = await axios.put(`http://localhost:8800/api/comments/reply/${parent._id}`, {
                     childId: replyResponse.data._id
                 }, {withCredentials: true,})
                 dispatch(commentSuccessful(updateParent.data))
@@ -200,8 +191,9 @@ const NewComment = ({currentUser, videoId, reply, setReply, parent}) => {
             setFocus({ready: false, line: false})
             setWriting(false)
             setComment("")
+            document.querySelector(".commentInput").style.height = 26 + "px"
         } catch (err) {
-            dispatch(commentFailed(err))
+            dispatch(commentFailed(err.response.data.message))
         }
     }
 
@@ -212,7 +204,8 @@ const NewComment = ({currentUser, videoId, reply, setReply, parent}) => {
             </AvatarWrapper>
             <InputArea onSubmit={(e) => e.preventDefault()} reply={reply}>
                 <Input
-                    height={25}
+                    className='commentInput'
+                    id='comment'
                     rows="1"
                     placeholder="Add a comment..."
                     type="text"
@@ -228,7 +221,7 @@ const NewComment = ({currentUser, videoId, reply, setReply, parent}) => {
                     <CommentButtons>
                         <CancelButton onClick={handleCancelBtn} >CANCEL</CancelButton>                        
                         {writing 
-                            ?   (<ActiveConfirmButton onClick={handleSendComment}>
+                            ?   (<ActiveConfirmButton onClick={handleSendComment} htmlFor="comment">
                                     {reply ? "REPLY" : "COMMENT" }
                                 </ActiveConfirmButton>)
                             :   (<ConfirmButton>

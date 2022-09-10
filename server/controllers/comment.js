@@ -21,6 +21,15 @@ export const getAllReplies = async(req, res, next) => {
   }
 };
 
+export const getUserComments = async(req, res, next) => {
+  try {
+    const comments = await Comment.find({userId: req.user.id})
+    res.status(200).json(comments)
+  } catch (err) {
+    next(err)
+  }
+}
+
 export const addComment = async(req, res, next) => {
   try {
     const newComment = new Comment({
@@ -34,16 +43,58 @@ export const addComment = async(req, res, next) => {
   }
 };
 
-export const deleteComment = async(req, res, next) => {
-
+export const editComment = async(req, res, next) => {
   try {
     const comment = await Comment.findById( req.params.id)
-    const video = await Video.findById(req.body.videoId)
+		if (!comment) return next(createError(404, "Comment could not be found"));
+    if (comment.userId === req.user.id) {
+      const editedComment = await Comment.findByIdAndUpdate(comment._id, {
+          $set: req.body,
+        },
+        { new: true }
+      );
+      res.status(200).json(editedComment)
+    }
+  } catch (err) {
+    next(err)
+  }
+};
+
+export const deleteComment = async(req, res, next) => {
+  try {
+    const comment = await Comment.findById( req.params.id)
+		if (!comment) return next(createError(404, "Comment could not be found"));
+    const video = await Video.findById(comment.videoId)
     // comment owner and video owner can delete comment
     if(comment.userId === req.user.id || video.userId === req.user.id) {
-      await Comment.findByIdAndDelete(req.params.id)
-      res.status(200).json("The comment has been deleted successfully")
-  } else {
+      // if comment have childs delete them
+      if(comment.childs.length) {
+        const foundParents = [];
+        const removeChilds = async(parent) => {
+          await Promise.all( 
+            parent.childs.map(async(childId)=>{
+              const child = await Comment.findById(childId)
+              if (child.childs.length > 0) {
+                foundParents.push(child)
+              } else {
+                await Comment.findByIdAndDelete(childId)
+                console.log("child deleted");
+              }
+            }),
+            await Comment.findByIdAndDelete(parent._id)
+          );
+          foundParents.length && removeChilds(foundParents.shift()) 
+        }
+        removeChilds(comment)
+      } else {
+        await Comment.findByIdAndDelete(req.params.id)
+      }
+      // if this is a reply, reduce parent comment's reply count
+      comment.parent && await Comment.findByIdAndUpdate(comment.parent, {
+        $pull: {childs: comment._id}
+      }, {new:true})
+      res.status(200).json("Comment has been deleted successfully!")
+    } else {
       next(createError(403, "You can only delete your own comment!"))
     }
   } catch (err) {

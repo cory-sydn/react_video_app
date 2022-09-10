@@ -1,0 +1,162 @@
+import React, { useEffect, useState } from 'react'
+import IonFlagOutline from '../../icons/IonFlagOutline.jsx';
+import MdiLightPencil from '../../icons/MdiLightPencil.jsx';
+import MdiLightDelete from '../../icons/MdiLightDelete.jsx';
+import { DeleteComment } from './DeleteComment';
+import { useSelector } from 'react-redux';
+import styled from 'styled-components';
+import { useDispatch } from "react-redux"
+import { deleteComment } from "../../redux/commentSlice"
+
+const Container = styled.div`
+  position: relative;
+`;
+
+const OptionsContainer = styled.div`
+  position: absolute;
+  top: 10px;
+  right: 40px;
+  padding: 8px 0;
+  border-radius: 5px;
+  background: ${({ theme }) => theme.dropDown.bg};
+  box-shadow: 0 0 3px 1px ${({ theme }) => theme.bar},
+    inset 0 0 3px 0 #0004;
+`;
+
+const Option = styled.div`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px 24px;
+  &:hover{
+    background: ${({ theme }) => theme.dropDown.hover};
+  }
+`;
+
+const Wrapper = styled.div`
+  position: fixed;
+  display: grid;
+  justify-content: center;
+  top: 0;
+  right: 0;
+  width: calc(100vw - 8px);
+  height: 100vh;
+  z-index: 99;
+`;
+
+const Message = styled.div`
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 300px;
+  height: max-content;
+	padding: 20px 0;
+	color: ${({ theme }) => theme.text};
+	background: ${({ theme }) => theme.uploader};
+  border-radius: 0;
+	white-space: pre-line;
+  display: grid;
+	align-items: center;
+  place-content: center;
+  z-index: 99;
+`;
+
+const SecondCheck = styled.div`
+	margin-top: 10px;
+  padding: 10px 20px 0;
+	display: flex;
+	justify-content: space-between;
+	border-top: 1px solid ${({ theme }) => theme.soft};
+`;
+
+const CheckButton = styled.div`
+  margin-inline: 10PX;
+  padding: 10px;
+  color: #3ea6ff;
+  cursor: pointer;
+`;
+
+const Title = styled.h4`
+  text-align: left;
+  margin: 4px 24px;
+`;
+
+const Text = styled.p`
+  color: ${({ theme }) => theme.textSoft};
+  white-space: pre-line;
+  display: flex;
+  flex-wrap: wrap;
+  text-align: left;
+  font-size: 14px;
+  line-height: 20px;
+  margin-block: 10px;
+  letter-spacing: 0.2px;
+  padding: 10px 24px 10px;
+`;
+
+const Options = ({ comment, optionRef, setEditOpen, warnRef, secondCheck, setSecondCheck, setOpenOptions }) => { 
+  const {currentVideo} = useSelector(state => state.video)
+  const {currentUser} = useSelector(state => state.user)
+  const [message, setMessage] = useState(null)
+  const dispatch = useDispatch()
+
+  const handleDelete = async() => {
+    setSecondCheck(false)
+		const res = await DeleteComment(comment._id)
+      res.status === 200 && dispatch(deleteComment(comment._id))
+      setMessage(res.data)
+    setTimeout(() =>{
+      setMessage(null)
+      setOpenOptions(false)
+    }, 2000)
+  }
+
+  useEffect(() => {
+    if (secondCheck) {
+      const message = comment.childs.length 
+        ? "Are you sure?\nComment will be irreversibly deleted with all these replies it received."
+        : "Delete your comment permanently?"
+			setMessage(message)
+    } else {
+      setMessage(null)
+    }
+  }, [secondCheck, comment.childs, setMessage])
+
+  return (
+    <>
+      <Container>
+        <OptionsContainer ref={optionRef}>
+          {currentUser?._id === comment.userId ? (
+            <>
+              <Option onClick={() => setEditOpen(true)} ><MdiLightPencil style={{marginRight: 10}}/> Edit</Option>
+              <Option onClick={() => setSecondCheck(true) }><MdiLightDelete style={{marginRight: 10}}/> Delete</Option>
+            </>
+          ) : currentVideo.userId === currentUser?._id ? (
+            <>
+              <Option onClick={handleDelete}><MdiLightDelete style={{marginRight: 10}}/> Delete</Option>
+              <Option><IonFlagOutline style={{marginRight: 10}} />Report</Option>
+            </>
+          ) : (
+            <Option><IonFlagOutline style={{marginRight: 10}} />Report</Option>
+          )}
+        </OptionsContainer>         
+      </Container>
+      {message !== null && (
+        <Wrapper>
+          <Message ref={warnRef}>
+            <Title>Delete Comment{"\n"}</Title>
+            <Text>{message}</Text>
+            {secondCheck && (
+              <SecondCheck>
+                <CheckButton onClick={() => setSecondCheck(false)} style={{marginLeft: 85}}>Cancel</CheckButton>
+                <CheckButton onClick={handleDelete}>Delete</CheckButton>
+              </SecondCheck>
+            )}
+          </Message>
+        </Wrapper>
+      )}
+    </>
+  )
+}
+
+export default Options

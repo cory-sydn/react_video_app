@@ -47,10 +47,16 @@ const commentSlice = createSlice({
 		},
     reply: (state, action) => {
 
-    }
+    },
+		deleteComment: (state, action) => {
+			state.currentComment = null
+		},
+		editComment: (state, action) => {
+			state.currentComment = action.payload;
+		}
 	},
 });
 
-export const { commentStart, commentSuccessful, commentFailed, like, dislike, reply } =
+export const { commentStart, commentSuccessful, commentFailed, like, dislike, reply, deleteComment, editComment } =
 	commentSlice.actions;
 export default commentSlice.reducer;

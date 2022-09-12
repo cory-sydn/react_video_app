@@ -6,7 +6,7 @@ import VideoCallOutlinedIcon from "@mui/icons-material/VideoCallOutlined";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import DropDown from "./DropDown";
+import DropDown from "../dropdown/DropDown";
 import Upload from "../../upload/Upload";
 
 const Container = styled.div`
@@ -80,29 +80,29 @@ const UploadSectionButton = styled.div`
 			z-index: 999;
 		}
 	}
-`
+`;
 
 const Profile = () => {
-  const [open, setOpen] = useState(false)
+  const [dropdown, setDropdown] = useState(false)
 	const [openUpload, setOpenUpload] = useState(false)
 	const [activeUpload, setActiveUpload] = useState(false)
 	const {currentUser} = useSelector((state) => state.user);
-	const buttonRef = useRef(null)
   const menuRef = useRef(null)
 
-	const handleDropDown = (e) => {
-		if(buttonRef.current && buttonRef.current.contains(e.target)) return
-    if(menuRef.current && !menuRef.current.contains(e.target)){
-    setOpen(false)
-    }
-  };
-
-  useEffect(()=> {
-		let isCancelled = false
-		if(isCancelled) return
-    document.addEventListener("mousedown", handleDropDown)
-		return ()=>{isCancelled=true}
-  }, [menuRef, buttonRef]);
+	useEffect(() => {
+		const handler = (event) => {
+		 if (dropdown && menuRef.current && !menuRef.current.contains(event.target)) {
+			setDropdown(false);
+		 }
+		};
+		document.addEventListener("mousedown", handler);
+		document.addEventListener("touchstart", handler);
+		return () => {
+		 	// Cleanup the event listener
+			document.removeEventListener("mousedown", handler);
+			document.removeEventListener("touchstart", handler);
+		};
+	 }, [dropdown]);
 
 	const activateUploading = () => {
 		setOpenUpload(true) 
@@ -134,11 +134,16 @@ const Profile = () => {
 						style={{ marginInline: 28 }}
 					/>
 					{currentUser && (currentUser?.imgUrl === undefined ? (
-						<BlankImg ref={buttonRef} onClick={()=>setOpen(!open)} >{(currentUser?.name[0]).toUpperCase()}</BlankImg>
+						<BlankImg onClick={()=>setDropdown(true)} >{(currentUser?.name[0]).toUpperCase()}</BlankImg>
 					) : (
-						<Img ref={buttonRef} onClick={()=>setOpen(!open)} src={currentUser?.img} alt="" />
+						<Img onClick={()=>setDropdown(true)} src={currentUser?.img} alt="" />
 					))}
-					{open && <DropDown setOpen={setOpen} menuRef={menuRef} /> }		
+					{dropdown && (
+						<DropDown 
+							setDropdown={setDropdown} 
+							menuRef={menuRef} 
+						/>
+					)}		
 				</Section>
 			)}
 		</Container>

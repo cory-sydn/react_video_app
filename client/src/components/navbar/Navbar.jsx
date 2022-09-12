@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Logo from '../../img/logo.png'
 import styled from 'styled-components';
 import MenuSharpIcon from '@mui/icons-material/MenuSharp';
@@ -11,10 +11,11 @@ const Container = styled.div`
   top: 0;
   display: flex;
   align-items: center;
-  background: ${({theme})=>theme.bgLighter};
+  background: ${({theme})=>theme.bgDarker};
+  box-shadow: inset 0 -1px 1px 0 #00000018;
   padding: 8px 16px;
   z-index: 5;
-`
+`;
 
 const Wrapper = styled.div`
   margin-left: 190px;
@@ -22,7 +23,7 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-`
+`;
 
 const Header = styled.div`
   font-family: 'Roboto Condensed', Arial, Helvetica, sans-serif;
@@ -31,13 +32,12 @@ const Header = styled.div`
   display: flex;
   align-items: center;
   gap: 5px;
-  cursor: pointer;
   position: absolute;
   top: 3px;
   left: 0;
   font-weight: 600;
   letter-spacing: -1px;
-`
+`;
 
 const Navbar = ({setSidebar}) => {
 
@@ -45,8 +45,8 @@ const Navbar = ({setSidebar}) => {
     <Container>
       <Wrapper >
         <Header >
-          <MenuSharpIcon onClick={()=>setSidebar(true)}/>
-          <Link to="/" className="logo">
+          <MenuSharpIcon onClick={()=>setSidebar(true)} style={{marginRight: 10}} cursor="pointer" />
+          <Link to="/" className="logo" cursor="pointer">
             <img src={Logo} className="img" alt=''/>YouTube
           </Link>
         </Header>

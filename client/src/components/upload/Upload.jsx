@@ -282,6 +282,7 @@ const ThumbnailImg = styled.img`
     transition: all 0.35s ease-in-out;
     width: 320px;
     height: 180px;
+    z-index: 14;
   }
 `;
 
@@ -399,7 +400,7 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
   const [warning, setWarning] = useState({state: false, message: ""})
   const [secondCancelCheck, setSecondCancelCheck] = useState(false)
   const [file, setFile] = useState({video: null, img: null})
-  const [videoPercent, setVideoPercent] = useState(50)
+  const [videoPercent, setVideoPercent] = useState(0)
   const [imagePercent, setImagePercent] = useState(0)
   const [videoUploadTask, setVideoUploadTask] = useState([])
   const [imageUploadTask, setImageUploadTask] = useState([])

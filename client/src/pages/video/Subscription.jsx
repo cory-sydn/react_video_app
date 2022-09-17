@@ -47,12 +47,12 @@ const Subscription = ({channel, setChannel}) => {
 	const [warn, setWarn] = useState(false);
 	const { currentUser } = useSelector((state) => state.user);
 	const dispatch = useDispatch();
-	
+
 	const handleSubscribe = async() => {
 		try {
 			!currentUser.subscribedUsers.includes(channel._id) 
-				? await axios.put(`http://localhost:8800/api/users/sub/${channel._id}`)
-				: await axios.put(`http://localhost:8800/api/users/unsub/${channel._id}`);
+				? await axios.put(`http://localhost:8800/api/users/sub/${channel._id}`,{}, { withCredentials: true })
+				: await axios.put(`http://localhost:8800/api/users/unsub/${channel._id}`,{}, { withCredentials: true });
 			dispatch(subscription(channel._id))
 		} catch (err) {
 			console.log(err);
@@ -82,13 +82,15 @@ const Subscription = ({channel, setChannel}) => {
 			)}
 			{currentUser && (
 				<>
-					<Join>JOIN</Join>
 					{currentUser?.subscribedUsers.includes(channel?._id) ? (
-						<Subscribed onClick={handleSubscribe}>SUBSCRIBED</Subscribed>
+						<>
+							<Join>JOIN</Join>
+							<Subscribed onClick={handleSubscribe}>SUBSCRIBED</Subscribed>
+							<NotificationsActiveOutlinedIcon cursor="pointer" />
+						</>
 					) : (
 						<Subscribe onClick={handleSubscribe}>SUBSCRIBE</Subscribe>
 					)}
-					<NotificationsActiveOutlinedIcon />
 				</>
 			)}
 		</Container>

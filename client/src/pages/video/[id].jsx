@@ -5,49 +5,62 @@ import ReplyOutlinedIcon from "@mui/icons-material/ReplyOutlined";
 import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
 import Comments from "../../components/comment/Comments";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { fetchStart, fetchSuccessful } from "../../redux/videoSlice";
 import { format } from "timeago.js";
 import LikeBtn from "./LikeBtn";
 import DislikeBtn from "./DislikeBtn"
 import SaveBtn from "./SaveBtn";
 import Subscription from "./Subscription";
+import DescRenderer from "./DescRenderer";
+import Recommendations from "../../components/Recommendations";
 
 const Container = styled.div`
 	width: 100%;
 	display: flex;
 	flex-wrap: wrap;
 	gap: 24px;
-	padding: 24px 36px;
+	padding: 24px 36px 50px;
+	background: ${({ theme }) => theme.bg};
+	z-index: 3;
 `;
 
 const Content = styled.section`
 	width: 68%;
-	min-width: 550px;
+	min-width: 650px;
 	flex: 5;
 	display: flex;
 	flex-direction: column;
-`;
-
-const RecommendationsSection = styled.section`
-	width: 26%;
-	min-width: 330px;
-	flex: 2;
+	@media (max-width: 730px) {
+		width: 100%;
+		min-width: 320px;
+	}
 `;
 
 const VideoWrapper = styled.div`
-	display: flex;
+	display: grid;
+	place-content: center;
+	background: #050505;
+	width: 100%;
 `;
 
 const VideoFrame = styled.video`
-	max-height: 720px;
-	max-width: 100%;
+	height: 360px;
+	width: 100%;
 	object-fit: cover;
-`
+	background-position: center center;
+	&.controls progress{
+		color: green;
+		background: red;
+		height: 1px
+	}
+`;
 
 const Title = styled.h1`
-  margin: 20px 0 12px;
+  margin: 20px 0 8px;
 	display: flex;
+	flex-direction: column;
+	text-align: left;
 	font-size: 20px;
 	font-weight: 600;
 	color: ${({ theme }) => theme.text};
@@ -64,6 +77,8 @@ const Details = styled.div`
 `;
 
 const Info = styled.span`
+	font-size: 14px;
+	place-self: start;
 	color: ${({ theme }) => theme.textSoft};
 `;
 
@@ -84,23 +99,24 @@ const Button = styled.button`
 	position: relative;
 `;
 
-const ChannelImg = styled.div`
-	width: 48px;
+const ChannelImg = styled(Link)`
+	min-width: 48px;
 	height: 48px;
-	margin-right: 10px;
+	margin-right: 16px;
 `;
 
 const Img = styled.img`
-	width: 36px;
-	height: 36px;
+	min-width: 48px;
+	height: 48px;
 	border-radius: 50%;
 	object-fit: cover;
 `;
 
 const ChannelLine = styled.div`
-	width: calc(100% - 63px);
+	width: calc(100% - 64px);
 	height: 59px;
 	display: flex;
+	align-items: center;
 	justify-content: space-between;
 `;
 
@@ -116,30 +132,17 @@ const ChannelName = styled.h3`
 	flex-direction: column;
 `;
 
-const Desc = styled.p`
-	white-space: pre-line;
-	font-size: 14px;
-	padding-top: 20px;
-	padding-left: 64px;
-	text-align: left;
-	height: 84px;
-	overflow-y: hidden;
-`;
-
-const More = styled.div`
-	margin: 16px 0 0 64px;
-	color: ${({ theme }) => theme.textSoft};
+const VideoTags = styled.div`
+	margin: -2px 2px 2px 0;
+	color:#3ea6ff;
 	font-size: 12px;
-	font-weight: 500;
+	font-weight: 400;
 	cursor: pointer;
-	letter-spacing: -0.5px;
 `;
 
 const Video = () => {
 	const [channel, setChannel] = useState({});
-	const [showMore, setShowMore] = useState(false);
 	const { currentVideo } = useSelector((state) => state.video);
-
 	const dispatch = useDispatch();
 	const videoId = useParams().id;
 
@@ -154,7 +157,6 @@ const Video = () => {
 				setChannel(channelRes.data);
 				dispatch(fetchSuccessful(videoRes.data));
 				document.title = videoRes.data.title
-				
 			} catch (err) {
 				if(axios.isCancel(err)) return console.log("cancelled!")
 				console.log(err.message);
@@ -170,19 +172,24 @@ const Video = () => {
 		<Container>
 			<Content>
 				<VideoWrapper>
-					<VideoFrame src={currentVideo?.videoUrl} />
+					<VideoFrame src={currentVideo?.videoUrl} poster={currentVideo?.imgUrl} controls
+					//  autoPlay 
+					 />
 				</VideoWrapper>
-				<Title>{currentVideo?.title} </Title>
+				<Title>
+					<VideoTags>{currentVideo?.tags.map((tag)=> ("#" + tag + " "))}</VideoTags>				
+					{currentVideo?.title}
+				</Title>
 				<Details>
 					<Info>
-						{currentVideo?.views} &bull; {format(currentVideo?.createdAt)}{" "}
+						{currentVideo?.views}{" views"} &bull; {format(currentVideo?.createdAt)}{" "}
 					</Info>
 					<Buttons>
 						<LikeBtn />
 						<DislikeBtn />
 						<Button>
 							<ReplyOutlinedIcon/>
-							&nbsp;SHARE
+							{" "}SHARE
 						</Button>
 						<SaveBtn/>
 						<Button>
@@ -191,7 +198,7 @@ const Video = () => {
 					</Buttons>
 				</Details>
 				<Details>
-					<ChannelImg>
+					<ChannelImg to={`/channel/${channel._id}`} >
 						<Img src={channel.img} />
 					</ChannelImg>
 					<ChannelLine>
@@ -199,31 +206,17 @@ const Video = () => {
 							<ChannelName>
 								{channel?.name?.toUpperCase()}
 								<Info style={{ margin: 0, fontSize: 12, fontWeight: 400 }}>
-									{channel.subscribers}{" "}
+									{channel.subscribers}{" subscribers "}
 								</Info>
 							</ChannelName>
 						</ChannelInfo>
 						<Subscription channel={channel} setChannel={setChannel} />
-					</ChannelLine>
-					<Desc>
-						{currentVideo?.desc?.length < 157
-							? (currentVideo.desc)
-							: showMore === false
-								?	`${currentVideo.desc.slice(0, 156)}...`
-								: currentVideo.desc
-						}
-					</Desc>
-					{currentVideo?.desc?.length > 157 &&
-						<More onClick={() => setShowMore(!showMore)}>
-							{showMore === true ? ("SHOW LESS") : ("SHOW MORE")}
-						</More>
-					}
+					</ChannelLine>					
+					<DescRenderer text={currentVideo?.desc} tags={currentVideo?.tags} />					
 				</Details>
 				<Comments />
 			</Content>
-			{/* <RecommendationsSection>
-           
-        </RecommendationsSection> */}
+			<Recommendations tags={currentVideo?.tags} />
 		</Container>
 	);
 };

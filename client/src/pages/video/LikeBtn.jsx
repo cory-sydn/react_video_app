@@ -46,12 +46,12 @@ const LikeBtn = () => {
 			onBlur={() => handleWarn(false)}
 			onClick={handleLike}
 		>
-			{currentVideo.likes?.includes(currentUser?._id) ? (
+			{currentVideo?.likes?.includes(currentUser?._id) ? (
 				<ThumbUpAltIcon />
 			) : (
 				<ThumbUpOutlinedIcon />
 			)}
-			&nbsp;{currentVideo.likes?.length}{" "}
+			&nbsp;{currentVideo?.likes?.length}{" "}
 			{warn && (
 				<Warning title={"Like this video?"} text={"make your opinion count."} />
 			)}

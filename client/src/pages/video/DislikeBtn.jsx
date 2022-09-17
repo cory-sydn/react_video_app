@@ -46,7 +46,7 @@ const DislikeBtn = () => {
 			onBlur={() => handleWarn(false)}
 			onClick={handleDislike}
 		>
-			{currentVideo.dislikes?.includes(currentUser?._id) ? (
+			{currentVideo?.dislikes?.includes(currentUser?._id) ? (
 				<ThumbDownAltIcon />
 			) : (
 				<ThumbDownOffAltOutlinedIcon />

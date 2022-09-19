@@ -8,22 +8,23 @@ import styled from 'styled-components';
 import { useDispatch } from "react-redux"
 import { deleteComment } from "../../redux/commentSlice"
 
-const Container = styled.div`
+export const Container = styled.div`
+  z-index: 25;
   position: relative;
 `;
 
-const OptionsContainer = styled.div`
+export const OptionsContainer = styled.div`
   position: absolute;
   top: 10px;
   right: 40px;
   padding: 8px 0;
   border-radius: 5px;
   background: ${({ theme }) => theme.dropDown.bg};
-  box-shadow: 0 0 3px 1px ${({ theme }) => theme.bar},
+  box-shadow: 0px 1px 2px 0px #0008,
     inset 0 0 3px 0 #0004;
 `;
 
-const Option = styled.div`
+export const Option = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -33,18 +34,17 @@ const Option = styled.div`
   }
 `;
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   position: fixed;
   display: grid;
   justify-content: center;
-  top: 0;
-  right: 0;
+  inset: 0;
   width: calc(100vw - 8px);
   height: 100vh;
   z-index: 99;
 `;
 
-const Message = styled.div`
+export const Message = styled.div`
   position: absolute;
   inset: 0;
   margin: auto;
@@ -61,7 +61,7 @@ const Message = styled.div`
   z-index: 99;
 `;
 
-const SecondCheck = styled.div`
+export const SecondCheck = styled.div`
 	margin-top: 10px;
   padding: 10px 20px 0;
 	display: flex;
@@ -69,19 +69,19 @@ const SecondCheck = styled.div`
 	border-top: 1px solid ${({ theme }) => theme.soft};
 `;
 
-const CheckButton = styled.div`
+export const CheckButton = styled.div`
   margin-inline: 10PX;
   padding: 10px;
   color: #3ea6ff;
   cursor: pointer;
 `;
 
-const Title = styled.h4`
+export const Title = styled.h4`
   text-align: left;
   margin: 4px 24px;
 `;
 
-const Text = styled.p`
+export const Text = styled.p`
   color: ${({ theme }) => theme.textSoft};
   white-space: pre-line;
   display: flex;
@@ -131,7 +131,7 @@ const Options = ({ comment, optionRef, setEditOpen, warnRef, secondCheck, setSec
               <Option onClick={() => setEditOpen(true)} ><MdiLightPencil style={{marginRight: 10}}/> Edit</Option>
               <Option onClick={() => setSecondCheck(true) }><MdiLightDelete style={{marginRight: 10}}/> Delete</Option>
             </>
-          ) : currentVideo.userId === currentUser?._id ? (
+          ) : currentVideo?.userId === currentUser?._id ? (
             <>
               <Option onClick={handleDelete}><MdiLightDelete style={{marginRight: 10}}/> Delete</Option>
               <Option><IonFlagOutline style={{marginRight: 10}} />Report</Option>

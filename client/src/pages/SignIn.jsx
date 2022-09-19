@@ -8,7 +8,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { loginFailed, loginStart, loginSuccessful } from "../redux/userSlice";
 import { auth, googleProvider } from "../firebase.config";
-import { signInWithPopup } from "firebase/auth";
+import { signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import googleSvg from "../img/google.svg";
 import { useNavigate } from "react-router-dom";
 
@@ -46,6 +46,7 @@ const Img = styled.img`
 	height: 30px;
 	padding: 0 0.25rem 0 0;
 `;
+
 const Text = styled.div`
 	width: 100%;
 	display: flex;
@@ -56,6 +57,7 @@ const Label = styled.label`
 	position: absolute;
 	left: -999999px;
 `;
+
 const InputWrapper = styled.div`
 	width: 100%;
 	display: grid;
@@ -69,6 +71,7 @@ const Icon = styled.div`
 	transform: scale(0.8);
 	position: absolute;
 `;
+
 const Input = styled.input`
 	min-width: 240px;
 	width: calc(240px + 15vmin);
@@ -79,6 +82,7 @@ const Input = styled.input`
 	color: ${({ theme }) => theme.text};
 	border: none;
 `;
+
 const Button = styled.button`
 	margin-bottom: 1.25rem;
 	border-radius: 2px;
@@ -99,6 +103,7 @@ const Button = styled.button`
 		transform: scaleY(1), translateY(0)
 	}
 `;
+
 const More = styled.div`
 	padding: 10px;
 	display: flex;
@@ -165,7 +170,7 @@ const SignIn = () => {
 	const [password, setPassword] = useState("");
 	const navigate = useNavigate()
 	const dispatch = useDispatch();
-	const user = useSelector((state) => state.user);
+	const currentUser = useSelector((state) => state.user);
 
 	const handleSignIn = async () => {
 		if (!name || !password) return;
@@ -176,19 +181,19 @@ const SignIn = () => {
 				"http://localhost:8800/api/auth/signin",
 				{ name, password },
 				{
-					//AxiosRequestConfig parameter for letting browser set cookies
 					withCredentials: true,
 				}
 			);
 			dispatch(loginSuccessful(res.data));
+			login(auth, res.data.email, password)
 			navigate("/")
 		} catch (err) {
-			dispatch(loginFailed(err.response.data.message));
+			dispatch(loginFailed(err?.response?.data?.message));
 		}
 	};
 
 	const googleSignIn = async () => {
-		dispatch(loginStart())
+		dispatch(loginStart());
 
 		signInWithPopup(auth, googleProvider)
 			.then( async(result) => {
@@ -203,7 +208,7 @@ const SignIn = () => {
 				})
 			})
 			.catch((err) => {
-				dispatch(loginFailed(err.response))
+				dispatch(loginFailed(err?.response?.data?.message))
 				console.log(err);
 			})
 	};
@@ -213,19 +218,37 @@ const SignIn = () => {
 		if (!name || !password) return;
 		if (name.length < 4 || password < 9) return;
 		try {
+			register()
 			const newUser = {	name, email, password,};
-			const res = await axios.post("/auth/signup", newUser, {withCredentials: true, })
+			const res = await axios.post("http://localhost:8800/api/auth/signup", newUser, {withCredentials: true, })
 			dispatch(loginSuccessful(res.data))
 			navigate("/")
 		} catch (err) {
 			console.log(err);
-			dispatch(loginFailed(err))
+			dispatch(loginFailed(err?.response?.data?.message))
 		}
 	};
 
+	async function register() {
+		try {
+			await createUserWithEmailAndPassword(auth, email, password)
+		} catch (err) {
+			dispatch(loginFailed(err?.response?.data?.message))
+			console.log(err);
+		}
+	}
+
+	async function login (auth, email, password) {
+		try {
+			await signInWithEmailAndPassword(auth, email, password)
+		} catch (err) {
+			dispatch(loginFailed(err))
+		}
+	}
+
 	useEffect(()=> {
 		document.title = "YouTube"
-	}, [])
+	}, []);
 
 	return (
 		<Container>
@@ -261,7 +284,7 @@ const SignIn = () => {
 				</InputWrapper>
 				<Button onClick={handleSignIn}>
 					Sign in
-					{user.error && <Error>{user.error} </Error>}
+					{currentUser?.error && <Error>{currentUser?.error} </Error>}
 				</Button>
 				<SinginWithGoogleBtn onClick={googleSignIn}>
 					<GoogleIcon src={googleSvg} /> Sing in with Google{" "}
@@ -300,7 +323,7 @@ const SignIn = () => {
 						onChange={(e) => setPassword(e.target.value)}
 					></Input>
 				</InputWrapper>
-				<Button onClick={handleSignUp} disabled={user.loading === true ? true : false } >Sign up</Button>
+				<Button onClick={handleSignUp} disabled={currentUser?.loading === true ? true : false } >Sign up</Button>
 			</Form>
 			<More>
 				<Span>English (US) &#9660;</Span>

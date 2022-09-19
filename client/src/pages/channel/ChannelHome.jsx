@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import camera from "../../img/camera";
-import Card from "../../components/Card";
+import Card from "../../components/videoCard/Card";
 
 const Container = styled.main``;
 

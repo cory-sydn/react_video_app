@@ -17,12 +17,10 @@ const Recommendations = ({tags}) => {
   const [videos, setVideos] = useState([])
 
   useEffect(() => {
+    if(!tags) return
 		const cancelToken = axios.CancelToken.source()
-    const query = tags.map((tag)=>
-      tag.split("#")[1] 
-    )
 		const fetchVideos = async () => {
-      const res = await axios.get(`http://localhost:8800/api/videos/reco/tags?tags=${query}`, {cancelToken: cancelToken.token});
+      const res = await axios.get(`http://localhost:8800/api/videos/recommend/tags?tags=${tags}`, {cancelToken: cancelToken.token});
       setVideos(res.data);
     };
     fetchVideos();

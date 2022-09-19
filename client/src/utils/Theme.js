@@ -1,6 +1,8 @@
 export const darkTheme = {
     bg:"#181818",
     bgLighter:"#202020f8",
+    bgDarker:"#121212",
+    dropDown: {bg:"#212121", item:"#2f2f2f", hover: "#444444", active: "#585858"},
     text:"white",
     textSoft:"#aaaaaa",
     soft:"#373737",
@@ -16,6 +18,8 @@ export const darkTheme = {
 export const lightTheme = {
     bg:"#f9f9f9",
     bgLighter:"#fffffff8",
+    bgDarker:"#ffffff",
+    dropDown: {bg:"#ffffff", item:"#ffffff", hover: "#f2f2f2", active: "#d8d8d8"},
     text:"#000510",
     textSoft:"#606060",
     soft:"#dfdfdf",

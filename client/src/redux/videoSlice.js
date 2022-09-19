@@ -45,9 +45,12 @@ const videoSlice = createSlice({
 				);
 			}
 		},
+		deleteVideo: (state, action) => {
+			state.currentVideo = null;
+		}
 	},
 });
 
-export const { fetchStart, fetchSuccessful, fetchFailed, like, dislike } =
+export const { fetchStart, fetchSuccessful, fetchFailed, like, dislike, deleteVideo } =
 	videoSlice.actions;
 export default videoSlice.reducer;

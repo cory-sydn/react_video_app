@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import ReplyOutlinedIcon from "@mui/icons-material/ReplyOutlined";
 import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
 import Comments from "../../components/comment/Comments";
 import axios from "axios";
@@ -14,6 +13,9 @@ import SaveBtn from "./SaveBtn";
 import Subscription from "./Subscription";
 import DescRenderer from "./DescRenderer";
 import Recommendations from "../../components/Recommendations";
+import Darkness from "../../utils/Darkness";
+import Options from "./Options";
+import ShareBtn from "./ShareBtn";
 
 const Container = styled.div`
 	width: 100%;
@@ -78,7 +80,7 @@ const Details = styled.div`
 
 const Info = styled.span`
 	font-size: 14px;
-	place-self: start;
+	place-self: center;
 	color: ${({ theme }) => theme.textSoft};
 `;
 
@@ -88,15 +90,18 @@ const Buttons = styled.div`
 `;
 
 const Button = styled.button`
+	width: 40px;
+	height: 40px;
 	color: ${({ theme }) => theme.text};
 	background: ${({ theme }) => theme.bg};
 	border:none;
+	border-radius: 50%;
 	outline: none;
-	margin-inline: 0.75rem;
+	margin-inline: 5px;
 	cursor: pointer;
-	display: flex;
+	display: grid;
+	place-content: center;
 	align-items: center;
-	position: relative;
 `;
 
 const ChannelImg = styled(Link)`
@@ -115,6 +120,7 @@ const Img = styled.img`
 const ChannelLine = styled.div`
 	width: calc(100% - 64px);
 	height: 59px;
+	margin-bottom: 12px;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -142,9 +148,16 @@ const VideoTags = styled.div`
 
 const Video = () => {
 	const [channel, setChannel] = useState({});
+	const [openOptions, setOpenOptions] = useState(false)
+	const [secondCheck, setSecondCheck] = useState(false)
+	const [darkEffect, setDarkEffect] = useState(false)
+	const [editOpen, setEditOpen] = useState(false)
 	const { currentVideo } = useSelector((state) => state.video);
 	const dispatch = useDispatch();
 	const videoId = useParams().id;
+	const optionRef = useRef()
+	const buttonRef = useRef()
+	const warnRef= useRef()
 
 	useEffect(() => {
 		const cancelToken = axios.CancelToken.source()
@@ -168,6 +181,44 @@ const Video = () => {
 		}
 	}, [videoId, dispatch]);
 
+	const handleToggleOptions = (e) => {
+		setOpenOptions(!openOptions)
+		e.target.classList.contains("btn") && e.target.classList.add("glow")
+		setTimeout(()=> {
+			e.target.classList.remove("glow")
+		},500)
+	}
+
+	const handleFocus = useCallback((e) => {
+		if(buttonRef.current && buttonRef.current.contains(e.target)) return
+		if(warnRef.current && warnRef.current.contains(e.target)) return
+		if(optionRef.current && !optionRef.current.contains(e.target)) {
+				setOpenOptions(false)
+				secondCheck && closeAlert()
+				darkEffect && closeAlert()
+			}
+    }, [secondCheck, darkEffect])
+
+    useEffect(() => {
+			document.addEventListener("mousedown", handleFocus)
+			return () => {
+					document.removeEventListener("mousedown", handleFocus)
+			}
+    }, [optionRef, buttonRef, handleFocus, warnRef])
+
+    useEffect(() => {
+			if (secondCheck) {
+					setDarkEffect(true)
+			}
+		}, [secondCheck, darkEffect])
+
+	function closeAlert() {
+		setSecondCheck(false)
+		setTimeout(() => {
+			setDarkEffect(false)
+		}, 400)
+	}
+
 	return (
 		<Container>
 			<Content>
@@ -187,14 +238,28 @@ const Video = () => {
 					<Buttons>
 						<LikeBtn />
 						<DislikeBtn />
-						<Button>
-							<ReplyOutlinedIcon/>
-							{" "}SHARE
-						</Button>
+						<ShareBtn />						
 						<SaveBtn/>
-						<Button>
-							<MoreHorizOutlinedIcon />
+						<Button
+							className="btn"
+							onClickCapture={handleToggleOptions}
+							ref={buttonRef}
+							name="button"
+						>
+							<MoreHorizOutlinedIcon style={{pointerEvents: "none"}}/>
 						</Button>
+						{openOptions && (
+							<Options
+								optionRef= {optionRef}
+								video= {currentVideo}
+								setEditOpen= {setEditOpen}
+								warnRef= {warnRef}
+								secondCheck= {secondCheck}
+								setSecondCheck= {setSecondCheck}
+								setOpenOptions={setOpenOptions}
+								close={closeAlert}
+							/>
+						)} 
 					</Buttons>
 				</Details>
 				<Details>
@@ -217,6 +282,9 @@ const Video = () => {
 				<Comments />
 			</Content>
 			<Recommendations tags={currentVideo?.tags} />
+			{darkEffect && (
+				<Darkness status={secondCheck} />
+			)}
 		</Container>
 	);
 };

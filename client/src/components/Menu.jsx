@@ -7,12 +7,12 @@ import SubscriptionsOutlinedIcon from "@mui/icons-material/SubscriptionsOutlined
 import VideoLibraryOutlinedIcon from "@mui/icons-material/VideoLibraryOutlined";
 import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
 import LibraryMusicOutlinedIcon from "@mui/icons-material/LibraryMusicOutlined";
+import SlideshowIcon from '@mui/icons-material/Slideshow';
 import SportsEsportsOutlinedIcon from "@mui/icons-material/SportsEsportsOutlined";
 import SportsBasketballOutlinedIcon from "@mui/icons-material/SportsBasketballOutlined";
 import MovieOutlinedIcon from "@mui/icons-material/MovieOutlined";
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
 import LiveTvOutlinedIcon from "@mui/icons-material/LiveTvOutlined";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
@@ -21,6 +21,9 @@ import MenuSharpIcon from '@mui/icons-material/MenuSharp';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { Header, HamburgerBtn } from './navbar/Navbar';
+import SignInButton from '../pages/home/SignInButton';
+import GlowingButton from "../utils/GlowingButton";
 
 const MenuContainer = styled.div`
     display: flex;
@@ -30,29 +33,14 @@ const MenuContainer = styled.div`
     width: 100vw;
     min-height: 100vh;
     height:100%;
-    z-index: 10;
-`
-
-const Header = styled.div`
-    font-family: 'Roboto Condensed', Arial, Helvetica, sans-serif;
-    margin: 0.75rem 0 0 1.5rem;
-    font-size: 1.25em;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    cursor: pointer;
-    position: absolute;
-    top: 3px;
-    left: 0;
-    font-weight: 600;
-    letter-spacing: -1px;
-`
+    z-index: 90;
+`;
 
 const Sidebar = styled.menu`
     display: flex;
     padding-top: 56px;
     margin: 0;
-    width: 0;
+    width: 240px;
     height: 100vh;
     position: relative;
     top: 0;
@@ -63,23 +51,24 @@ const Sidebar = styled.menu`
 
     @keyframes open {
         0% {
-            width: 0;
+            transform: translateX(-240px);
         }
         100% {
-            width: 240px;
+            transform:translateX(0);
         }
     }
     @keyframes close {
         0% {
-            width: 240px;
+            transform: translateX(0);
         }
         100% {
-            width: 0;
+            transform: translateX(-240px)
         }
     }
-`
+`;
 
 const Container = styled.div`
+    box-shadow: -2px -1px 3px 0 #00000018;
     font-size: 14px;
     padding-top: 1px;    
     overflow-x: hidden;
@@ -96,13 +85,13 @@ const Container = styled.div`
             background: ${({theme}) => theme.scroll};
         }
     }
-`
+`;
 
 const Wrapper = styled.div`
     width: 225px;
     padding:8px 0 16px 0;
     flex-basis: 1e-9px;
-`
+`;
 
 const Item = styled.div`
     height: 40px;
@@ -115,57 +104,38 @@ const Item = styled.div`
     &:hover {
         background: ${({theme}) => theme.soft};
     }
-`
+`;
 
 const Hr = styled.hr`
     margin: 12px 0;
     height: 1px;
     border: none;
     border-bottom: 1px solid ${({theme})=>theme.soft};
-`
-
-const Login =styled.div`
-    margin: 0 18px 0 24px;
-    text-align: left;
-`
-
-const Button =styled.button`
-    padding: 5px 15px;
-    gap: 5px;
-    background-color: transparent;
-    display: flex;
-    align-items: center;
-    border: 1px solid #3ea6ff;
-    color: #3ea6ff;
-    margin: 10px 0 0 ;
-    cursor: pointer;
-    border-radius: 2px;
-    font-weight: 500;
-`
+`;
 
 const Title =styled.h2`
     font-size: 14px;
     font-weight: 500;
     color: #aaaaaa;
     margin-bottom: 20px;
-`
+`;
 
 const Img = styled.img`
     width: 36px;
     height: 36px;
     border-radius: 50%;
     object-fit: scale-down;
-`
+`;
 
 const Outside = styled.div`
     min-width: calc(100vw - 240px);
     min-height: 100vh;
-`
+`;
 
 const Menu = ({darkMode, setDarkMode, sidebar, setSidebar}) => {
     const [close, setClose] = useState(false)
     const [channels, setChannels] = useState(null)
-    const user = useSelector(state => state.user.currentUser)
+    const {currentUser} = useSelector(state => state.user)
 
     const handleClose = () => {
         setClose(true)
@@ -176,23 +146,30 @@ const Menu = ({darkMode, setDarkMode, sidebar, setSidebar}) => {
 
     const getChannels = async() => {
         try {
-            const res = await axios.get("/users/subs")
-            setChannels( res.data)
+            const res = await axios.get("http://localhost:8800/api/users/subs", {
+                withCredentials: true
+            })
+            setChannels(res.data)
         } catch (err) {
             console.log(err);
         }
     };
 
     useEffect(()=>{
-        if(user) getChannels()
-    },[]);
+        if(currentUser) getChannels()
+    },[currentUser]);
     
     return (
     <MenuContainer close={close} >
         <Sidebar tabIndex={0} close={close}>
             <Header >
-                <MenuSharpIcon onClick={handleClose} />
-                <Link to="/" className="logo">
+                <HamburgerBtn  onClick={handleClose}>
+                    <GlowingButton
+                        style={{marginRight: 10}}
+                        icon={<MenuSharpIcon />}
+                    />
+                </HamburgerBtn>
+                <Link to="/" className="logo" cursor="pointer">
                     <img src={Logo} className="img" alt='' />YouTube
                 </Link>
             </Header>
@@ -221,33 +198,35 @@ const Menu = ({darkMode, setDarkMode, sidebar, setSidebar}) => {
                         <VideoLibraryOutlinedIcon />
                         Library
                     </Item>
+                    {currentUser && (
+                        <Link to={`/channel/${currentUser._id}`} >
+                            <Item >
+                                <SlideshowIcon />
+                                Your Videos
+                            </Item>
+                        </Link>
+                    )}
                     <Item>
                         <HistoryOutlinedIcon />
                         History
                     </Item>
                     <Hr />
-                    {!user && (
+                    {!currentUser && (
                         <>               
-                            <Login>
-                                Sign in to like videos, comment, and subscribe.
-                                <Link to="signin" >
-                                    <Button>
-                                        <AccountCircleOutlinedIcon />
-                                        SIGN IN
-                                    </Button>
-                                </Link>
-                            </Login>
+                            <SignInButton type={"menu"} />
                             <Hr />
                         </>
                     )}                    
-                    {channels && (
+                    {channels?.length > 0 && (
                         <>
                             <Title>SUBSCRIPTIONS</Title>
                             {channels.map((channel) => (
-                                <Item key={channel._id} >
-                                    {channel.img && (<Img src={channel.img} alt=""/>)}
-                                    {channel.name}
-                                </Item>
+                                <Link to={`/channel/${channel?._id}`}key={channel?._id} >
+                                    <Item  >
+                                        {channel?.img && (<Img src={channel?.img} alt=""/>)}
+                                        {channel?.name}
+                                    </Item>
+                                </Link>
                             ))}
                             <Hr />
                         </>

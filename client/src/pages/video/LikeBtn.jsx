@@ -1,23 +1,11 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { like } from "../../redux/videoSlice";
 import Warning from "../../components/Warning";
-
-const Button = styled.button`
-	color: ${({ theme }) => theme.text};
-	background: ${({ theme }) => theme.bg};
-	border: none;
-	outline: none;
-	margin-inline: 0.75rem;
-	cursor: pointer;
-	display: flex;
-	align-items: center;
-	position: relative;
-`;
+import GlowingButton, { BtnContainer } from "../../utils/GlowingButton";
 
 const LikeBtn = () => {
   const [warn, setWarn] = useState(false)
@@ -41,21 +29,23 @@ const LikeBtn = () => {
 	}
 
 	return (
-		<Button
+		<BtnContainer
 			onFocus={() => handleWarn(true)}
 			onBlur={() => handleWarn(false)}
 			onClick={handleLike}
 		>
-			{currentVideo?.likes?.includes(currentUser?._id) ? (
-				<ThumbUpAltIcon />
-			) : (
-				<ThumbUpOutlinedIcon />
-			)}
-			&nbsp;{currentVideo?.likes?.length}{" "}
-			{warn && (
-				<Warning title={"Like this video?"} text={"make your opinion count."} />
-			)}
-		</Button>
+			<GlowingButton
+				icon={currentVideo?.likes?.includes(currentUser?._id) ? (
+					<ThumbUpAltIcon />
+				) : (
+					<ThumbUpOutlinedIcon />
+				)}
+			/>
+				{currentVideo?.likes?.length > 0 ? currentVideo?.likes?.length : "LIKE" }{" "}
+				{warn && (
+					<Warning title={"Like this video?"} text={"make your opinion count."} />
+				)}
+		</BtnContainer>
 	);
 };
 

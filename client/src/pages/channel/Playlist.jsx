@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Card from "../../components/Card";
+import Card from "../../components/videoCard/Card";
 import { useSelector } from "react-redux";
 
 const Container = styled.div`

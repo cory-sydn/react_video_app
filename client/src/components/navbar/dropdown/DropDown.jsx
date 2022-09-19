@@ -15,6 +15,8 @@ import PolicyOutlinedIcon from '@mui/icons-material/PolicyOutlined';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { logout } from "../../../redux/userSlice";
+import { signOut } from "firebase/auth";
+import { auth } from "../../../firebase.config";
 import { Link } from "react-router-dom";
 import {Selector} from "./Selector";
 import { forwardRef } from "react";
@@ -169,10 +171,15 @@ const DropDown = forwardRef((props, ref) => {
 	
 	const handleSignout = () => {
 		//document.cookie = 'access_token=null; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+		firebaseLogout()
 		dispatch(logout());
 		window.location.reload()
 	};
 
+	const firebaseLogout = async() => {
+		await signOut(auth)
+	}
+ 
 	return (
 		<Screen >
 			<MenuContainer ref={props.menuRef} >

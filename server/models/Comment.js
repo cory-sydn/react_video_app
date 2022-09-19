@@ -22,9 +22,11 @@ const CommentSchema = new mongoose.Schema(
     },
     likes: {
       type: [String],
+      default: []
     },
     dislikes: {
       type: [String],
+      default: []
     }
   },
   { timestamps: true }

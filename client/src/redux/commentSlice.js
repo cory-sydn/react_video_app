@@ -45,9 +45,6 @@ const commentSlice = createSlice({
 				);
 			}
 		},
-    reply: (state, action) => {
-
-    },
 		deleteComment: (state, action) => {
 			state.currentComment = null
 		},
@@ -57,6 +54,6 @@ const commentSlice = createSlice({
 	},
 });
 
-export const { commentStart, commentSuccessful, commentFailed, like, dislike, reply, deleteComment, editComment } =
+export const { commentStart, commentSuccessful, commentFailed, like, dislike, deleteComment, editComment } =
 	commentSlice.actions;
 export default commentSlice.reducer;

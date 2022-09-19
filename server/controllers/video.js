@@ -1,4 +1,5 @@
 import { createError } from "../error.js";
+import Comment from "../models/Comment.js";
 import User from "../models/User.js";
 import Video from "../models/Video.js";
 
@@ -9,7 +10,7 @@ export const addVideo = async (req, res, next) => {
 	});
 	try {
 		const createdVideo = await video.save();
-		res.status(201).json(createdVideo);
+		res.status(200).json(createdVideo);
 	} catch (err) {
 		next(err);
 	}
@@ -38,7 +39,7 @@ export const updateVideo = async (req, res, next) => {
 			);
 			res.status(200).json(updatedVideo);
 		} else {
-			return next(403, "You can update only your own videos");
+			return next(createError(403, "You can update only your own videos"));
 		}
 	} catch (err) {
 		next(err);
@@ -51,7 +52,13 @@ export const deleteVideo = async (req, res, next) => {
 		if (!video) return next(createError(404, "Video could not be found"));
 		if (req.user.id === video.userId) {
 			await Video.findByIdAndDelete(req.params.id);
-			res.status(200).json("Video has been deleted!");
+			const comments = await Comment.find({ videoId: req.params.id })
+			comments?.length > 0 && await Promise.all(
+				comments.map(async(comment) => {
+					await Comment.findByIdAndDelete(comment._id)
+				})
+			)
+			res.status(200).json("Video deleted successfully!");
 		} else {
 			return next(403, "You can only delete your own videos!");
 		}
@@ -92,6 +99,16 @@ export const trendVideos = async (req, res, next) => {
 	}
 };
 
+export const channelVideos = async(req, res, next) => {
+	try {
+		const {channelId} = req.params
+		const videos = await Video.find({ userId: channelId })
+		res.status(200).json(videos)
+	} catch (err) {
+		next(err)
+	}
+}
+
 export const subsVideos = async (req, res, next) => {
 	try {
 		const user = await User.findById(req.user.id);
@@ -110,7 +127,7 @@ export const subsVideos = async (req, res, next) => {
 	}
 };
 
-export const getByTag = async (req, res, next) => {
+export const getTags = async (req, res, next) => {
 	const tags = req.query.tags.split(",");
 	try {
 		const videos = await Video.find({ tags: { $in: tags } }).limit(20);
@@ -124,7 +141,9 @@ export const search = async (req, res, next) => {
 	const query = req.query.q;
 	try {
 		const videos = await Video.find({
-			title: { $regex: query, $options: "i" },
+			$or:[
+			{tags: { $regex: query, $options: "i" }}, 
+			{title: { $regex: query, $options: "i" }}]
 		}).limit(40);
 		res.status(200).json(videos);
 	} catch (err) {
@@ -133,9 +152,8 @@ export const search = async (req, res, next) => {
 };
 
 export const getLikedVideos = async (req, res, next) => {
-	console.log("Credentials Verified. LikedVideos");
 	try {
-		const videos = await Video.find({ likes: req.user.id})		
+		const videos = await Video.find({ likes: req.user.id})
 		res.status(200).json(videos);
 	} catch (err) {
 		next(err);

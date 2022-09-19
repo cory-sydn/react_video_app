@@ -9,6 +9,7 @@ import { muiUploader } from '../../utils/muiTheme';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import { useNavigate } from 'react-router-dom';
 import WarningMessage from './WarningMessage';
+import Darkness from '../../utils/Darkness';
 
 const Container = styled.div`
   &::after,::before {
@@ -24,13 +25,13 @@ const Wrapper = styled.section`
   position: absolute;
   display: grid;
   justify-content: center;
-  top: -10px;
+  top: -8px;
   right: -16px;
-  width: calc(100vw - 8px);
+  width: calc(100vw - 0px);
   height: 100vh;
   background: #0006;
   overflow: hidden;
-  z-index: 11;
+  z-index: 31;
 `;
 
 const UploaderBox = styled.div`
@@ -44,7 +45,7 @@ const UploaderBox = styled.div`
   border-radius: 6px;
   overflow-y: hidden;
   position: relative;
-  z-index: 12;
+  z-index: 32;
 `;
 
 const UploaderHeader = styled.header`
@@ -70,7 +71,7 @@ const UploaderFooter = styled.footer`
   height: 56px;
   width: 100%;
   padding: 10px 10px 10px 40px;
-  z-index: 13;
+  z-index: 33;
 	border-top: 1px solid ${({ theme }) => theme.soft};
 `;
 
@@ -106,8 +107,8 @@ const UploadLabel = styled.label`
   color: ${({ theme }) => theme.textSoft};
   cursor: pointer;
   &:hover{
-    animation: glow 3s cubic-bezier(0.165, 0.84, 0.44, 1) both infinite;
-    @keyframes glow {
+    animation: wawe 3s cubic-bezier(0.165, 0.84, 0.44, 1) both infinite;
+    @keyframes wawe {
       0%{
         box-shadow: 0 0 2px 0 #3ea5ff76;
       }
@@ -189,7 +190,7 @@ const Left = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  z-index: 12;
+  z-index: 32;
 `;
 
 const Right = styled.div`
@@ -282,7 +283,7 @@ const ThumbnailImg = styled.img`
     transition: all 0.35s ease-in-out;
     width: 320px;
     height: 180px;
-    z-index: 14;
+    z-index: 34;
   }
 `;
 
@@ -301,6 +302,7 @@ const Screen = styled.div`
   display: grid;
   place-content: center;
   background-color: #080808;
+  color: white;
   width: 100%;
   min-height: 170px;
   border-radius: 5px 5px 0 0;
@@ -367,7 +369,10 @@ const ConfirmButton = styled.button`
   border-radius: 3px;
   color: ${({ theme }) => theme.uploader};
   cursor: pointer;
+  filter: brightness(100%);
+  transition: filter 0.3s ease-in-out;
   &:hover {
+    transition: filter 0.3s ease-in-out;
     filter: brightness(85%);
   }
 `;
@@ -378,27 +383,9 @@ const CancelButton = styled(ConfirmButton)`
   margin-right: 25px;
 `;
 
-const SecondCheck = styled(Buttons)`
-  background: ${({ theme }) => theme.uploader};
-  position: absolute;
-  top: 10px;
-  right: 120px;
-`;
-
-const Confirm = styled(ConfirmButton)`
-  padding: 10px 12px;
-  background: #ff0000;
-`;
-
-const Cancel = styled(Confirm)`
-  background: #c0c0c0;
-  color: ${({ theme }) => theme.uploader};
-  margin-right: 15px;
-`;
-
 const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
   const [warning, setWarning] = useState({state: false, message: ""})
-  const [secondCancelCheck, setSecondCancelCheck] = useState(false)
+  const [secondCheck, setSecondCheck] = useState(false)
   const [file, setFile] = useState({video: null, img: null})
   const [videoPercent, setVideoPercent] = useState(0)
   const [imagePercent, setImagePercent] = useState(0)
@@ -411,6 +398,7 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
     videoUrl: "",
     tags: []
   });
+  const [darkEffect, setDarkEffect] = useState(false)
   const navigate = useNavigate();
 
   const handleDrop = (e) => {
@@ -424,7 +412,7 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
     try {
       const fileName = new Date().getTime() + file.name
       const storageRef = ref(storage, fileName);
-      console.log(storageRef);
+    
       const uploadTask = uploadBytesResumable(storageRef, file)
       dataType === "videoUrl" ? setVideoUploadTask(uploadTask) : setImageUploadTask(uploadTask)
       uploadTask.on('state_changed', 
@@ -460,9 +448,14 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
   const handleInput = (e) => {
     e.preventDefault()
     if (e.target.name === "tags") {
-      setVideoDetails(prev => ({...prev, tags: e.target.value.split(",").map((el)=>el.trim()) }))
+      const processed = e.target.value.split(",").map((el)=> {
+        const trimmed = el.trim().replace(/[^a-z,'0-9\s]+/gi, '')
+        return trimmed[0]?.toUpperCase() + trimmed.slice(1)
+      })
+      const filtered = processed.filter((el)=> (el !== null && el !== "undefined") )
+      setVideoDetails(prev => ({...prev, tags: filtered}))
     } else {
-      setVideoDetails(prev => ({...prev, [e.target.name]: e.target.value}));
+      setVideoDetails(prev => ({...prev, [e.target.name]: e.target.value.trim()}));
     }
     // textarea auto expand functionality
     e.target.style.removeProperty("height");
@@ -479,21 +472,22 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
   
   const handleConfirm = async(e) => {
     e.preventDefault()
-    // creates video with the url and the videoDetails at MongoDB
-    if (videoPercent < 100 && videoDetails.videoUrl === "") return setWarning({state: true, message: "Video uploading is not over yet!"})
+    // register video with the firebase cloud urls and the videoDetails at MongoDB
+    if (videoPercent < 100 && videoDetails.videoUrl === "") return setWarning({state: true, message: "Video uploading is not finished yet!"})
     try {
       const res = await axios.post("http://localhost:8800/api/videos", {...videoDetails}, {withCredentials:true})
       setOpenUpload(false)
       res.status === 200 && navigate(`/video/${res.data._id}`)
     } catch (err) {
       console.log(err);
+      err.response.data.message && setWarning({state: true, message: err?.response?.data?.message})
     }
   }
 
   const handleCancel = () => {
-    if (!secondCancelCheck){
-      setWarning({state: true, message: "Are you sure?\n Whole progress will be lost"})
-      setSecondCancelCheck(true)
+    if (!secondCheck){
+      setWarning({state: true, message: "Are you sure?\n Whole progress will be lost!"})
+      setSecondCheck(true)
     } else {
       videoPercent && (videoPercent < 100
         ? (videoUploadTask.cancel())
@@ -507,10 +501,26 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
 
   const removeFromStorage = (storageRef) => {
     deleteObject(storageRef).then(()=> {
-      console.log(`${(storageRef.name).slice(13, -1)} is successfully deleted from storage`);
+      console.log(`${(storageRef.name).slice(13, -1)} is successfully deleted from the storage`);
     }).catch((err) => {
       console.log(err)
     })
+  }
+
+  useEffect(() => {
+    if(warning.state ){
+      setDarkEffect(true)
+    } else {
+      setTimeout(() => {
+        setDarkEffect(false)
+      }, 400)
+    }
+  }, [darkEffect, warning.state])
+
+  const closeComponent = () => {
+    if (videoPercent > 0) return setActiveUpload(false); 
+    setActiveUpload(false);
+    setOpenUpload(false)
   }
 
   return (
@@ -521,7 +531,7 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
             <UploaderHeader>
               <HeaderTitle>Upload Videos</HeaderTitle>
               <CloseBtn>
-                <CloseIcon onClick={() => setActiveUpload(false)} sx={{fontSize:27, fontWeight:"bolder"}} />
+                <CloseIcon onClick={closeComponent} sx={{fontSize:27, fontWeight:"bolder"}} />
               </CloseBtn>
             </UploaderHeader>
             {!videoPercent ? (
@@ -596,13 +606,14 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
                           accept="image/*"
                         />
                         <Title4>Tags</Title4>
-                        <ItemExplain>Tags can be useful when it comes to users trying to find certain contents, especially if content in your video is commonly misspelled. Please separate the tags with commas.</ItemExplain>
+                        <ItemExplain>Tags can be useful when it comes to users trying to find certain contents, especially if content in your video is commonly misspelled.<br/><br/>Please separate the tags with commas.</ItemExplain>
                         <Input
                           defaultValue={videoDetails?.tags}
                           name='tags'
                           type="text"
                           maxlength="500"
-                          placeholder="#live, #business, ..."
+                          placeholder="music, comedy, business, ..."
+                          onInput={(e) => e.target.value = e.target.value.replace(/[^a-z,#'0-9\s]+/gi, "")}
                           onChange={handleInput}
                         />
                       </DetailsForm>
@@ -629,14 +640,9 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
                       <CancelButton onClick={handleCancel}>
                         cancel
                       </CancelButton>
-                      {secondCancelCheck && (
-                        <SecondCheck>
-                          <Confirm onClick={handleCancel}>Yes</Confirm>
-                          <Cancel onClick={()=> setSecondCancelCheck(false) + setWarning((prev)=>({...prev, state: false}))}>No</Cancel>
-                        </SecondCheck>
-                      )}
-                      <ConfirmButton onClick={handleConfirm} onBlur={()=>setWarning((prev)=>({...prev, state: false}))} >confirm</ConfirmButton>
-                      {warning.state && (<WarningMessage message={warning.message} />)}
+                      <ConfirmButton onClick={handleConfirm} onBlur={()=>setWarning((prev)=>({...prev, state: false}))}>
+                        confirm
+                      </ConfirmButton>
                     </Buttons>
                   </UploaderFooter>
                 </>
@@ -644,6 +650,17 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
             }
           </UploaderBox>
         </Wrapper>
+      )}
+      {warning.state && (
+        <WarningMessage 
+          message={warning.message}
+          secondCheck={secondCheck}
+          setSecondCheck={setSecondCheck}
+          setWarning={setWarning}
+          handleCancel={handleCancel}
+        />)}
+      {darkEffect && (
+        <Darkness status={warning.state} />
       )}
     </Container>
   )

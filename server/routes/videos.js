@@ -2,9 +2,9 @@ import express from "express";
 import {
 	addVideo,
 	addView,
+	channelVideos,
 	deleteVideo,
 	dislike,
-	getByTag,
 	getLikedVideos,
 	getVideo,
 	like,
@@ -13,6 +13,7 @@ import {
 	subsVideos,
 	trendVideos,
 	updateVideo,
+	getTags,
 } from "../controllers/video.js";
 import { verifyToken } from "../verifyToken.js";
 
@@ -27,14 +28,16 @@ router.get("/find/:id", getVideo);
 router.get("/trend", trendVideos);
 // RANDOM
 router.get("/random", randomVideos);
+// CHANNEL VIDEOS
+router.get("/:channelId", channelVideos);
 // SUBSCRIBED CHANNEL VIDEOS
 router.get("/sub", verifyToken, subsVideos);
 // GET BY THE TAGS
-router.get("/tags", getByTag);
+router.get("/recommend/tags", getTags);
 // QUERY
-router.get("/search", search);
+router.get("/query/search", search);
 // Videos that user liked
-router.get("/liked", verifyToken, getLikedVideos)
+router.get("/liked/:userId", verifyToken, getLikedVideos)
 
 // UPDATE/
 router.put("/:id", verifyToken, updateVideo);

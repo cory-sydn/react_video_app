@@ -11,14 +11,18 @@ const Container = styled.section`
   position: fixed;
   bottom: 0;
   left: 0;
-  width: 75px;
+  width: 72px;
   display: flex;
   flex-direction: column;
   align-items: center;
   height: calc(100vh - 56px);
-  background: ${({theme})=>theme.bgDarker};
+  background: ${({theme})=>theme.bgLighter};
   box-shadow: inset -1px 0 1px 0 #00000018;
   z-index: 1;
+  @media (max-width: 660px) {
+    display: none;
+    left: -9999px;
+  }
 `;
 
 const Item = styled.div`

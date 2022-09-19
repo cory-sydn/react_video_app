@@ -5,16 +5,17 @@ import MenuSharpIcon from '@mui/icons-material/MenuSharp';
 import { Link } from 'react-router-dom';
 import SearchBar from './SearchBar';
 import Profile from './profile/Profile'
+import GlowingButton from "../../utils/GlowingButton";
 
 const Container = styled.div`
   position: sticky;
   top: 0;
   display: flex;
   align-items: center;
-  background: ${({theme})=>theme.bgDarker};
+  background: ${({theme})=>theme.bgLighter};
   box-shadow: inset 0 -1px 1px 0 #00000018;
   padding: 8px 16px;
-  z-index: 5;
+  z-index: 40;
 `;
 
 const Wrapper = styled.div`
@@ -25,9 +26,9 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 
-const Header = styled.div`
+export const Header = styled.div`
   font-family: 'Roboto Condensed', Arial, Helvetica, sans-serif;
-  margin: 0.75rem 0 0 1.5rem;
+  margin: 8px 0 0 16px;
   font-size: 1.25em;
   display: flex;
   align-items: center;
@@ -39,13 +40,23 @@ const Header = styled.div`
   letter-spacing: -1px;
 `;
 
+export const HamburgerBtn = styled.button`
+  color: ${({ theme }) => theme.text};
+	background: ${({ theme }) => theme.bgLighter};
+	border: none;
+`;
+
 const Navbar = ({setSidebar}) => {
 
   return (
     <Container>
       <Wrapper >
         <Header >
-          <MenuSharpIcon onClick={()=>setSidebar(true)} style={{marginRight: 10}} cursor="pointer" />
+          <HamburgerBtn onClick={()=>setSidebar(true)}>
+            <GlowingButton style={{marginRight: 10}}
+              icon={<MenuSharpIcon/>}
+            />
+          </HamburgerBtn>
           <Link to="/" className="logo" cursor="pointer">
             <img src={Logo} className="img" alt=''/>YouTube
           </Link>

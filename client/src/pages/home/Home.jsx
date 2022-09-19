@@ -5,19 +5,24 @@ import axios from 'axios'
 import { useSelector } from 'react-redux'
 import EmptySubscriptions from './EmptySubscriptions'
 
-const Wrapper = styled.section`
-  margin: 20px 30px 50px 105px;
+export const GridContainer = styled.section`
   width: 100%;
   height: 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  row-gap: 2em;
-  column-gap: 2em;
-  @media (min-width:1050px){
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  margin: 20px 30px 50px 102px;
+  @media (max-width:660px){
+    margin: 20px 30px 50px 30px;
   };
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, max-content));
+  @media (min-width:1050px){
+    grid-template-columns: repeat(auto-fill, minmax(280px, max-content));
+  };
+  row-gap: 1.2em;
+  column-gap: 1.2em;
+  justify-content: center;
+  align-items: center;
   position: relative;
-`
+`;
 
 const Home = ({type}) => {
   const [videos, setVideos] = useState([])
@@ -37,17 +42,18 @@ const Home = ({type}) => {
       //console.log(err);
     }
   },[type])
+  
   return (
-    <Wrapper>
-        {videos.map((video)=>(
-          <Card video={video} key={video._id} />
-        ))}
-        {type === "sub" && (
-          !currentUser && (
-            <EmptySubscriptions />
-          )
-        )}
-    </Wrapper>
+    <GridContainer>
+      {videos.map((video)=>(
+        <Card video={video} key={video._id} />
+      ))}
+      {type === "sub" && (
+        !currentUser && (
+          <EmptySubscriptions />
+        )
+      )}
+    </GridContainer>
   )
 }
 

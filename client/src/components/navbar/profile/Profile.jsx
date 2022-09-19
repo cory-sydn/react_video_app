@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import MoreVertSharpIcon from "@mui/icons-material/MoreVertSharp";
-import VideoCallOutlinedIcon from "@mui/icons-material/VideoCallOutlined";
-import { useSelector } from "react-redux";
+import CarbonVideoAdd from "../../../icons/CarbonVideoAdd";
+import CarbonVideoFilled from "../../../icons/CarbonVideoFilled";
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import DropDown from "../dropdown/DropDown";
 import Upload from "../../upload/Upload";
+import GlowingButton, { BtnContainer } from "../../../utils/GlowingButton";
 
 const Container = styled.div`
 	display: flex;
@@ -63,21 +64,51 @@ const BlankImg = styled.button`
 	}
 `;
 
-const UploadSectionButton = styled.div`
-	margin-left: 16px;
-	cursor: pointer;
-	position: relative;
+const UploadSectionButton = styled(BtnContainer)`
+	margin-left: 6px;
+	margin-right: 3px;
+	background: ${({ theme }) => theme.bgLighter};
 	&:hover {
 		&::after {
-			content: "Upload Video";
-			background: ${({ theme }) => theme.bgDarker};
+			content: "Upload Video" ;
+			background: ${({ theme }) => theme.bgLighter};
 			font-size: 12px;
 			padding: 6px 10px;
 			border-radius: 3px;
 			position: absolute;
 			right: -20px;
-			bottom: -60px;
+			bottom: -55px;
 			z-index: 999;
+		}
+	}
+`;
+
+const NotificationButton = styled(BtnContainer)`
+	background: ${({ theme }) => theme.bgLighter};
+	margin-right: 15px;
+	&:hover {
+		&::after {
+			content: "Notifications" ;
+			background: ${({ theme }) => theme.bgLighter};
+			font-size: 12px;
+			padding: 6px 10px;
+			border-radius: 3px;
+			position: absolute;
+			right: -20px;
+			bottom: -40px;
+			z-index: 999;
+		}
+	}
+`;
+
+const GlowingVideoIcon = styled(CarbonVideoFilled)`
+	animation: blueWawe 1.5s ease-in-out both infinite;
+	@keyframes blueWawe {
+		0%{
+			color:#3ea5ff;
+		}
+		100%{
+			color:#94cdff;
 		}
 	}
 `;
@@ -102,7 +133,7 @@ const Profile = () => {
 			document.removeEventListener("mousedown", handler);
 			document.removeEventListener("touchstart", handler);
 		};
-	 }, [dropdown]);
+	}, [dropdown]);
 
 	const activateUploading = () => {
 		setOpenUpload(true) 
@@ -123,16 +154,22 @@ const Profile = () => {
 				</Section>
 			) : (
 				<Section>
-					<UploadSectionButton>
-						<VideoCallOutlinedIcon onClick={activateUploading} />
+					<UploadSectionButton 
+						onClick={activateUploading} 
+					>
+						<GlowingButton icon={openUpload 
+							? (<GlowingVideoIcon/>) 
+							: (<CarbonVideoAdd />)
+						}/>
 					</UploadSectionButton>
 					{openUpload && 
 						<Upload setOpenUpload={setOpenUpload} activeUpload={activeUpload} setActiveUpload={setActiveUpload} />
 					}
-					<NotificationsNoneIcon
-						cursor="pointer"
-						style={{ marginInline: 28 }}
-					/>
+					<NotificationButton>
+						<GlowingButton
+							icon={<NotificationsNoneIcon />}
+						/>
+					</NotificationButton>
 					{currentUser && (currentUser?.imgUrl === undefined ? (
 						<BlankImg onClick={()=>setDropdown(true)} >{(currentUser?.name[0]).toUpperCase()}</BlankImg>
 					) : (

@@ -11,19 +11,19 @@ const Container = styled.div`
     display: grid;
     grid-template-columns: ${(props) => (props.reply ? "40px 100%" : "56px 100%")};
     margin-bottom:  ${(props) => (props.reply ? "0px" : "3rem")};
-    
+ ;   
 `
 const AvatarWrapper = styled.div`
     width: ${(props) => (props.reply ? "40px" : "56px")};
     height: 100%;
     display: grid;
-    place-items: left;
+ ;   place-items: left;
 `
 const Avatar = styled.img`
     min-width: ${(props) => (props.reply ? "24px" : "40px")};;
     height: ${(props) => (props.reply ? "24px" : "40px")};;
     border-radius: 50%;
-`
+`;
 
 const InputArea = styled.form`
     width: ${(props) => (props.reply ? "calc(100% - 72px)" : "calc(100% - 56px)")};
@@ -31,7 +31,7 @@ const InputArea = styled.form`
     flex-direction: column;
     flex-wrap: wrap;
     position: relative;
-`
+`;
 
 const Input = styled.textarea`
     width: 100%;
@@ -54,7 +54,7 @@ const Input = styled.textarea`
     &::-webkit-scrollbar {
         background: transparent;
     }
-`
+`;
 
 const Hr = styled.hr`
     width: 50%;
@@ -72,7 +72,7 @@ const Hr = styled.hr`
         100% {
             width: 50%;
         }
-    }
+ ;   }
 `
 const LeftHr = styled.hr`
     width: calc( 50% + 1px );
@@ -92,7 +92,7 @@ const LeftHr = styled.hr`
             transform: translateX( calc( -100% + 1px ));
         }
     }
-`
+`;
 
 const CommentButtons = styled.div`
     padding-top: 10px;
@@ -101,7 +101,7 @@ const CommentButtons = styled.div`
     width: 100%;
     justify-content: flex-end;
     display: flex;
-`
+`;
 
 const CancelButton = styled.button`
     border: none;
@@ -112,7 +112,7 @@ const CancelButton = styled.button`
     font-weight: 500;
     border-radius: 2px;
     cursor: pointer;
-`
+`;
 
 const ConfirmButton = styled(CancelButton)`
     margin-left: 8px;
@@ -120,13 +120,13 @@ const ConfirmButton = styled(CancelButton)`
     background: ${({theme})=> theme.commentButton.bg};
     color: ${({theme})=> theme.commentButton.color};
     cursor: auto;
-`
+`;
 
 const ActiveConfirmButton = styled(ConfirmButton)`
     background:#3ea6ff;
     color: ${({theme})=>theme.bg};
     cursor: pointer;
-`
+`;
 
 const NewComment = ({currentUser, videoId, reply, setReply, parent }) => {
     const [comment, setComment] = useState("")
@@ -173,7 +173,7 @@ const NewComment = ({currentUser, videoId, reply, setReply, parent }) => {
                 const replyResponse = await axios.post("http://localhost:8800/api/comments", {
                     videoId: parent.videoId,
                     parent: parent?._id,
-                    desc: comment,
+                    desc: comment.trim(),
                 },{withCredentials: true,})
                 dispatch(commentSuccessful(replyResponse.data))
                 const updateParent = await axios.put(`http://localhost:8800/api/comments/reply/${parent._id}`, {
@@ -184,7 +184,7 @@ const NewComment = ({currentUser, videoId, reply, setReply, parent }) => {
             } else {
                 const res = await axios.post("http://localhost:8800/api/comments", {
                     videoId,
-                    desc: comment,
+                    desc: comment.trim(),
                 },{withCredentials: true,})
                 dispatch(commentSuccessful(res.data))
             }

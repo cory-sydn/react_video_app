@@ -9,10 +9,13 @@ import Playlist from "./Playlist";
 import About from "./About";
 
 const Container = styled.div`
-	margin-left: 75px;
+	margin-left: 72px;
 	width: 100%;
 	display: flex;
 	flex-direction: column;
+	@media (max-width:660px){
+    margin-left: 0;
+  };
 `;
 
 const Header = styled.header`

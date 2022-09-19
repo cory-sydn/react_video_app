@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef, useCallback } from 'react'
 import styled from 'styled-components';
 import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
@@ -17,8 +17,6 @@ import unknown from "../../img/unnamed.jpg"
 import NewComment from './NewComment';
 import { muiTheme } from '../../utils/muiTheme';
 import Options from './Options.jsx';
-import { useRef } from 'react';
-import { useCallback } from 'react';
 import EditComment from './EditComment'
 
 const Container = styled.div`
@@ -98,6 +96,7 @@ const DisplayRepliesBtn = styled(Button)`
     color: #3ea6ff;
     z-index: 5;
 `;
+
 const Btn = styled.div`
     padding-right: 10px;
     display: flex;
@@ -139,27 +138,24 @@ const Right = styled.div`
 `;
 
 const ThreeDotsContainer = styled.div`
-    top: 10px;
-    right: 0;
     width: 40px;
     height: 40px;
-    display:grid;
+    display: grid;
     place-content: center;
     border-radius: 50%;
     border: none;
-    outline: none;
     background: transparent;
     z-index: 5;
     cursor: pointer;
     animation: ${( props ) => props.glow ? "glow 0.5s ease-in-out;" : ""};
     @keyframes glow {
         0%{
-        border: 1px solid ${({ theme }) => theme.text};
-        box-shadow: inset 0 0 15px 0 ${({ theme }) => theme.textSoft};
+            border: 1px solid ${({ theme }) => theme.text};
+            box-shadow: inset 0 0 15px 0 ${({ theme }) => theme.textSoft};
         }
         100%{
-        border: 1px solid ${({ theme }) => theme.bgLighter};
-        box-shadow: inset 0 0 15px 0 ${({ theme }) => theme.bgLighter};
+            border: 1px solid ${({ theme }) => theme.bgLighter};
+            box-shadow: inset 0 0 15px 0 ${({ theme }) => theme.bgLighter};
         }
     }
 `;
@@ -189,7 +185,7 @@ const Darkness = styled.div`
     }
   }
   overflow: hidden;
-  z-index: 10;
+  z-index: 25;
 `;
 
 const Comment = ({comment, currentUser, isChild}) => {
@@ -284,6 +280,9 @@ const Comment = ({comment, currentUser, isChild}) => {
 
     useEffect(() => {
         document.addEventListener("mousedown", handleFocus)
+        return () => {
+            document.removeEventListener("mousedown", handleFocus)
+        }
     }, [optionRef, buttonRef, handleFocus, warnRef])
 
     useEffect(() => {
@@ -352,7 +351,6 @@ const Comment = ({comment, currentUser, isChild}) => {
                         <ThreeDotsContainer onClickCapture={handleToggleOptions}
                             ref={buttonRef}
                             style={{display: threeDots ? "grid" : "hidden" }}
-                            type="text"
                             name="threeDots"                            
                             glow={glow}
                         >

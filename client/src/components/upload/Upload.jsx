@@ -9,9 +9,9 @@ import { muiUploader } from '../../utils/muiTheme';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import { useNavigate } from 'react-router-dom';
 import WarningMessage from './WarningMessage';
-import Darkness from '../../utils/Darkness';
+import Darkness from '../../utils/constants/Darkness';
 
-const Container = styled.div`
+export const Container = styled.div`
   &::after,::before {
     margin: 0;
     padding: 0;
@@ -19,7 +19,7 @@ const Container = styled.div`
   }
 `;
 
-const Wrapper = styled.section`
+export const Wrapper = styled.section`
   margin: 0;
   padding: 0;
   position: absolute;
@@ -34,7 +34,7 @@ const Wrapper = styled.section`
   z-index: 31;
 `;
 
-const UploaderBox = styled.div`
+export const UploaderBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -48,7 +48,7 @@ const UploaderBox = styled.div`
   z-index: 32;
 `;
 
-const UploaderHeader = styled.header`
+export const UploaderHeader = styled.header`
   position: sticky;
   top: 0;
   left: 0;
@@ -58,9 +58,10 @@ const UploaderHeader = styled.header`
   width: 100%;
   padding: 10px 20px 10px;
 	border-bottom: 1px solid ${({ theme }) => theme.soft};
+  box-shadow: 0 1px 2px #00000045;
 `;
 
-const UploaderFooter = styled.footer`
+export const UploaderFooter = styled.footer`
   position: absolute;
   bottom: 0;
   left: 0;
@@ -73,13 +74,14 @@ const UploaderFooter = styled.footer`
   padding: 10px 10px 10px 40px;
   z-index: 33;
 	border-top: 1px solid ${({ theme }) => theme.soft};
+  box-shadow: 0 -1px 2px #00000045;
 `;
 
-const HeaderTitle = styled.h3`
+export const HeaderTitle = styled.h3`
   margin-top: 8px;
 `;
 
-const CloseBtn = styled.button`
+export const CloseBtn = styled.button`
   border: none;
   outline: none;
   background: transparent;
@@ -88,7 +90,7 @@ const CloseBtn = styled.button`
   cursor:pointer;
 `;
 
-const UploadVideoForm = styled.form`
+export const UploadVideoForm = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -148,11 +150,11 @@ const Span = styled.span`
   font-size: 13px;
 `;
 
-const HiddenInput = styled.input`
+export const HiddenInput = styled.input`
   display: none ;
 `;
 
-const Divided = styled.div`
+export const Divided = styled.div`
   width: 100%;
   height: 488px;
   display: flex;
@@ -171,19 +173,19 @@ const Divided = styled.div`
   }
 `;
 
-const Title3 = styled.h3`
+export const Title3 = styled.h3`
   width: 100%;
   text-align: left;
   margin-top: 8px;
   margin-bottom: 20px;
 `;
 
-const Title4 = styled(Title3)`
+export const Title4 = styled(Title3)`
   font-size: 16px;
   margin-bottom: 10px;
 `;
 
-const Left = styled.div`
+export const Left = styled.div`
   width:63%;
   height: 100%;
   padding: 30px 20px 30px 40px;
@@ -193,7 +195,7 @@ const Left = styled.div`
   z-index: 32;
 `;
 
-const Right = styled.div`
+export const Right = styled.div`
   position: sticky;
   top: 0;
   right: 0;
@@ -205,13 +207,13 @@ const Right = styled.div`
   border-right: 2px solid ${({ theme }) => theme.uploader};
 `;
 
-const DetailsForm = styled.form`
+export const DetailsForm = styled.form`
   width: 100%;
   display: flex;
   flex-direction: column;
 `;
 
-const Input = styled.input`
+export const Input = styled.input`
   width: 100%;
   background: ${({ theme }) => theme.uploader};
   color: ${({theme})=> theme.text};
@@ -225,7 +227,7 @@ const Input = styled.input`
   }
 `;
 
-const DescInput = styled.textarea`
+export const DescInput = styled.textarea`
   width: 100%;
   overflow: auto;
   resize: none;
@@ -240,13 +242,25 @@ const DescInput = styled.textarea`
   border: 1px solid  ${({ theme }) => theme.textSoft};
   padding: 12px 18px;
   margin-bottom: 24px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: none;
   &:focus {
     border: 1px solid transparent;
     outline: 1px solid #3ea6ff;
   }
+  &::-webkit-scrollbar{
+    width: 8px;
+    background: ${({ theme }) => theme.dropDown.active};
+    border-radius: 0 4px 4px 0;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #909090;
+    border-radius: 6px;
+  }
 `;
 
-const ThumbnailInputLabel = styled.label`
+export const ThumbnailInputLabel = styled.label`
   display: grid;
   place-content: center;
   margin-top: 10px;
@@ -265,12 +279,12 @@ const ThumbnailInputLabel = styled.label`
   }
 `;
 
-const AddImageIcon = styled(AddPhotoAlternateIcon)`
+export const AddImageIcon = styled(AddPhotoAlternateIcon)`
   place-self: center;
   margin: 5px 0 10px 0;
 `;
 
-const ThumbnailImg = styled.img`
+export const ThumbnailImg = styled.img`
   width: 160px;
   height: 90px;
   border: 2px solid #151525;
@@ -287,18 +301,20 @@ const ThumbnailImg = styled.img`
   }
 `;
 
-const Card = styled.div`
+export const Card = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   min-width: 320px;
   min-height: 250px;
   height: 100%;
+  mask-image: linear-gradient(#363636f4 94%, #4c4c4c20 );
+  isolation: isolate;
   background: ${({ theme }) => theme.bg};
   border-radius: 5px;
 `;
 
-const Screen = styled.div`
+export const Screen = styled.div`
   display: grid;
   place-content: center;
   background-color: #080808;
@@ -309,7 +325,7 @@ const Screen = styled.div`
   font-size: 14px;
 `;
 
-const Item = styled.div`
+export const Item = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -319,7 +335,7 @@ const Item = styled.div`
   font-size: 14px;
 `;
 
-const ItemTitle = styled.p`
+export const ItemTitle = styled.p`
   font-size: 13px;
   width: 100%;
   padding-bottom: 10px;
@@ -327,31 +343,54 @@ const ItemTitle = styled.p`
   color: ${({ theme }) => theme.textSoft};
 `;
 
-const ItemExplain = styled(ItemTitle)`
+export const ItemExplain = styled(ItemTitle)`
   font-size: 14px;
   font-weight: 400;
 `;
 
-const VideoLink = styled.p`
+export const VideoLink = styled.p`
   font-size: 12px;
   color: #3ea6ff;
 `;
 
-const ProcessDisplay = styled.div`
-  width: 102px;
+export const ProcessDisplay = styled.div`
+  width: 100px;
   height: 10px;
-  border-radius: 5px;
+  border-radius: 30px;
   background: ${({ theme }) => theme.textSoft};
   position: relative;
-  &::after{
+  overflow: hidden;
+  box-shadow: 0 1px 0 #ffffff60, inset 0 2px 3px rgba(0,0,0,0.3);
+  &::before{
     content: "";
     position: absolute;
-    left: 1px;
-    top: 1px;
-    height: 8px;
+    left: 0;
+    top: 0;
+    height:100%;
     width: ${(props) => (props.percentage > 0 ? `${props.percentage}px` : 0)};
-    background: #3ea6ff;
-    border-radius: 5px;
+    background: linear-gradient(#6ebafd , #3ea6ff);
+    box-shadow: inset 0 1px 0 #ffffff60, 0 4px 5px rgba(0,0,0,0.3);
+    border-radius: 30px;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    left:0;
+    top: 0;
+    height:100%;
+    width: ${(props) => (props.percentage > 0 ? `${props.percentage}px` : 0)};
+    background: linear-gradient(300deg, #88c7ff, #3ea6ff);
+    animation: flow cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+    animation-duration: ${(props) => props.percentage === 300 ? 0 : `calc(30ms * ${props.percentage})`};
+    border-radius: 30px;
+  }
+  @keyframes flow {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(0);
+    }
   }
 `;
 
@@ -359,16 +398,16 @@ const Buttons = styled.div`
   display: flex;
 `;
 
-const ConfirmButton = styled.button`
+export const ConfirmButton = styled.button`
   text-transform: uppercase;
   padding: 10px 18px;
   font-size: 14px;
   font-weight: 600;
-  border: none;  
-  background: #3ea6ff;
+  border: ${(props) => props.suspendConfirm ? "1px solid #919191aa" : "1px solid #3ea6ff"};
+  background: ${(props) => props.suspendConfirm ? "#919191aa" : "linear-gradient(#65b7ff 15% , #3ea6ff 100%)"};
   border-radius: 3px;
   color: ${({ theme }) => theme.uploader};
-  cursor: pointer;
+  //cursor: ${(props) => props.suspendConfirm ? "progress" : "pointer"};
   filter: brightness(100%);
   transition: filter 0.3s ease-in-out;
   &:hover {
@@ -378,9 +417,17 @@ const ConfirmButton = styled.button`
 `;
 
 const CancelButton = styled(ConfirmButton)`
-  background: red;
+  background: linear-gradient(#fb3232 20%, red 100%);
+  border: 1px solid red;
   color: #c0c0c0;
   margin-right: 25px;
+`;
+
+export const VideoFrame = styled.video`
+  width: 100%;
+  height: 100%;
+	object-fit: scale-down;
+  background-origin: 0 0;
 `;
 
 const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
@@ -399,6 +446,7 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
     tags: []
   });
   const [darkEffect, setDarkEffect] = useState(false)
+  const [suspendConfirm, setSuspendConfirm] = useState(true)
   const navigate = useNavigate();
 
   const handleDrop = (e) => {
@@ -434,7 +482,7 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
           console.log(error);
         },
         () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(async(downloadURL) => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             console.log(`${dataType} available at`, downloadURL);
             setVideoDetails(prev => ({...prev, [dataType]: downloadURL}))
           });
@@ -449,6 +497,7 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
     e.preventDefault()
     if (e.target.name === "tags") {
       const processed = e.target.value.split(",").map((el)=> {
+        // Allowing the storage of just letters and numbers on the DB.
         const trimmed = el.trim().replace(/[^a-z,'0-9\s]+/gi, '')
         return trimmed[0]?.toUpperCase() + trimmed.slice(1)
       })
@@ -472,7 +521,7 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
   
   const handleConfirm = async(e) => {
     e.preventDefault()
-    // register video with the firebase cloud urls and the videoDetails at MongoDB
+    // register video with the firebase cloud storage urls and with the videoDetails at MongoDB
     if (videoPercent < 100 && videoDetails.videoUrl === "") return setWarning({state: true, message: "Video uploading is not finished yet!"})
     try {
       const res = await axios.post("http://localhost:8800/api/videos", {...videoDetails}, {withCredentials:true})
@@ -486,7 +535,7 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
 
   const handleCancel = () => {
     if (!secondCheck){
-      setWarning({state: true, message: "Are you sure?\n Whole progress will be lost!"})
+      setWarning({state: true, message: "Are you sure?\n\nWhole progress will be lost!"})
       setSecondCheck(true)
     } else {
       videoPercent && (videoPercent < 100
@@ -518,10 +567,18 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
   }, [darkEffect, warning.state])
 
   const closeComponent = () => {
+    // upload component stay mounted and preserves state values
     if (videoPercent > 0) return setActiveUpload(false); 
     setActiveUpload(false);
     setOpenUpload(false)
   }
+
+  useEffect(() => {
+    // verify that there is no empty space before confirm
+    const array = []
+    Object.values(videoDetails).map((el)=> {return array.push(el.length)})
+    array.every(el => el > 0) && setSuspendConfirm(false)
+  }, [videoDetails])
 
   return (
     <Container>
@@ -529,7 +586,7 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
         <Wrapper>
           <UploaderBox>
             <UploaderHeader>
-              <HeaderTitle>Upload Videos</HeaderTitle>
+              <HeaderTitle>{videoDetails?.title ? videoDetails?.title : "Upload Videos"}</HeaderTitle>
               <CloseBtn>
                 <CloseIcon onClick={closeComponent} sx={{fontSize:27, fontWeight:"bolder"}} />
               </CloseBtn>
@@ -541,6 +598,7 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
                   onDrop={handleDrop}
                   onDragOver={handleDrop}
                   onSubmit={(e) => e.preventDefault()}
+                  accept="video/*"
                   >
                   <UploadLabel htmlFor="upload">
                     <ThemeProvider theme={muiUploader} >
@@ -590,7 +648,7 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
                           >
                           {imagePercent > 0 && imagePercent < 100 ? ( 
                               <ProcessDisplay percentage={Math.round(imagePercent)}></ProcessDisplay> 
-                            ) : imagePercent === 100 ? (<ThumbnailImg src={videoDetails?.imgUrl}></ThumbnailImg>  
+                            ) : imagePercent === 100 && videoDetails.imgUrl ? (<ThumbnailImg src={videoDetails?.imgUrl}></ThumbnailImg>  
                             ) : (
                               <>
                                 <AddImageIcon />
@@ -606,7 +664,7 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
                           accept="image/*"
                         />
                         <Title4>Tags</Title4>
-                        <ItemExplain>Tags can be useful when it comes to users trying to find certain contents, especially if content in your video is commonly misspelled.<br/><br/>Please separate the tags with commas.</ItemExplain>
+                        <ItemExplain>Tags can be useful when it comes to searching and recommendation, especially if content in your video is commonly misspelled.<br/><br/>Please separate the tags with commas.</ItemExplain>
                         <Input
                           defaultValue={videoDetails?.tags}
                           name='tags'
@@ -621,7 +679,10 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
                     <Right>
                       <Card>
                         <Screen>
-                          {"Uploading " + Math.round(videoPercent) + "% ..." }
+                          {videoPercent < 100 ? ("Uploading " + Math.round(videoPercent) + "% ..."
+                            ) : (
+                            <VideoFrame src={videoDetails.videoUrl} poster={videoDetails?.imgUrl} controls />
+                          )}
                         </Screen>
                         <Item>
                           <ItemTitle>Video Link</ItemTitle>
@@ -635,12 +696,18 @@ const Upload = ({activeUpload, setActiveUpload, setOpenUpload}) => {
                     </Right>                    
                   </Divided>
                   <UploaderFooter>
-                    <ProcessDisplay percentage={Math.round(videoPercent)}></ProcessDisplay>
+                    <ProcessDisplay percentage={Math.round(videoPercent * 3)} style={{width: 300, height: 20}} ></ProcessDisplay>
                     <Buttons>
                       <CancelButton onClick={handleCancel}>
                         cancel
                       </CancelButton>
-                      <ConfirmButton onClick={handleConfirm} onBlur={()=>setWarning((prev)=>({...prev, state: false}))}>
+                      <ConfirmButton 
+                        onClick={handleConfirm}
+                        onBlur={()=>setWarning((prev)=>({...prev, state: false}))}
+                        disabled={suspendConfirm}
+                        style={{cursor: suspendConfirm ? "not-allowed" : "pointer"}}
+                        suspendConfirm={suspendConfirm}
+                        >
                         confirm
                       </ConfirmButton>
                     </Buttons>

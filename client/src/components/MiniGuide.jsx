@@ -18,6 +18,7 @@ const Container = styled.section`
   height: calc(100vh - 56px);
   background: ${({theme})=>theme.bgLighter};
   box-shadow: inset -1px 0 1px 0 #00000018;
+  padding-top: 8px;
   z-index: 1;
   @media (max-width: 660px) {
     display: none;
@@ -28,8 +29,11 @@ const Container = styled.section`
 const Item = styled.div`
   display: grid;
   place-content: center center;
-  width: 75px;
-  height: 75px;
+  width: 72px;
+  height: 40px;
+  &:hover {
+    background: ${({theme}) => theme.soft};
+  }
 `;
 
 const MiniGuide = () => {

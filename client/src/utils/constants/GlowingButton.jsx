@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import styled from "styled-components";
-import "./glow.css"
+import "../glow.css"
 
 export const BtnContainer = styled.button`
 	display: flex;

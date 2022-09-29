@@ -11,14 +11,15 @@ const Container = styled.div`
     display: grid;
     grid-template-columns: ${(props) => (props.reply ? "40px 100%" : "56px 100%")};
     margin-bottom:  ${(props) => (props.reply ? "0px" : "3rem")};
- ;   
-`
+`;
+
 const AvatarWrapper = styled.div`
     width: ${(props) => (props.reply ? "40px" : "56px")};
     height: 100%;
     display: grid;
- ;   place-items: left;
-`
+    place-items: left;
+`;
+
 const Avatar = styled.img`
     min-width: ${(props) => (props.reply ? "24px" : "40px")};;
     height: ${(props) => (props.reply ? "24px" : "40px")};;
@@ -33,7 +34,7 @@ const InputArea = styled.form`
     position: relative;
 `;
 
-const Input = styled.textarea`
+export const Input = styled.textarea`
     width: 100%;
     overflow: auto;
     resize: none;
@@ -56,7 +57,7 @@ const Input = styled.textarea`
     }
 `;
 
-const Hr = styled.hr`
+export const Hr = styled.hr`
     width: 50%;
     position: absolute;
     bottom: 47px;
@@ -72,9 +73,10 @@ const Hr = styled.hr`
         100% {
             width: 50%;
         }
- ;   }
-`
-const LeftHr = styled.hr`
+    }
+`;
+
+export const LeftHr = styled.hr`
     width: calc( 50% + 1px );
     position: absolute;
     bottom: 47px;
@@ -94,7 +96,7 @@ const LeftHr = styled.hr`
     }
 `;
 
-const CommentButtons = styled.div`
+export const CommentButtons = styled.div`
     padding-top: 10px;
     width: 100%;
     line-height: 60px;
@@ -103,7 +105,7 @@ const CommentButtons = styled.div`
     display: flex;
 `;
 
-const CancelButton = styled.button`
+export const CancelButton = styled.button`
     border: none;
     background: transparent;
     color: #606060;
@@ -114,7 +116,7 @@ const CancelButton = styled.button`
     cursor: pointer;
 `;
 
-const ConfirmButton = styled(CancelButton)`
+export const ConfirmButton = styled(CancelButton)`
     margin-left: 8px;
     font-weight: 600;
     background: ${({theme})=> theme.commentButton.bg};
@@ -122,7 +124,7 @@ const ConfirmButton = styled(CancelButton)`
     cursor: auto;
 `;
 
-const ActiveConfirmButton = styled(ConfirmButton)`
+export const ActiveConfirmButton = styled(ConfirmButton)`
     background:#3ea6ff;
     color: ${({theme})=>theme.bg};
     cursor: pointer;

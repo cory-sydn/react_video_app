@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { dislike } from "../../redux/videoSlice";
 import Warning from "../../components/Warning";
-import GlowingButton, { BtnContainer } from "../../utils/GlowingButton";
+import GlowingButton, { BtnContainer } from "../../utils/constants/GlowingButton";
 
 const DislikeBtn = () => {
 	const [warn, setWarn] = useState(false);

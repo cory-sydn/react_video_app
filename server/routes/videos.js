@@ -31,7 +31,7 @@ router.get("/random", randomVideos);
 // CHANNEL VIDEOS
 router.get("/:channelId", channelVideos);
 // SUBSCRIBED CHANNEL VIDEOS
-router.get("/sub", verifyToken, subsVideos);
+router.get("/query/sub", verifyToken, subsVideos);
 // GET BY THE TAGS
 router.get("/recommend/tags", getTags);
 // QUERY

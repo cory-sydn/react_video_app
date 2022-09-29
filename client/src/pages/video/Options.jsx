@@ -16,8 +16,9 @@ import { Container,
   Title,
   Text  } from '../../components/comment/Options';
 import { useNavigate } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
-const Options = ({ video, optionRef, setEditOpen, warnRef, secondCheck, setSecondCheck, setOpenOptions, close }) => {
+const Options = ({ video, optionRef, warnRef, secondCheck, setSecondCheck, setOpenOptions, close, channelId }) => {
   const {currentUser} = useSelector(state => state.user)
   const [message, setMessage] = useState(null)
   const dispatch = useDispatch();
@@ -29,10 +30,12 @@ const Options = ({ video, optionRef, setEditOpen, warnRef, secondCheck, setSecon
     try {
       const res = await axios.delete(`http://localhost:8800/api/videos/${video._id}`, {withCredentials: true})
       setMessage(res.data)
-      const firebaseVideoName = video.videoUrl.split("/o/")[1].split("?alt=")[0]
+
+      const firebaseVideoName = video?.videoUrl.split("/o/")[1].split("?alt=")[0]
       const firebaseImgName = video?.imgUrl.split("/o/")[1].split("?alt=")[0]
       const videoRef = ref(storage, firebaseVideoName)
       const imageRef = ref(storage,firebaseImgName)
+
       if (res.status === 200) {
         dispatch(deleteVideo(video._id))
         deleteObject(videoRef).then(() => {
@@ -72,7 +75,9 @@ const Options = ({ video, optionRef, setEditOpen, warnRef, secondCheck, setSecon
         <OptionsContainer ref={optionRef}>
           {currentUser?._id === video?.userId ? (
             <>
-              <Option onClick={() => setEditOpen(true)} ><MdiLightPencil style={{marginRight: 10}}/>Edit</Option>
+              <Link to={`/channel/studio/${channelId}/${video._id}`} replace>
+                <Option ><MdiLightPencil style={{marginRight: 10}}/>Edit</Option>
+              </Link>
               <Option onClick={() => setSecondCheck(true) }><MdiLightDelete style={{marginRight: 10}}/> Delete</Option>
             </>
           )  : (

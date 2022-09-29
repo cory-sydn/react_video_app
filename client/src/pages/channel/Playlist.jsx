@@ -27,6 +27,7 @@ const Wrapper = styled.section`
 
 const Title = styled.h3`
 	font-weight: 500;
+	margin-bottom: 20px;
 `;
 
 const Playlist = ({ channel }) => {

@@ -5,7 +5,7 @@ import MenuSharpIcon from '@mui/icons-material/MenuSharp';
 import { Link } from 'react-router-dom';
 import SearchBar from './SearchBar';
 import Profile from './profile/Profile'
-import GlowingButton from "../../utils/GlowingButton";
+import GlowingButton from "../../utils/constants/GlowingButton";
 
 const Container = styled.div`
   position: sticky;

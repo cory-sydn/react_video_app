@@ -5,17 +5,18 @@ import { useSelector } from "react-redux"
 import { Container, 
   OptionsContainer,
   Option } from '../../components/comment/Options';
+import { Link } from "react-router-dom";
 
-const Options = ({ video, optionRef, setEditOpen, warnRef, secondCheck, setSecondCheck, setOpenOptions, close }) => {
+const Options = ({ video, optionRef}) => {
   const {currentUser} = useSelector(state => state.user)
 
   return (
     <Container>
       <OptionsContainer ref={optionRef}>
         {currentUser?._id === video.userId ? (
-          <>
-            <Option onClick={() => setEditOpen(true)} ><MdiLightPencil style={{marginRight: 10}}/>Edit</Option>
-          </>
+          <Link to={`/channel/studio/${video.userId}/${video._id}`} replace>
+            <Option><MdiLightPencil style={{marginRight: 10}}/>Edit</Option>
+          </Link>
         )  : (
           <Option><IonFlagOutline style={{marginRight: 10}} />Report</Option>
         )}

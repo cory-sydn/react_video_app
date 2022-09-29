@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PlaylistAddOutlinedIcon from "@mui/icons-material/PlaylistAddOutlined";
 import Warning from "../../components/Warning";
 import { useSelector } from "react-redux";
-import GlowingButton, { BtnContainer } from "../../utils/GlowingButton";
+import GlowingButton, { BtnContainer } from "../../utils/constants/GlowingButton";
 
 const SaveBtn = () => {
 	const [warn, setWarn] = useState(false);

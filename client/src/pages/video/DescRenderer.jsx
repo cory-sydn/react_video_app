@@ -17,7 +17,13 @@ const Text =  styled.div`
   letter-spacing: 0.4px;  
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: ${(props) => (props.showMore ? "" : "5")};
+  -webkit-line-clamp: ${(props) => (props.showMore ? "" : "4")};
+  display: -moz-box;
+  -moz-box-orient: vertical;
+  -moz-line-clamp: ${(props) => (props.showMore ? "" : "4")};
+  display: -ms-box;
+  -ms-box-orient: vertical;
+  -ms-line-clamp: ${(props) => (props.showMore ? "" : "4")};
   overflow: ${(props) => (props.showMore ? "" : "hidden")};
   text-overflow: ${(props) => (props.showMore ? "" : "ellipsis")};
   overflow-wrap:${(props) => (props.showMore ? "" : "break-word")};

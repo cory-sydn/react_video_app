@@ -39,9 +39,12 @@ const userSlice = createSlice({
 				);
 			}
 		},
+		changeImg: (state, action) => {
+			state.currentUser.img =  action.payload
+		}
 	},
 });
 
-export const { loginStart, loginSuccessful, loginFailed, logout, subscription } =
+export const { loginStart, loginSuccessful, loginFailed, logout, subscription, changeImg } =
 	userSlice.actions;
 export default userSlice.reducer;

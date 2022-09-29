@@ -302,7 +302,9 @@ const Comment = ({comment, currentUser, isChild}) => {
       return (   
     <Container isChild={isChild}>
         <AvatarWrapper isChild={isChild} >
-            <Avatar src={commentAuthor.img === undefined ? unknown : commentAuthor.img} isChild={isChild}></Avatar>
+            <Link to={`/channel/${commentAuthor?._id}`} >
+                <Avatar src={commentAuthor?.img === "" ? unknown : commentAuthor.img} isChild={isChild}></Avatar>
+            </Link>
         </AvatarWrapper>
         {editOpen ? (
             <EditComment oldComment={comment} setEditOpen={setEditOpen} />
@@ -310,13 +312,13 @@ const Comment = ({comment, currentUser, isChild}) => {
             <Wrapper >
                 <Details onMouseEnter={() => setThreeDots(true)} onMouseLeave={() => setThreeDots(false)}>
                     <Left>
-                        <Name>{commentAuthor.name}<Date>{format(comment.createdAt)} </Date></Name>
+                        <Name>{commentAuthor.name}<Date>{format(comment?.createdAt)} </Date></Name>
                         <Text>
                             {comment?.desc?.length < 356
-                                ? comment.desc
+                                ? comment?.desc
                                 : expand === false
-                                    ? `${(comment.desc).slice(0, 355)}...`
-                                    : comment.desc
+                                    ? `${(comment?.desc).slice(0, 355)}...`
+                                    : comment?.desc
                             }
                         </Text>
                             {comment?.desc?.length > 356 &&
@@ -327,7 +329,7 @@ const Comment = ({comment, currentUser, isChild}) => {
                         <Reactions>
                             <ThemeProvider theme={muiTheme} >
                                 <Button>
-                                    {comment.likes?.includes(currentUser?._id) ? (
+                                    {comment?.likes?.includes(currentUser?._id) ? (
                                         <ThumbUpAltIcon fontSize="small" onClick={handleLike}  />
                                     ) : (
                                         <ThumbUpOutlinedIcon fontSize="small" onClick={handleLike}  />
@@ -335,7 +337,7 @@ const Comment = ({comment, currentUser, isChild}) => {
                                     <Span>&nbsp;{comment?.likes?.length > 0 && comment.likes.length}</Span>
                                 </Button>
                                 <Button>
-                                    {comment.dislikes?.includes(currentUser?._id) ? (
+                                    {comment?.dislikes?.includes(currentUser?._id) ? (
                                         <ThumbDownAltIcon fontSize="small"onClick={handleDislike} />
                                     ) : (
                                         <ThumbDownOffAltOutlinedIcon fontSize="small" onClick={handleDislike} />
@@ -382,7 +384,7 @@ const Comment = ({comment, currentUser, isChild}) => {
                         <Btn >
                             {openReplies ? <ArrowDropUpIcon/> : <ArrowDropDownIcon/> }
                             {comment?.childs.length} &ensp;
-                            {comment.childs.length > 1 ? "REPLIES" : "REPLY"} 
+                            {comment?.childs.length > 1 ? "REPLIES" : "REPLY"} 
                         </Btn>
                     </DisplayRepliesBtn>
                 )}

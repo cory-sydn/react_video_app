@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { format } from "timeago.js";
 import TeenyiconsMoreVerticalOutline from '../../icons/TeenyiconsMoreVerticalOutline.jsx';
+import ProfileImg from "../../utils/constants/ProfileImg.jsx";
 import Options from "./Options.jsx";
 
 const Container = styled.div`
@@ -13,13 +14,15 @@ const Container = styled.div`
 	flex-direction: ${(props) => (props.type === "sm" ? "row" : "column")};
 	align-items: flex-start;
 	justify-content: flex-start;
-	max-width: 320px;
+	max-width: ${(props) => (props.type === "sm" ? "100%" : "320px")};
 	margin-bottom: 10px;
 	height: ${(props) => (props.type === "sm" ? "103px" : "100%")};
 	&:hover {
 		transform: ${(props) => (props.play ? "scale(1.18)" : "scale(1)")};
 		transition: all 0.5s ease;
-		background: ${(props) => (props.play ? "#88888815" : "")};
+		background: ${(props) => (props.play ? "#88888840" : "")};
+  	mask-image: linear-gradient(#363636f4 90%, #4c4c4c20 );
+		border-radius: 0 0 5px 5px;
 		z-index: 20;
 	}
 `;
@@ -71,15 +74,6 @@ const Details = styled.div`
 	transition: all 0.5s ease-in-out;
 `;
 
-const ChannelImg = styled.img`
-	display: ${(props) => (props.type === "sm" ? "none" : "flex")};
-	min-width: 36px;
-	height: 36px;
-	border-radius: 50%;
-	background: #606060;
-	object-fit: cover;
-`;
-
 const Texts = styled.div`
 	margin-left: ${(props) => (props.type === "sm" ? "5px" : "14px")};
 	height: ${(props) => (props.type === "sm" ? "103px" : "100%")};
@@ -115,7 +109,7 @@ const VideoFrame = styled.video`
 
 const OptionArea = styled.div`
 	display: flex;
-	padding-top: 20px;
+	padding-top: ${(props) => (props.type === "sm" ? 0 : "16px")};
 `;
 
 const ThreeDotsContainer = styled.div`
@@ -232,11 +226,11 @@ const Card = ({ type, video }) => {
 				<Context>
 					<Details type={type} play={play} >
 						<Link to={`/channel/${channel?._id}`}>
-							<ChannelImg src={channel?.imgUrl} alt=""  type={type}/>
+							{ channel && (type !== "sm") && (<ProfileImg size={36} img={channel.img} name={channel.name} />)}
 						</Link>
 						<Texts type={type}>
 							<Link to={`/video/${video?._id}`}>
-								<Title type={type}>{video?.title} </Title>
+								<Title type={type}>{video?.title[0]?.toUpperCase() + video?.title?.slice(1) } </Title>
 							</Link>
 							<Link to={`/channel/${channel?._id}`}>
 								<ChannelName type={type}> {channel?.name} </ChannelName>
@@ -247,7 +241,7 @@ const Card = ({ type, video }) => {
 							</Info>
 						</Texts>
 					</Details>
-					<OptionArea>
+					<OptionArea type={type} >
 						<ThreeDotsContainer onClickCapture={handleToggleOptions}
 							ref={buttonRef}
 							style={{display: threeDots ? "grid" : "hidden" }}
@@ -258,9 +252,8 @@ const Card = ({ type, video }) => {
 						</ThreeDotsContainer>
 						{openOptions && (
 							<Options
-							optionRef= {optionRef}
-							video= {video}
-							setOpenOptions={setOpenOptions}
+								optionRef= {optionRef}
+								video= {video}
 							/>
 						)}
 					</OptionArea>

@@ -7,49 +7,30 @@ import Subscription from "../video/Subscription";
 import ChannelHome from "./ChannelHome";
 import Playlist from "./Playlist";
 import About from "./About";
+import ChannelProfil from "../../utils/constants/ChannelProfil";
 
 const Container = styled.div`
 	margin-left: 72px;
 	width: 100%;
+	min-height: calc(100vh - 56px);
 	display: flex;
 	flex-direction: column;
 	@media (max-width:660px){
     margin-left: 0;
   };
+	background: ${({ theme }) => theme.bgDarker};
 `;
 
 const Header = styled.header`
 	width: 100%;
 	padding: 20px 40px 0;
-	background: ${({ theme }) => theme.dropDown.bg};
+	background: ${({ theme }) => theme.bg};
 `;
 
 const UserHeader = styled.header`
 	display: flex;
 	justify-content: space-between;
 	margin-bottom: 10px;
-`;
-
-const Img = styled.img`
-	width: 80px;
-	height: 80px;
-	border-radius: 50%;
-	object-fit: cover;
-	cursor: pointer;
-`;
-
-const BlankImg = styled.button`
-	width: 80px;
-	height: 80px;
-	border-radius: 50%;
-	display: grid;
-	place-content: center;
-	color: white;
-	background: #0a413c;
-	border: transparent;
-	font-family: sans-serif, Arial, Helvetica;
-	font-size: 38px;
-	font-weight: 500;
 `;
 
 const Stats = styled.div`
@@ -163,12 +144,7 @@ const Channel = () => {
 			<Header>
 				<UserHeader>
 					<ChannelInfo>
-						{channel &&
-							(channel.imgUrl === undefined ? (
-								<BlankImg>{channel.name[0].toUpperCase()}</BlankImg>
-							) : (
-								<Img src={channel.imgUrl} alt="" />
-							))}
+						{channel &&	(<ChannelProfil channel={channel} />)}
 						<Stats>
 							<Title>{channel?.name} </Title>
 							<Text2>

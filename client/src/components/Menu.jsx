@@ -23,7 +23,8 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { Header, HamburgerBtn } from './navbar/Navbar';
 import SignInButton from '../pages/home/SignInButton';
-import GlowingButton from "../utils/GlowingButton";
+import GlowingButton from "../utils/constants/GlowingButton";
+import ProfileImg from '../utils/constants/ProfileImg';
 
 const MenuContainer = styled.div`
     display: flex;
@@ -118,13 +119,6 @@ const Title =styled.h2`
     font-weight: 500;
     color: #aaaaaa;
     margin-bottom: 20px;
-`;
-
-const Img = styled.img`
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    object-fit: scale-down;
 `;
 
 const Outside = styled.div`
@@ -223,7 +217,7 @@ const Menu = ({darkMode, setDarkMode, sidebar, setSidebar}) => {
                             {channels.map((channel) => (
                                 <Link to={`/channel/${channel?._id}`}key={channel?._id} >
                                     <Item  >
-                                        {channel?.img && (<Img src={channel?.img} alt=""/>)}
+                                        {channel && (<ProfileImg size={24} img={channel.img} name={channel.name} />)}
                                         {channel?.name}
                                     </Item>
                                 </Link>

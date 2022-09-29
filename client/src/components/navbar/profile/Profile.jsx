@@ -8,7 +8,8 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import DropDown from "../dropdown/DropDown";
 import Upload from "../../upload/Upload";
-import GlowingButton, { BtnContainer } from "../../../utils/GlowingButton";
+import GlowingButton, { BtnContainer } from "../../../utils/constants/GlowingButton";
+import ProfileImg from '../../../utils/constants/ProfileImg'
 
 const Container = styled.div`
 	display: flex;
@@ -38,28 +39,18 @@ const Section = styled.section`
 	margin-right: 8px;
 `;
 
-const Img = styled.img`
-	width: 36px;
-	height: 36px;
-	border-radius: 50%;
-	object-fit: cover;
-	cursor: pointer;
-`;
-
-const BlankImg = styled.button`
-	width: 36px;
-	height: 36px;
-	border-radius: 50%;
+const ImgCircle = styled.button`
 	display: grid;
 	place-content: center;
-	color: white;
-	background: #0a413c;
-	border: transparent;
-	font-family: sans-serif, Arial, Helvetica;
-	font-size: 18px;
-	font-weight: 500;
-	cursor: pointer;
+	z-index: 2;
+	width: 34px;
+	height: 34px;
+	border: 1px solid transparent;
+	border-radius: 50%;
 	&:focus {
+		border: 1px solid #2c7ef3;
+	}
+	&:hover {
 		border: 1px solid #2c7ef3;
 	}
 `;
@@ -170,11 +161,11 @@ const Profile = () => {
 							icon={<NotificationsNoneIcon />}
 						/>
 					</NotificationButton>
-					{currentUser && (currentUser?.imgUrl === undefined ? (
-						<BlankImg onClick={()=>setDropdown(true)} >{(currentUser?.name[0]).toUpperCase()}</BlankImg>
-					) : (
-						<Img onClick={()=>setDropdown(true)} src={currentUser?.img} alt="" />
-					))}
+					{currentUser && (
+						<ImgCircle onClick={() => setDropdown(true)}>
+								<ProfileImg  size={32} img={currentUser?.img} name={currentUser?.name}/>
+						</ImgCircle>
+					)}
 					{dropdown && (
 						<DropDown 
 							setDropdown={setDropdown} 

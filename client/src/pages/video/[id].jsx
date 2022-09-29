@@ -5,7 +5,7 @@ import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
 import Comments from "../../components/comment/Comments";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
-import { fetchStart, fetchSuccessful } from "../../redux/videoSlice";
+import { fetchStart, fetchSuccessful, incrementView } from "../../redux/videoSlice";
 import { format } from "timeago.js";
 import LikeBtn from "./LikeBtn";
 import DislikeBtn from "./DislikeBtn"
@@ -13,9 +13,10 @@ import SaveBtn from "./SaveBtn";
 import Subscription from "./Subscription";
 import DescRenderer from "./DescRenderer";
 import Recommendations from "../../components/Recommendations";
-import Darkness from "../../utils/Darkness";
+import Darkness from "../../utils/constants/Darkness";
 import Options from "./Options";
 import ShareBtn from "./ShareBtn";
+import ProfileImg from "../../utils/constants/ProfileImg";
 
 const Container = styled.div`
 	width: 100%;
@@ -80,7 +81,7 @@ const Details = styled.div`
 
 const Info = styled.span`
 	font-size: 14px;
-	place-self: center;
+	place-self: flex-start;
 	color: ${({ theme }) => theme.textSoft};
 `;
 
@@ -102,19 +103,6 @@ const Button = styled.button`
 	display: grid;
 	place-content: center;
 	align-items: center;
-`;
-
-const ChannelImg = styled(Link)`
-	min-width: 48px;
-	height: 48px;
-	margin-right: 16px;
-`;
-
-const Img = styled.img`
-	min-width: 48px;
-	height: 48px;
-	border-radius: 50%;
-	object-fit: cover;
 `;
 
 const ChannelLine = styled.div`
@@ -151,18 +139,20 @@ const Video = () => {
 	const [openOptions, setOpenOptions] = useState(false)
 	const [secondCheck, setSecondCheck] = useState(false)
 	const [darkEffect, setDarkEffect] = useState(false)
-	const [editOpen, setEditOpen] = useState(false)
+	const [time, setTime] = useState(0)
 	const { currentVideo } = useSelector((state) => state.video);
 	const dispatch = useDispatch();
 	const videoId = useParams().id;
 	const optionRef = useRef()
 	const buttonRef = useRef()
-	const warnRef= useRef()
+	const warnRef = useRef()
+	const videoRef = useRef()
 
 	useEffect(() => {
 		const cancelToken = axios.CancelToken.source()
 		const getVideo = async () => {
 			dispatch(fetchStart());
+			setTime(0)
 			try {
 				const videoRes = await axios.get(`http://localhost:8800/api/videos/find/${videoId}`, {cancelToken: cancelToken.token});
 				const channelRes = await axios.get(`http://localhost:8800/api/users/find/${videoRes.data.userId}`, {cancelToken: cancelToken.token});
@@ -193,24 +183,24 @@ const Video = () => {
 		if(buttonRef.current && buttonRef.current.contains(e.target)) return
 		if(warnRef.current && warnRef.current.contains(e.target)) return
 		if(optionRef.current && !optionRef.current.contains(e.target)) {
-				setOpenOptions(false)
-				secondCheck && closeAlert()
-				darkEffect && closeAlert()
-			}
-    }, [secondCheck, darkEffect])
+			setOpenOptions(false)
+			secondCheck && closeAlert()
+			darkEffect && closeAlert()
+		}
+	}, [secondCheck, darkEffect])
 
-    useEffect(() => {
-			document.addEventListener("mousedown", handleFocus)
-			return () => {
-					document.removeEventListener("mousedown", handleFocus)
-			}
-    }, [optionRef, buttonRef, handleFocus, warnRef])
+	useEffect(() => {
+		document.addEventListener("mousedown", handleFocus)
+		return () => {
+			document.removeEventListener("mousedown", handleFocus)
+		}
+	}, [optionRef, buttonRef, handleFocus, warnRef])
 
-    useEffect(() => {
-			if (secondCheck) {
-					setDarkEffect(true)
-			}
-		}, [secondCheck, darkEffect])
+	useEffect(() => {
+		if (secondCheck) {
+			setDarkEffect(true)
+		}
+	}, [secondCheck, darkEffect])
 
 	function closeAlert() {
 		setSecondCheck(false)
@@ -219,17 +209,44 @@ const Video = () => {
 		}, 400)
 	}
 
+	const handleViews = useCallback(async() => {
+		const seekCount = videoRef.current.played.length
+		setTime(0)
+		for(let index = 0; index < seekCount; index++) {
+			const start = videoRef.current.played.start(index)
+			const end = videoRef.current.played.end(index)
+			setTime((prev) => (prev + (end - start)))
+		}
+		if(Math.round(time) === Math.round(videoRef.current.duration) || Math.round(time) === 30) {
+			// firstly cut off onTimeUpdate event handler
+			setTime(35)
+			await axios.put(`http://localhost:8800/api/videos/view/${currentVideo?._id}`)
+				.then(
+					(response) => {
+						if (response.status === 200) {						
+							return dispatch(incrementView(response.data.views))
+						}
+					}
+				)		
+		}
+	}, [time, currentVideo?._id, dispatch])
+
 	return (
 		<Container>
 			<Content>
 				<VideoWrapper>
 					<VideoFrame src={currentVideo?.videoUrl} poster={currentVideo?.imgUrl} controls
-					//  autoPlay 
+						type="video"
+						onTimeUpdate={videoRef.duration < 30 && time < 30 ? handleViews 
+														: time < 31  ? handleViews : undefined
+													}
+						autoPlay 
+						ref={videoRef}
 					 />
 				</VideoWrapper>
 				<Title>
-					<VideoTags>{currentVideo?.tags.map((tag)=> ("#" + tag + " "))}</VideoTags>				
-					{currentVideo?.title}
+					<VideoTags>{currentVideo?.tags?.map((tag)=> ("#" + tag + " "))}</VideoTags>				
+					{currentVideo?.title[0]?.toUpperCase() + currentVideo?.title?.slice(1) }
 				</Title>
 				<Details>
 					<Info>
@@ -252,20 +269,20 @@ const Video = () => {
 							<Options
 								optionRef= {optionRef}
 								video= {currentVideo}
-								setEditOpen= {setEditOpen}
 								warnRef= {warnRef}
 								secondCheck= {secondCheck}
 								setSecondCheck= {setSecondCheck}
 								setOpenOptions={setOpenOptions}
 								close={closeAlert}
+								channelId={channel._id}
 							/>
 						)} 
 					</Buttons>
 				</Details>
 				<Details>
-					<ChannelImg to={`/channel/${channel._id}`} >
-						<Img src={channel.img} />
-					</ChannelImg>
+					<Link to={`/channel/${channel._id}`} >
+						{ channel && (<ProfileImg size={48} img={channel.img} name={channel.name} />)}
+					</Link>
 					<ChannelLine>
 						<ChannelInfo>
 							<ChannelName>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
@@ -19,9 +19,9 @@ import { signOut } from "firebase/auth";
 import { auth } from "../../../firebase.config";
 import { Link } from "react-router-dom";
 import {Selector} from "./Selector";
-import { forwardRef } from "react";
 import { Countries } from './Countries';
 import { Languages } from './Languages';
+import ProfileImg from '../../../utils/constants/ProfileImg'
 
 const Screen = styled.div`
   position: fixed;
@@ -109,28 +109,6 @@ const Title = styled.h2`
 	text-transform: capitalize;
 `;
 
-const Img = styled.img`
-	width: 42px;
-	height: 42px;
-	border-radius: 50%;
-	object-fit: cover;
-	cursor: pointer;
-`;
-
-const BlankImg = styled.button`
-	width: 42px;
-	height: 42px;
-	border-radius: 50%;
-	display: grid;
-	place-content: center;
-	color: white;
-	background: #0a413c;
-	border: transparent;
-	font-family: sans-serif, Arial, Helvetica;
-	font-size: 18px;
-	font-weight: 500;
-`;
-
 const Item = styled.div`
 	height: 40px;
 	display: flex;
@@ -195,11 +173,8 @@ const DropDown = forwardRef((props, ref) => {
 							</>
 						)}
 						{user && (submenu === undefined &&
-							(user.imgUrl === undefined ? (
-								<BlankImg>{user.name[0].toUpperCase()}</BlankImg>
-							) : (
-								<Img src={user.imgUrl} alt="" />
-							)))}
+							(<ProfileImg size={42} img={user.img} name={user.name} />)
+						)}
 						{submenu === undefined && (
 							<Title>{user && user.name} </Title>
 						)}

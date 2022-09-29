@@ -11,6 +11,7 @@ const videoSlice = createSlice({
 	initialState,
 	reducers: {
 		fetchStart: (state) => {
+			state.currentVideo = null;
 			state.loading = true;
 			state.error = false;
 		},
@@ -47,10 +48,13 @@ const videoSlice = createSlice({
 		},
 		deleteVideo: (state, action) => {
 			state.currentVideo = null;
+		},
+		incrementView:(state, action) => {
+			state.currentVideo.views = action.payload
 		}
 	},
 });
 
-export const { fetchStart, fetchSuccessful, fetchFailed, like, dislike, deleteVideo } =
+export const { fetchStart, fetchSuccessful, fetchFailed, like, dislike, deleteVideo, incrementView } =
 	videoSlice.actions;
 export default videoSlice.reducer;

@@ -1,6 +1,5 @@
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
-import IonAlertCircled from '../../icons/IonAlertCircled.jsx'
 
 const Container = styled.div`
   position: fixed;
@@ -33,6 +32,7 @@ const Text = styled.div`
   white-space: pre-line;
   color:  ${({ theme }) => theme.text};
   background: ${({ theme }) => theme.bgDarker};
+  text-align: left;
   padding: 24px;
   border-radius: 3px;
 `;
@@ -61,10 +61,24 @@ const SecondCheck = styled.div`
 `;
 
 const WarningMessage = ({message, secondCheck, setSecondCheck, setWarning, handleCancel }) => {
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === "Escape") {
+      setWarning((prev)=>({...prev, state: false}))
+      setSecondCheck(false)
+    }
+  },[setWarning, setSecondCheck])
+
+  useEffect(()=> {
+    window.addEventListener("keyup",handleKeyDown )
+    return () => {
+      window.removeEventListener("keyup",handleKeyDown )
+    }
+  }, [handleKeyDown])
+  
   return (
     <Container>
       <Wrapper>
-        <Text><IonAlertCircled style={{color: "#c5e300", marginRight: 20 } } />{message}</Text>
+        <Text>{message}</Text>
         {secondCheck && (
           <SecondCheck>
             <Button onClick={()=> setSecondCheck(false) + setWarning((prev)=>({...prev, state: false}))}>No</Button>

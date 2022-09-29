@@ -15,6 +15,7 @@ import SignIn from './pages/SignIn';
 import Channel from './pages/channel/[id].jsx'
 import MiniGuide from './components/MiniGuide';
 import Search from './pages/Search';
+import Studio from './pages/studio/Studio';
 
 const Container = styled.div`
   display: flex;
@@ -53,13 +54,15 @@ function App() {
               <Route path='/'>
                 <Route index element={<Home type="random" />}/>
                 <Route path='trends' element={<Home type="trend"/>}/>
-                <Route path='subscriptions' element={<Home type="sub"/>}/>
+                <Route path='subscriptions' element={<Home type="query/sub"/>}/>
                 <Route path='search' element={<Search />}/>
                 <Route path='signin' element={<SignIn />}/>
                 <Route path='video'>
                   <Route path=':id' element={<Video/>}/>
                 </Route>
                 <Route path='channel/:id/*'element={<Channel />} />
+                <Route path='channel/studio/:id/*'element={<Studio />} />
+                <Route path="/*" element={<Home type="random" />} />
               </Route>
             </Routes>
           </Wrapper>

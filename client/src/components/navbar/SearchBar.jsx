@@ -60,6 +60,9 @@ const IconContainer = styled.div`
   display: grid;
   place-content: center center;
   cursor: pointer;
+  @media (max-width:530px) {
+    min-width: 40px;
+  }
 `;
 
 const SearchBar = () => {

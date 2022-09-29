@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Logo from '../../img/logo.png'
 import styled from 'styled-components';
 import MenuSharpIcon from '@mui/icons-material/MenuSharp';
@@ -24,6 +24,12 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  @media (max-width:650px) {
+    margin-left: 158px;
+  }
+  @media (max-width:530px) {
+    margin-left: 90px;
+  }
 `;
 
 export const Header = styled.div`
@@ -47,7 +53,20 @@ export const HamburgerBtn = styled.button`
 `;
 
 const Navbar = ({setSidebar}) => {
+	const [disappear, setDisappear] = useState(false)
+	
+  const handleDisappear = useCallback((e) => {
+    if (e.target.innerWidth < 530) return setDisappear(true)
+    setDisappear(false)
+  }, [])
 
+	useEffect(() => {
+		window.addEventListener("resize", handleDisappear)
+    return () => {
+  		window.removeEventListener("resize", handleDisappear)
+    }
+	})
+	
   return (
     <Container>
       <Wrapper >
@@ -58,7 +77,8 @@ const Navbar = ({setSidebar}) => {
             />
           </HamburgerBtn>
           <Link to="/" className="logo" cursor="pointer">
-            <img src={Logo} className="img" alt=''/>YouTube
+            <img src={Logo} className="img" alt=''/>
+            {!disappear && "YouTube" }            
           </Link>
         </Header>
         <SearchBar />

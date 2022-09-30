@@ -4,6 +4,8 @@ import Card from '../../components/videoCard/Card'
 import axios from 'axios'
 import { useSelector } from 'react-redux'
 import EmptySubscriptions from './EmptySubscriptions'
+import SkeletonCard from '../../components/videoCard/SkeletonCard'
+import uuid from "react-uuid"
 
 export const GridContainer = styled.section`
   width: 100%;
@@ -25,30 +27,35 @@ export const GridContainer = styled.section`
 `;
 
 const Home = ({type}) => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [videoLoading, setVideoLoading] = useState(true);
   const [videos, setVideos] = useState([])
   const { currentUser } = useSelector((state) => state.user)
 
   useEffect(()=> {
     document.title = "YouTube"
+    setVideoLoading(true)
     try {
       const fecthVideos = async()=>{
         const res = await axios.get( `http://localhost:8800/api/videos/${type}`, {
           withCredentials: true
         })
         setVideos(res.data)
-        setIsLoading(false)
       }
       fecthVideos()
     } catch (err) {
       //console.log(err);
     }
   },[type])
-  
+
+  useEffect(() => {
+    videos.length && setVideoLoading(false)
+  }, [videos.length])
+
   return (
     <GridContainer>
+      {videoLoading && Array.from(Array(12), (_, i) =>  <SkeletonCard key={uuid()} /> )}
       {videos.map((video)=>(
-        <Card video={video} key={video._id} isLoading={isLoading} />
+        <Card video={video} key={video._id} videoLoading={videoLoading} />
       ))}
       {type === "sub" && (
         !currentUser && (

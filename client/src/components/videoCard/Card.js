@@ -6,6 +6,7 @@ import { format } from "timeago.js";
 import TeenyiconsMoreVerticalOutline from "../../icons/TeenyiconsMoreVerticalOutline.jsx";
 import ProfileImg from "../../utils/constants/ProfileImg.jsx";
 import Options from "./Options.jsx";
+import Skeleton from '@mui/material/Skeleton'
 
 const Container = styled.div`
 	width: 100%;
@@ -104,6 +105,7 @@ const VideoFrame = styled.video`
 	width: 100%;
 	min-height: 130px;
 	max-height: 160px;
+	background: ${(props)=> !props.dataProps && "#313131"};
 	flex: 1;
 	object-fit: cover;
 `;
@@ -137,6 +139,7 @@ const ThreeDotsContainer = styled.div`
 `;
 
 const Card = ({ type, video }) => {
+	const [loading, setLoading] = useState(true);
 	const [channel, setChannel] = useState([]);
 	const [play, setPlay] = useState(0);
 	const [timerId, setTimerId] = useState(0);
@@ -147,6 +150,7 @@ const Card = ({ type, video }) => {
 	const buttonRef = useRef();
 
 	useEffect(() => {
+		setLoading(true)
 		try {
 			const fetchChannel = async () => {
 				const res = await axios.get(
@@ -159,6 +163,10 @@ const Card = ({ type, video }) => {
 			console.error(err);
 		}
 	}, [video?.userId]);
+
+	useEffect(() => {
+		channel?.name && setLoading(false)
+	}, [channel])
 
 	const playVid = (e) => {
 		if (timerId) return;
@@ -206,7 +214,7 @@ const Card = ({ type, video }) => {
 
 	return (
 		<>
-			<Container
+			 <Container
 				type={type}
 				play={play}
 				onMouseEnter={() => setThreeDots(true)}
@@ -223,15 +231,18 @@ const Card = ({ type, video }) => {
 							muted
 							onMouseEnter={playVid}
 							onMouseOut={stop}
+							dataProps={video?.imgUrl}
 						/>
 					)}
 				</VideoLink>
 				<Context>
-					<Details type={type} play={play}>
+					<Details type={type} play={play} >					
 						<Link to={`/channel/${channel?._id}`}>
-							{channel && type !== "sm" && (
+							{loading ? (
+								<Skeleton variant="circular" width={40} height={40} sx={{background: "#313131"}} />
+							) : ( channel && type !== "sm" && (
 								<ProfileImg size={36} img={channel.img} name={channel.name} />
-							)}
+							))}
 						</Link>
 						<Texts type={type}>
 							<Link to={`/video/${video?._id}`}>
@@ -240,7 +251,11 @@ const Card = ({ type, video }) => {
 								</Title>
 							</Link>
 							<Link to={`/channel/${channel?._id}`}>
-								<ChannelName type={type}> {channel?.name} </ChannelName>
+								{loading ? (
+			          	<Skeleton variant="text" sx={{ width: 90, fontSize: '1rem', background: "#313131" }} />
+								) : (
+									<ChannelName type={type}> {channel?.name} </ChannelName>
+								)}
 							</Link>
 							<Info>
 								{" "}

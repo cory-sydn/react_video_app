@@ -1,39 +1,40 @@
-import React, {useState} from 'react';
-import styled from 'styled-components';
-import { forwardRef } from 'react';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { forwardRef } from "react";
 
 const Container = styled.div`
-  height: max-content;
-  width: 100%;
-  background:  ${({ theme }) => theme.dropDown.item};
-  display: flex;
-  flex-direction: column;
+	height: max-content;
+	width: 100%;
+	background: ${({ theme }) => theme.dropDown.item};
+	display: flex;
+	flex-direction: column;
 `;
 
 const Input = styled.input`
-  position: sticky;
-  top:0;left:1px;
-  width: 100%;
+	position: sticky;
+	top: 0;
+	left: 1px;
+	width: 100%;
 	height: 40px;
 	display: flex;
 	align-items: center;
 	padding: 0 15px;
 	font-size: 14px;
-  background:  ${({ theme }) => theme.dropDown.item};
-  border: 1px solid  ${({ theme }) => theme.textSoft};
+	background: ${({ theme }) => theme.dropDown.item};
+	border: 1px solid ${({ theme }) => theme.textSoft};
 	cursor: pointer;
-  outline: none;
+	outline: none;
 	&:hover {
 		background: ${({ theme }) => theme.soft};
 	}
-  &:focus {
-    border: 1px solid #3ea6ff;
-  }
+	&:focus {
+		border: 1px solid #3ea6ff;
+	}
 `;
 
 const Wrapper = styled.div`
-  max-height: 450px;
-  overflow-x: hidden;
+	max-height: 450px;
+	overflow-x: hidden;
 	overflow-y: scroll;
 	overscroll-behavior: none;
 	border: 1px solid ${({ theme }) => theme.soft};
@@ -50,7 +51,7 @@ const Wrapper = styled.div`
 `;
 
 const CountryContainer = styled.div`
-  height: 100%;
+	height: 100%;
 `;
 
 const Item = styled.div`
@@ -64,55 +65,54 @@ const Item = styled.div`
 	&:hover {
 		background: ${({ theme }) => theme.soft};
 	}
-  &:active {
+	&:active {
 		background: ${({ theme }) => theme.dropDown.active};
 	}
 `;
 
 export const Selector = forwardRef((props, ref) => {
-  const [options, setOptions] = useState(props.data)
-  
-  function handleSelect (e) {
-    props.setter(e.target.outerText)
-    props.setSubmenu(undefined)
-  }
+	const [options, setOptions] = useState(props.data);
 
-  const handleChange = (e) => {
-    const regex = new RegExp(`${e.target.value}`, "gi")
-    const filtered = props.data.filter((el) => el.label.match(regex))
-    filtered.length && setOptions(filtered)
-  }
+	function handleSelect(e) {
+		props.setter(e.target.outerText);
+		props.setSubmenu(undefined);
+	}
 
-  return (
-    <Container  >
-      <Input
-        type="text"
-        options={options}
-        autoFocus
-        autoHighlight
-        onChange={handleChange}
-        />
-      <Wrapper>
-       <CountryContainer>         
-          {options.map((option)=> (
-            <Item
-              key={option.code}
-              onClick={handleSelect}
-            >
-              {props.submenu === "Location" ? (
-                <img
-                  loading="lazy"
-                  width="20"
-                  src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-                  srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-                  alt=""
-                />
-              ) : (<div style={{width: 15}} ></div>)}
-              {option.label} ({option.code})
-            </Item>
-          ))}
-       </CountryContainer>
-      </Wrapper>
-    </Container>
-  );
-})
+	const handleChange = (e) => {
+		const regex = new RegExp(`${e.target.value}`, "gi");
+		const filtered = props.data.filter((el) => el.label.match(regex));
+		filtered.length && setOptions(filtered);
+	};
+
+	return (
+		<Container>
+			<Input
+				type="text"
+				options={options}
+				autoFocus
+				autoHighlight
+				onChange={handleChange}
+			/>
+			<Wrapper>
+				<CountryContainer>
+					{options.map((option) => (
+						<Item key={option.code} onClick={handleSelect}>
+							{props.submenu === "Location" ? (
+								<img
+									loading="lazy"
+									width="20"
+									src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+									srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+									alt=""
+								/>
+							) : (
+								<div style={{ width: 15 }}></div>
+							)}
+							{option.label} ({option.code})
+						</Item>
+					))}
+				</CountryContainer>
+			</Wrapper>
+		</Container>
+	);
+});

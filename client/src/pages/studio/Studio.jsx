@@ -1,21 +1,21 @@
-import React from 'react'
+import React from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { Route, Routes, useParams, useNavigate, Link } from "react-router-dom";
-import VideosTable from './VideosTable';
-import CommentsTable from './CommentsTable';
-import Edit from './Edit';
-import ChannelProfil from '../../utils/constants/ChannelProfil';
+import VideosTable from "./VideosTable";
+import CommentsTable from "./CommentsTable";
+import Edit from "./Edit";
+import ChannelProfil from "../../utils/constants/ChannelProfil";
 
 const Container = styled.main`
 	margin-left: 72px;
 	width: 100%;
 	min-height: calc(100vh - 56px);
-	@media (max-width:660px){
-    margin-left: 0;
-  };
+	@media (max-width: 660px) {
+		margin-left: 0;
+	} ;
 `;
 
 const Header = styled.header`
@@ -30,35 +30,35 @@ const ChannelInfo = styled.div`
 `;
 
 const Title = styled.h3`
-  padding-left: 20px;
-  padding-top: 20px;
+	padding-left: 20px;
+	padding-top: 20px;
 `;
 
 const Menu = styled.div`
-  display: flex;
+	display: flex;
 `;
 
 const Hr = styled.div`
-  width: 100%;
-  opacity: 0.4;
- 	border-bottom: 1px solid ${({ theme }) => theme.textSoft};
+	width: 100%;
+	opacity: 0.4;
+	border-bottom: 1px solid ${({ theme }) => theme.textSoft};
 `;
 
 const MenuItem = styled.h5`
-  padding: 20px 40px;
+	padding: 20px 40px;
 `;
 
 const Studio = () => {
-  const [videos, setVideos] = useState([])
-	const [openEdit, setOpenEdit] = useState(false)
+	const [videos, setVideos] = useState([]);
+	const [openEdit, setOpenEdit] = useState(false);
 	const { currentUser } = useSelector((state) => state.user);
-	const navigate = useNavigate()
-	const urlObj = useParams()
+	const navigate = useNavigate();
+	const urlObj = useParams();
 
-	useEffect(()=>{
-		if (!currentUser) return navigate("/")
-		if (currentUser?._id !== urlObj.id ) navigate("/")
-	}, [currentUser, urlObj.id, navigate])
+	useEffect(() => {
+		if (!currentUser) return navigate("/");
+		if (currentUser?._id !== urlObj.id) navigate("/");
+	}, [currentUser, urlObj.id, navigate]);
 
 	useEffect(() => {
 		const cancelToken = axios.CancelToken.source();
@@ -80,38 +80,38 @@ const Studio = () => {
 		};
 	}, [currentUser]);
 
-	useEffect(()=> {
-		const editId = Object.entries(urlObj)[1][1]
-		const editVideo = videos.find((video) => video._id === editId)
-		setOpenEdit(editVideo)
-	}, [urlObj, videos])
+	useEffect(() => {
+		const editId = Object.entries(urlObj)[1][1];
+		const editVideo = videos.find((video) => video._id === editId);
+		setOpenEdit(editVideo);
+	}, [urlObj, videos]);
 
-  return (
-    <Container>
-      <Header>
-        <ChannelInfo>
-          {currentUser && (<ChannelProfil channel={currentUser} />)}
-        </ChannelInfo>
-        <Title >{currentUser?.name + " "}  channel content</Title>
-      </Header>
-      <Menu>
-        <Link to="" >
+	return (
+		<Container>
+			<Header>
+				<ChannelInfo>
+					{currentUser && <ChannelProfil channel={currentUser} />}
+				</ChannelInfo>
+				<Title>{currentUser?.name + " "} channel content</Title>
+			</Header>
+			<Menu>
+				<Link to="">
 					<MenuItem>Videos</MenuItem>
 				</Link>
-        <Link to="comments" >
+				<Link to="comments">
 					<MenuItem>Comments</MenuItem>
 				</Link>
-      </Menu>
+			</Menu>
 			<Hr />
 			<Routes>
-				<Route path='/'>
-					<Route index element={<VideosTable videos={videos} />}/>
-					<Route path='comments' element={<CommentsTable videos={videos} />}/>
+				<Route path="/">
+					<Route index element={<VideosTable videos={videos} />} />
+					<Route path="comments" element={<CommentsTable videos={videos} />} />
 				</Route>
 			</Routes>
-			{openEdit && <Edit openEdit={openEdit} setOpenEdit={setOpenEdit}/>}
-    </Container>
-  )
-}
+			{openEdit && <Edit openEdit={openEdit} setOpenEdit={setOpenEdit} />}
+		</Container>
+	);
+};
 
-export default Studio
+export default Studio;

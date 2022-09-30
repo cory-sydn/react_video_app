@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import MdiLightMessageText from '../../icons/MdiLightMessageText.jsx'
+import MdiLightMessageText from "../../icons/MdiLightMessageText.jsx";
 import CommentCard from "./CommentCard.jsx";
 
 const Container = styled.div`
@@ -31,10 +31,10 @@ const Text1 = styled.h4`
 `;
 
 const CommentsLink = styled(Text1)`
-  width: max-content;
-  padding-left: 20px;
+	width: max-content;
+	padding-left: 20px;
 	color: #3ea6ff;
-  position: relative;
+	position: relative;
 	cursor: pointer;
 `;
 
@@ -50,18 +50,18 @@ const Display = styled.div`
 	width: 100%;
 	display: flex;
 	flex-direction: column;
-	@media (max-width:1120px){
+	@media (max-width: 1120px) {
 		padding: 20px 40px 20px 30px;
-  };
-	@media (max-width:950px){
+	}
+	@media (max-width: 950px) {
 		padding: 20px 30px 20px 0;
-  };
+	} ;
 `;
 
 const CommentIcon = styled(MdiLightMessageText)`
-  position: absolute;
-  top: 1px;
-  left: 0;
+	position: absolute;
+	top: 1px;
+	left: 0;
 `;
 
 const About = ({ channel }) => {
@@ -89,26 +89,32 @@ const About = ({ channel }) => {
 		};
 	}, [currentUser, channel]);
 
-  return (
+	return (
 		<Container>
 			<Display>
 				{open && (
-						<>
-							<Title style={{ marginBottom:20}} >Your YouTube Comments</Title>
-							{userComments.map((comment) => (
-								<CommentCard key={comment._id} comment={comment} userComments={userComments} setUserComments={setUserComments} />
-							))}
-						</>
-					)}
+					<>
+						<Title style={{ marginBottom: 20 }}>Your YouTube Comments</Title>
+						{userComments.map((comment) => (
+							<CommentCard
+								key={comment._id}
+								comment={comment}
+								userComments={userComments}
+								setUserComments={setUserComments}
+							/>
+						))}
+					</>
+				)}
 			</Display>
 			<Stats>
 				<Title>Stats</Title>
 				<Hr />
 				<Text1>{channel?.name}</Text1>
 				<Text1>Joined {channel?.createdAt?.split("T")[0]}</Text1>
-				{currentUser?._id === channel?._id && ( userComments?.length > 0 &&
+				{currentUser?._id === channel?._id && userComments?.length > 0 && (
 					<CommentsLink onClick={() => setOpen(!open)}>
-						<CommentIcon />{userComments.length + " commets"}
+						<CommentIcon />
+						{userComments.length + " commets"}
 					</CommentsLink>
 				)}
 				<Hr />

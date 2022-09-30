@@ -102,7 +102,7 @@ const ChannelHome = () => {
 				</>
 			)}
 			<Main>
-			{videos.length > 0 && (<Title>Uploads</Title>)}
+				{videos.length > 0 && <Title>Uploads</Title>}
 				<Wrapper>
 					{videos.length > 0 &&
 						videos.map((video) => <Card video={video} key={video._id} />)}

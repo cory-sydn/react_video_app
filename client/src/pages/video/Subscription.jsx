@@ -27,7 +27,7 @@ const Join = styled.button`
 
 const Subscribe = styled.button`
 	color: #ffffff;
-	background:#cc0000;
+	background: #cc0000;
 	height: 37px;
 	margin-inline: 16px;
 	border: none;
@@ -41,28 +41,36 @@ const Subscribe = styled.button`
 const Subscribed = styled(Subscribe)`
 	color: ${({ theme }) => theme.subscription.color};
 	background: ${({ theme }) => theme.subscription.bg};
-`
+`;
 
-const Subscription = ({channel, setChannel}) => {
+const Subscription = ({ channel, setChannel }) => {
 	const [warn, setWarn] = useState(false);
 	const { currentUser } = useSelector((state) => state.user);
 	const dispatch = useDispatch();
 
-	const handleSubscribe = async() => {
+	const handleSubscribe = async () => {
 		try {
-			!currentUser.subscribedUsers.includes(channel._id) 
-				? await axios.put(`http://localhost:8800/api/users/sub/${channel._id}`,{}, { withCredentials: true })
-				: await axios.put(`http://localhost:8800/api/users/unsub/${channel._id}`,{}, { withCredentials: true });
-			dispatch(subscription(channel._id))
+			!currentUser.subscribedUsers.includes(channel._id)
+				? await axios.put(
+						`http://localhost:8800/api/users/sub/${channel._id}`,
+						{},
+						{ withCredentials: true }
+				  )
+				: await axios.put(
+						`http://localhost:8800/api/users/unsub/${channel._id}`,
+						{},
+						{ withCredentials: true }
+				  );
+			dispatch(subscription(channel._id));
 		} catch (err) {
 			console.log(err);
 		}
-	}
+	};
 
 	const handleWarn = (boolean) => {
-		if (currentUser) return
-		setWarn(boolean)
-	}
+		if (currentUser) return;
+		setWarn(boolean);
+	};
 
 	return (
 		<Container>

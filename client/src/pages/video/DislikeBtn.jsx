@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import ThumbDownOffAltOutlinedIcon from "@mui/icons-material/ThumbDownOffAltOutlined";
-import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
+import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { dislike } from "../../redux/videoSlice";
 import Warning from "../../components/Warning";
-import GlowingButton, { BtnContainer } from "../../utils/constants/GlowingButton";
+import GlowingButton, {
+	BtnContainer,
+} from "../../utils/constants/GlowingButton";
 
 const DislikeBtn = () => {
 	const [warn, setWarn] = useState(false);
@@ -13,20 +15,24 @@ const DislikeBtn = () => {
 	const { currentVideo } = useSelector((state) => state.video);
 	const dispatch = useDispatch();
 
-	const handleDislike = async() =>  {
-		if(!currentUser) return
+	const handleDislike = async () => {
+		if (!currentUser) return;
 		try {
-			await axios.put(`http://localhost:8800/api/videos/dislike/${currentVideo._id}`,{},{withCredentials: true} )
-			dispatch(dislike(currentUser._id))
+			await axios.put(
+				`http://localhost:8800/api/videos/dislike/${currentVideo._id}`,
+				{},
+				{ withCredentials: true }
+			);
+			dispatch(dislike(currentUser._id));
 		} catch (err) {
 			console.log(err);
 		}
-	}
+	};
 
 	const handleWarn = (boolean) => {
-		if (currentUser) return
-		setWarn(boolean)
-	}
+		if (currentUser) return;
+		setWarn(boolean);
+	};
 
 	return (
 		<BtnContainer
@@ -35,19 +41,21 @@ const DislikeBtn = () => {
 			onClick={handleDislike}
 		>
 			<GlowingButton
-				icon={currentVideo?.dislikes?.includes(currentUser?._id) ? (
-					<ThumbDownAltIcon/>
-				) : (
-					<ThumbDownOffAltOutlinedIcon/>
-				)}
+				icon={
+					currentVideo?.dislikes?.includes(currentUser?._id) ? (
+						<ThumbDownAltIcon />
+					) : (
+						<ThumbDownOffAltOutlinedIcon />
+					)
+				}
 			/>
-				DISLIKE
-				{warn && (
-					<Warning
-						title={"Don't like this video?"}
-						text={"make your opinion count."}
-					/>
-				)}
+			DISLIKE
+			{warn && (
+				<Warning
+					title={"Don't like this video?"}
+					text={"make your opinion count."}
+				/>
+			)}
 		</BtnContainer>
 	);
 };

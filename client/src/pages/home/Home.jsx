@@ -25,6 +25,7 @@ export const GridContainer = styled.section`
 `;
 
 const Home = ({type}) => {
+  const [isLoading, setIsLoading] = useState(true);
   const [videos, setVideos] = useState([])
   const { currentUser } = useSelector((state) => state.user)
 
@@ -36,6 +37,7 @@ const Home = ({type}) => {
           withCredentials: true
         })
         setVideos(res.data)
+        setIsLoading(false)
       }
       fecthVideos()
     } catch (err) {
@@ -46,7 +48,7 @@ const Home = ({type}) => {
   return (
     <GridContainer>
       {videos.map((video)=>(
-        <Card video={video} key={video._id} />
+        <Card video={video} key={video._id} isLoading={isLoading} />
       ))}
       {type === "sub" && (
         !currentUser && (

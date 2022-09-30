@@ -15,9 +15,9 @@ const Container = styled.div`
 	min-height: calc(100vh - 56px);
 	display: flex;
 	flex-direction: column;
-	@media (max-width:660px){
-    margin-left: 0;
-  };
+	@media (max-width: 660px) {
+		margin-left: 0;
+	}
 	background: ${({ theme }) => theme.bgDarker};
 `;
 
@@ -109,7 +109,7 @@ const Channel = () => {
 					{ cancelToken: cancelToken.token }
 				);
 				setChannel(channelRes.data);
-				document.title = channelRes.data.name
+				document.title = channelRes.data.name;
 			} catch (err) {
 				console.log(err);
 			}
@@ -144,7 +144,7 @@ const Channel = () => {
 			<Header>
 				<UserHeader>
 					<ChannelInfo>
-						{channel &&	(<ChannelProfil channel={channel} />)}
+						{channel && <ChannelProfil channel={channel} />}
 						<Stats>
 							<Title>{channel?.name} </Title>
 							<Text2>
@@ -161,7 +161,8 @@ const Channel = () => {
 							className="channel__menu-item"
 							onClick={handleSlider}
 							ref={active}
-						>Home
+						>
+							Home
 						</Item>
 					</Link>
 					<Link to="videos">

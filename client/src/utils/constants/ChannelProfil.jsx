@@ -5,7 +5,7 @@ import axios from "axios";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { Uploader } from "../functions/Uploader";
 import ProfileImg from "./ProfileImg";
-import { ProcessDisplay } from "../../components/upload/Upload";
+import { ProcessDisplay } from "../constants/Upload";
 import { changeImg } from "../../redux/userSlice";
 
 const Container = styled.form`

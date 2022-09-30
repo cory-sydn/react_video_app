@@ -5,30 +5,30 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import PortraitOutlinedIcon from "@mui/icons-material/PortraitOutlined";
 import SwitchAccountOutlinedIcon from "@mui/icons-material/SwitchAccountOutlined";
 import Brightness3OutlinedIcon from "@mui/icons-material/Brightness3Outlined";
-import TranslateIcon from '@mui/icons-material/Translate';
+import TranslateIcon from "@mui/icons-material/Translate";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import LanguageIcon from '@mui/icons-material/Language';
-import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
-import FeedbackOutlinedIcon from '@mui/icons-material/FeedbackOutlined';
-import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
-import PolicyOutlinedIcon from '@mui/icons-material/PolicyOutlined';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import LanguageIcon from "@mui/icons-material/Language";
+import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
+import FeedbackOutlinedIcon from "@mui/icons-material/FeedbackOutlined";
+import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
+import PolicyOutlinedIcon from "@mui/icons-material/PolicyOutlined";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { logout } from "../../../redux/userSlice";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../firebase.config";
 import { Link } from "react-router-dom";
-import {Selector} from "./Selector";
-import { Countries } from './Countries';
-import { Languages } from './Languages';
-import ProfileImg from '../../../utils/constants/ProfileImg'
+import { Selector } from "./Selector";
+import { Countries } from "./Countries";
+import { Languages } from "./Languages";
+import ProfileImg from "../../../utils/constants/ProfileImg";
 
 const Screen = styled.div`
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: calc(100vw - 8px);
-  height: 100vh;
+	position: fixed;
+	top: 0;
+	right: 0;
+	width: calc(100vw - 8px);
+	height: 100vh;
 	z-index: 10;
 `;
 
@@ -44,7 +44,7 @@ const MenuContainer = styled.div`
 	z-index: 15;
 	color: ${({ theme }) => theme.text};
 	background: ${({ theme }) => theme.dropDown.item};
-  box-shadow: 0 3px 2px 0 #00000022;
+	box-shadow: 0 3px 2px 0 #00000022;
 	border-top: transparent;
 	transition: all 0.5s ease-in-out;
 `;
@@ -52,8 +52,8 @@ const MenuContainer = styled.div`
 const Menu = styled.section`
 	width: 300px;
 	height: 100%;
-	@media (max-height: 650px){
-    height: calc(100vh - 60px);
+	@media (max-height: 650px) {
+		height: calc(100vh - 60px);
 	}
 	display: flex;
 	flex-direction: column;
@@ -141,114 +141,125 @@ const Span = styled.div`
 `;
 
 const DropDown = forwardRef((props, ref) => {
-  const [country, setCountry] = useState(undefined)
-  const [language, setLanguage] = useState(undefined)
-	const [submenu, setSubmenu] = useState(undefined)
+	const [country, setCountry] = useState(undefined);
+	const [language, setLanguage] = useState(undefined);
+	const [submenu, setSubmenu] = useState(undefined);
 	const user = useSelector((state) => state.user.currentUser);
 	const dispatch = useDispatch();
-	
+
 	const handleSignout = () => {
 		//document.cookie = 'access_token=null; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-		firebaseLogout()
+		firebaseLogout();
 		dispatch(logout());
-		window.location.reload()
+		window.location.reload();
 	};
 
-	const firebaseLogout = async() => {
-		await signOut(auth)
-	}
- 
+	const firebaseLogout = async () => {
+		await signOut(auth);
+	};
+
 	return (
-		<Screen >
-			<MenuContainer ref={props.menuRef} >
+		<Screen>
+			<MenuContainer ref={props.menuRef}>
 				<Menu>
 					<Header>
 						{submenu !== undefined && (
 							<>
-								<ArrowBackIcon 
-								style={{margin: "5px 10px 5px 0px"}}
-								onClick={() => setSubmenu(undefined)}
-								cursor="pointer" /> 
+								<ArrowBackIcon
+									style={{ margin: "5px 10px 5px 0px" }}
+									onClick={() => setSubmenu(undefined)}
+									cursor="pointer"
+								/>
 								Choose Your {submenu}
 							</>
 						)}
-						{user && (submenu === undefined &&
-							(<ProfileImg size={42} img={user.img} name={user.name} />)
+						{user && submenu === undefined && (
+							<ProfileImg size={42} img={user.img} name={user.name} />
 						)}
-						{submenu === undefined && (
-							<Title>{user && user.name} </Title>
-						)}
+						{submenu === undefined && <Title>{user && user.name} </Title>}
 					</Header>
 					<Container>
-						{submenu === undefined &&	(<Wrapper>
-							<Link to={`/channel/${user._id}`} >
-								<Item  >
-									<PortraitOutlinedIcon /> Your channel
+						{submenu === undefined && (
+							<Wrapper>
+								<Link to={`/channel/${user._id}`}>
+									<Item>
+										<PortraitOutlinedIcon /> Your channel
+									</Item>
+								</Link>
+								<Link to="/">
+									<Item style={{ justifyContent: "space-between" }}>
+										<Span>
+											<SwitchAccountOutlinedIcon /> Swicth account
+										</Span>
+										<ChevronRightIcon style={{ float: "right" }} />
+									</Item>
+								</Link>
+								{user && (
+									<Item onClick={handleSignout}>
+										<LogoutOutlinedIcon /> Sign out
+									</Item>
+								)}
+								<Hr />
+								<Item>
+									<PaidOutlinedIcon />
+									Purchases and memberships
 								</Item>
-							</Link>
-							<Link to="/">
-								<Item style={{justifyContent:"space-between"}}>
+								<Item>
+									<PolicyOutlinedIcon />
+									Your data in YouTube
+								</Item>
+								<Hr />
+								<Item style={{ justifyContent: "space-between" }}>
 									<Span>
-										<SwitchAccountOutlinedIcon /> Swicth account 
+										<Brightness3OutlinedIcon /> Appearance:
 									</Span>
-									<ChevronRightIcon style={{ float: "right"}} />
+									<ChevronRightIcon />
 								</Item>
-							</Link>
-							{user && (
-								<Item onClick={handleSignout}>
-									<LogoutOutlinedIcon /> Sign out
+								<Item
+									onClick={() => setSubmenu("Language")}
+									style={{ justifyContent: "space-between" }}
+								>
+									<Span>
+										<TranslateIcon /> Language:{" "}
+										{language ? " " + language : " English"}
+									</Span>
+									<ChevronRightIcon />
 								</Item>
-							)}
-							<Hr />
-							<Item>
-								<PaidOutlinedIcon />Purchases and memberships
-							</Item>
-							<Item>
-								<PolicyOutlinedIcon />Your data in YouTube
-							</Item>
-							<Hr />
-							<Item style={{justifyContent:"space-between"}}>
-								<Span>
-									<Brightness3OutlinedIcon /> Appearance: 
-								</Span><ChevronRightIcon />
-							</Item>
-							<Item  onClick={() => setSubmenu("Language")} style={{justifyContent:"space-between"}}>
-								<Span>
-									<TranslateIcon /> Language: {language ? " " + language : " English"}
-								</Span>
-								<ChevronRightIcon />								
-							</Item>
-							<Item  onClick={() => setSubmenu("Location")} style={{justifyContent:"space-between"}}>
-								<Span>
-									<LanguageIcon />Location: {country ? " " + country : " United Kingdom"}
-								</Span>
-								<ChevronRightIcon />
-							</Item>									
-							<Hr />
-							<Item>
-								<SettingsOutlinedIcon /> Settings
-							</Item>
-							<Hr />
-							<Item>
-								<HelpOutlineOutlinedIcon /> Help
-							</Item>
-							<Item>
-								<FeedbackOutlinedIcon /> Send Feedback
-							</Item>
-						</Wrapper>
-					)}	
+								<Item
+									onClick={() => setSubmenu("Location")}
+									style={{ justifyContent: "space-between" }}
+								>
+									<Span>
+										<LanguageIcon />
+										Location: {country ? " " + country : " United Kingdom"}
+									</Span>
+									<ChevronRightIcon />
+								</Item>
+								<Hr />
+								<Item>
+									<SettingsOutlinedIcon /> Settings
+								</Item>
+								<Hr />
+								<Item>
+									<HelpOutlineOutlinedIcon /> Help
+								</Item>
+								<Item>
+									<FeedbackOutlinedIcon /> Send Feedback
+								</Item>
+							</Wrapper>
+						)}
 					</Container>
 					{submenu !== undefined && (
-							<Selector
-							setter = {submenu === "Location" ? setCountry : setLanguage}
-							data = {submenu === "Location" ? Countries : Languages}
+						<Selector
+							setter={submenu === "Location" ? setCountry : setLanguage}
+							data={submenu === "Location" ? Countries : Languages}
 							submenu={submenu}
 							setSubmenu={setSubmenu}
 						/>
-					)}		
+					)}
 				</Menu>
 			</MenuContainer>
 		</Screen>
 	);
-})
+});
 export default DropDown;

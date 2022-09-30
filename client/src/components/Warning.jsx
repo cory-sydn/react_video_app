@@ -28,11 +28,11 @@ const Text = styled.div`
 `;
 
 const Hr = styled.hr`
-  margin-top: 10px;
-  width: 100%;
-  border: transparent;
+	margin-top: 10px;
+	width: 100%;
+	border: transparent;
 	border-bottom: 1px solid ${({ theme }) => theme.soft};
-`
+`;
 
 const BtnContainer = styled.div`
 	padding: 10px 20px;
@@ -47,22 +47,22 @@ const Button = styled.div`
 	font-weight: 500;
 	background: transparent;
 	padding: 10px 15px;
-  background: ${({ theme }) => theme.warning.bg};
+	background: ${({ theme }) => theme.warning.bg};
 	cursor: pointer;
 `;
 
 const Warning = ({ title, text }) => {
 	const navigate = useNavigate();
-	
-  function redirect() {
+
+	function redirect() {
 		navigate("/signin");
 	}
-  
+
 	return (
 		<Container>
 			<Title>{title}</Title>
-			<Text>Sign in to{" "}{text} </Text>
-      <Hr/>
+			<Text>Sign in to {text} </Text>
+			<Hr />
 			<BtnContainer>
 				<Button onClick={redirect}>SIGN IN </Button>
 			</BtnContainer>

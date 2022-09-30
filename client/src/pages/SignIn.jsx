@@ -8,7 +8,11 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { loginFailed, loginStart, loginSuccessful } from "../redux/userSlice";
 import { auth, googleProvider } from "../firebase.config";
-import { signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import {
+	signInWithPopup,
+	createUserWithEmailAndPassword,
+	signInWithEmailAndPassword,
+} from "firebase/auth";
 import googleSvg from "../img/google.svg";
 import { useNavigate } from "react-router-dom";
 
@@ -92,15 +96,15 @@ const Button = styled.button`
 	cursor: pointer;
 	border: 1px solid #434343;
 	filter: sepia(18%);
-	transition: all 0.3s ;
+	transition: all 0.3s;
 	box-shadow: 0 1px 3px 0 #88888899;
 	&:hover {
 		box-shadow: 0 1px 7px 0 #2c7ef3;
-		transform: scaleY(1.05), translateY(3px)
+		transform: scaleY(1.05), translateY(3px);
 	}
 	&:active {
 		box-shadow: 0 0 2px 0 #2c7ef3;
-		transform: scaleY(1), translateY(0)
+		transform: scaleY(1), translateY(0);
 	}
 `;
 
@@ -168,7 +172,7 @@ const SignIn = () => {
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	const navigate = useNavigate()
+	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const currentUser = useSelector((state) => state.user);
 
@@ -185,8 +189,8 @@ const SignIn = () => {
 				}
 			);
 			dispatch(loginSuccessful(res.data));
-			login(auth, res.data.email, password)
-			navigate("/")
+			login(auth, res.data.email, password);
+			navigate("/");
 		} catch (err) {
 			dispatch(loginFailed(err?.response?.data?.message));
 		}
@@ -196,58 +200,63 @@ const SignIn = () => {
 		dispatch(loginStart());
 
 		signInWithPopup(auth, googleProvider)
-			.then( async(result) => {
-				await axios.post("/auth/google", {
-					name: result.user.displayName,
-					email: result.user.email,
-					img: result.user.photoURL
-				})
-				.then((res) => {
-					dispatch(loginSuccessful(res.data))
-					navigate("/")
-				})
+			.then(async (result) => {
+				await axios
+					.post("/auth/google", {
+						name: result.user.displayName,
+						email: result.user.email,
+						img: result.user.photoURL,
+					})
+					.then((res) => {
+						dispatch(loginSuccessful(res.data));
+						navigate("/");
+					});
 			})
 			.catch((err) => {
-				dispatch(loginFailed(err?.response?.data?.message))
+				dispatch(loginFailed(err?.response?.data?.message));
 				console.log(err);
-			})
+			});
 	};
 
 	const handleSignUp = async () => {
-		dispatch(loginStart())
+		dispatch(loginStart());
 		if (!name || !password) return;
 		if (name.length < 4 || password < 9) return;
 		try {
-			register()
-			const newUser = {	name, email, password,};
-			const res = await axios.post("http://localhost:8800/api/auth/signup", newUser, {withCredentials: true, })
-			dispatch(loginSuccessful(res.data))
-			navigate("/")
+			register();
+			const newUser = { name, email, password };
+			const res = await axios.post(
+				"http://localhost:8800/api/auth/signup",
+				newUser,
+				{ withCredentials: true }
+			);
+			dispatch(loginSuccessful(res.data));
+			navigate("/");
 		} catch (err) {
 			console.log(err);
-			dispatch(loginFailed(err?.response?.data?.message))
+			dispatch(loginFailed(err?.response?.data?.message));
 		}
 	};
 
 	async function register() {
 		try {
-			await createUserWithEmailAndPassword(auth, email, password)
+			await createUserWithEmailAndPassword(auth, email, password);
 		} catch (err) {
-			dispatch(loginFailed(err?.response?.data?.message))
+			dispatch(loginFailed(err?.response?.data?.message));
 			console.log(err);
 		}
 	}
 
-	async function login (auth, email, password) {
+	async function login(auth, email, password) {
 		try {
-			await signInWithEmailAndPassword(auth, email, password)
+			await signInWithEmailAndPassword(auth, email, password);
 		} catch (err) {
-			dispatch(loginFailed(err))
+			dispatch(loginFailed(err));
 		}
 	}
 
-	useEffect(()=> {
-		document.title = "YouTube"
+	useEffect(() => {
+		document.title = "YouTube";
 	}, []);
 
 	return (
@@ -323,7 +332,12 @@ const SignIn = () => {
 						onChange={(e) => setPassword(e.target.value)}
 					></Input>
 				</InputWrapper>
-				<Button onClick={handleSignUp} disabled={currentUser?.loading === true ? true : false } >Sign up</Button>
+				<Button
+					onClick={handleSignUp}
+					disabled={currentUser?.loading === true ? true : false}
+				>
+					Sign up
+				</Button>
 			</Form>
 			<More>
 				<Span>English (US) &#9660;</Span>

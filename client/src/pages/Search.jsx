@@ -1,34 +1,35 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
-import Card from '../components/videoCard/Card'
-import { GridContainer } from './home/Home'
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import Card from "../components/videoCard/Card";
+import { GridContainer } from "./home/Home";
 
 const Search = () => {
-  const [videos, setVideos] = useState([])
-  const location = useLocation()
-  
-  useEffect(()=> {
-    document.title = "YouTube"
-    try {
-      const fecthVideos = async()=>{
-        const res = await axios.get( `http://localhost:8800/api/videos/query/search${location.search}`,)
-        setVideos(res.data)
-      }
-      fecthVideos()
-    } catch (err) {
-      //console.log(err);
-    }
-  },[location])
+	const [videos, setVideos] = useState([]);
+	const location = useLocation();
 
-  return (
-    <GridContainer>
-      {videos.map((video) => (
-        <Card key={video._id} video={video} />
-      ))}
-      
-    </GridContainer>
-  )
-}
+	useEffect(() => {
+		document.title = "YouTube";
+		try {
+			const fecthVideos = async () => {
+				const res = await axios.get(
+					`http://localhost:8800/api/videos/query/search${location.search}`
+				);
+				setVideos(res.data);
+			};
+			fecthVideos();
+		} catch (err) {
+			//console.log(err);
+		}
+	}, [location]);
 
-export default Search
+	return (
+		<GridContainer>
+			{videos.map((video) => (
+				<Card key={video._id} video={video} />
+			))}
+		</GridContainer>
+	);
+};
+
+export default Search;

@@ -22,7 +22,7 @@ const Wrapper = styled.section`
 	place-content: flex-start;
 	@media (min-width: 1050px) {
 		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-	};
+	} ;
 `;
 
 const Title = styled.h3`

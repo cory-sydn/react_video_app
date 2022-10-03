@@ -28,7 +28,7 @@ const SortButton = styled.div`
 	cursor: pointer;
 `;
 
-const Comments = () => {
+const Comments = ({channelId}) => {
 	const [comments, setComments] = useState([]);
 	const { currentUser } = useSelector((state) => state.user);
 	const { currentComment } = useSelector((state) => state.comment);
@@ -51,7 +51,7 @@ const Comments = () => {
 		return () => {
 			cancelToken.cancel();
 		};
-	}, [videoId, currentComment]);
+	}, [videoId, currentComment, channelId]);
 
 	return (
 		<Container>
@@ -63,14 +63,22 @@ const Comments = () => {
 				</SortButton>
 			</CommentsHeader>
 			<NewComment currentUser={currentUser} videoId={videoId} />
+			{comments.map((comment) => comment.userId === channelId && !comment.parent && (
+				<Comment
+				key={comment._id}
+				comment={comment}
+				currentUser={currentUser}
+				channelId={channelId}
+			/>))}
 			{comments.map(
 				(comment) =>
 					// if comment have a parent that means it is a reply comment thus we should skip it
-					!comment.parent && (
+					!comment.parent && comment.userId !== channelId && (
 						<Comment
 							key={comment._id}
 							comment={comment}
 							currentUser={currentUser}
+							channelId={channelId}
 						/>
 					)
 			)}

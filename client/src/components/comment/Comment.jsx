@@ -48,12 +48,18 @@ const Details = styled.div`
 	color: ${({ theme }) => theme.text};
 `;
 
-const Name = styled.span`
+const NameLine = styled.div`
 	font-size: 13px;
 	font-weight: 500;
 	text-align: left;
-	margin-bottom: 4px;
+	margin-bottom: 6px;
 	text-transform: capitalize;
+`;
+
+const Name = styled.span`
+	background:  ${(props) => (props.isChannelMessage ? "#595959": "transparent")};
+	padding:  ${(props) => (props.isChannelMessage ? "4px 6px": 0)};
+	border-radius: 15px;
 `;
 
 const Date = styled.span`
@@ -189,7 +195,7 @@ const Darkness = styled.div`
 	z-index: 25;
 `;
 
-const Comment = ({ comment, currentUser, isChild }) => {
+const Comment = ({ channelId, comment, currentUser, isChild }) => {
 	const [commentAuthor, setCommenAuthor] = useState({});
 	const [expand, setExpand] = useState(false);
 	const [reply, setReply] = useState(false);
@@ -332,10 +338,14 @@ const Comment = ({ comment, currentUser, isChild }) => {
 						onMouseLeave={() => setThreeDots(false)}
 					>
 						<Left>
-							<Name>
-								{commentAuthor.name}
+							<NameLine>
+								<Name
+									isChannelMessage={channelId === commentAuthor._id ? true : false} 
+								>
+									{commentAuthor.name}
+								</Name>
 								<Date>{format(comment?.createdAt)} </Date>
-							</Name>
+							</NameLine>
 							<Text>
 								{comment?.desc?.length < 356
 									? comment?.desc

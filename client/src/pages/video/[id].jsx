@@ -325,7 +325,7 @@ const Video = () => {
 					</ChannelLine>
 					<DescRenderer text={currentVideo?.desc} tags={currentVideo?.tags} />
 				</Details>
-				<Comments />
+				<Comments channelId={currentVideo?.userId} />
 			</Content>
 			<Recommendations tags={currentVideo?.tags} />
 			{darkEffect && <Darkness status={secondCheck} />}

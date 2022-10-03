@@ -3,7 +3,6 @@ import styled, { ThemeProvider } from "styled-components";
 import "./App.css";
 import Menu from "./components/Menu";
 import Navbar from "./components/navbar/Navbar";
-import { darkTheme, lightTheme } from "./utils/Theme.js";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/home/Home.jsx";
 import Video from "./pages/video/[id].jsx";
@@ -12,6 +11,7 @@ import Channel from "./pages/channel/[id].jsx";
 import MiniGuide from "./components/MiniGuide";
 import Search from "./pages/Search";
 import Studio from "./pages/studio/Studio";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
 	display: flex;
@@ -32,17 +32,15 @@ const Wrapper = styled.div`
 `;
 
 function App() {
-	const [darkMode, setDarkMode] = useState(false);
 	const [sidebar, setSidebar] = useState(false);
+	const {theme} = useSelector((state) => state.user)
 
 	return (
-		<ThemeProvider theme={darkMode ? lightTheme : darkTheme}>
+		<ThemeProvider theme={theme}>
 			<Container className="App">
 				<BrowserRouter>
 					{sidebar && (
 						<Menu
-							darkMode={darkMode}
-							setDarkMode={setDarkMode}
 							setSidebar={setSidebar}
 							sidebar={sidebar}
 						/>

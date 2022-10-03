@@ -19,12 +19,14 @@ import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import SettingsBrightnessOutlinedIcon from "@mui/icons-material/SettingsBrightnessOutlined";
 import MenuSharpIcon from "@mui/icons-material/MenuSharp";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { Header, HamburgerBtn } from "./navbar/Navbar";
 import SignInButton from "../pages/home/SignInButton";
 import GlowingButton from "../utils/constants/GlowingButton";
 import ProfileImg from "../utils/constants/ProfileImg";
+import { darkTheme, lightTheme } from "../utils/Theme";
+import { changeTheme } from "../redux/userSlice";
 
 const MenuContainer = styled.div`
 	display: flex;
@@ -127,10 +129,12 @@ const Outside = styled.div`
 	min-height: 100vh;
 `;
 
-const Menu = ({ darkMode, setDarkMode, sidebar, setSidebar }) => {
+const Menu = ({ sidebar, setSidebar }) => {
 	const [close, setClose] = useState(false);
 	const [channels, setChannels] = useState(null);
 	const { currentUser } = useSelector((state) => state.user);
+	const {themeName} = useSelector((state) => state.user.theme)
+	const dispatch = useDispatch()
 
 	const handleClose = () => {
 		setClose(true);
@@ -153,6 +157,12 @@ const Menu = ({ darkMode, setDarkMode, sidebar, setSidebar }) => {
 	useEffect(() => {
 		if (currentUser) getChannels();
 	}, [currentUser]);
+
+	const handleTheme = () => {
+		themeName === "Dark" 
+			?	dispatch(changeTheme(lightTheme))
+			:	dispatch(changeTheme(darkTheme))			 
+	}
 
 	return (
 		<MenuContainer close={close}>
@@ -271,9 +281,9 @@ const Menu = ({ darkMode, setDarkMode, sidebar, setSidebar }) => {
 							<HelpOutlineOutlinedIcon />
 							Help
 						</Item>
-						<Item onClick={() => setDarkMode(!darkMode)}>
+						<Item onClick={handleTheme} >
 							<SettingsBrightnessOutlinedIcon />
-							{darkMode ? "Dark" : "Light"} Mode
+							{themeName} Mode
 						</Item>
 					</Wrapper>
 				</Container>

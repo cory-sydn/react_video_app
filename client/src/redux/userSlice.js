@@ -4,6 +4,9 @@ const initialState = {
 	currentUser: null,
 	loading: false,
 	error: false,
+	theme: null,
+	language: null,
+	country: null
 };
 
 const userSlice = createSlice({
@@ -41,10 +44,27 @@ const userSlice = createSlice({
 		},
 		changeImg: (state, action) => {
 			state.currentUser.img =  action.payload
+		},
+		changeTheme: (state, action) => {
+			state.theme = action.payload
+		},
+		changeLanguage: (state, action) => {
+			state.language = action.payload
+		},
+		changeCountry: (state, action) => {
+			state.country = action.payload
 		}
 	},
 });
 
-export const { loginStart, loginSuccessful, loginFailed, logout, subscription, changeImg } =
+export const { loginStart, 
+	loginSuccessful, 
+	loginFailed, 
+	logout, 
+	subscription, 
+	changeImg, 
+	changeTheme,
+	changeLanguage,
+	changeCountry } =
 	userSlice.actions;
 export default userSlice.reducer;

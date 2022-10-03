@@ -58,7 +58,7 @@ const ImgCircle = styled.button`
 const UploadSectionButton = styled(BtnContainer)`
 	margin-left: 6px;
 	margin-right: 3px;
-	background: ${({ theme }) => theme.bgLighter};
+	background: transparent;
 	&:hover {
 		&::after {
 			content: "Upload Video" ;
@@ -75,7 +75,7 @@ const UploadSectionButton = styled(BtnContainer)`
 `;
 
 const NotificationButton = styled(BtnContainer)`
-	background: ${({ theme }) => theme.bgLighter};
+	background: transparent;
 	margin-right: 15px;
 	&:hover {
 		&::after {

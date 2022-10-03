@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { forwardRef } from "react";
+import { useDispatch } from "react-redux";
 
-const Container = styled.div`
+export const Container = styled.div`
 	height: max-content;
 	width: 100%;
 	background: ${({ theme }) => theme.dropDown.item};
@@ -72,9 +73,10 @@ const Item = styled.div`
 
 export const Selector = forwardRef((props, ref) => {
 	const [options, setOptions] = useState(props.data);
+	const dispatch = useDispatch();
 
 	function handleSelect(e) {
-		props.setter(e.target.outerText);
+		dispatch(props.setter(e.target.outerText))
 		props.setSubmenu(undefined);
 	}
 

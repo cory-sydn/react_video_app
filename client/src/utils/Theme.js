@@ -1,4 +1,5 @@
 export const darkTheme = {
+    themeName: "Dark",
     bg:"#181818",
     bgLighter:"#202020f8",
     bgDarker:"#121212",
@@ -12,10 +13,12 @@ export const darkTheme = {
     scroll: "#606060",
     subscription:{bg:"#373737", color: "#999999" },
     warning: {bg: "#202020f5", color: "#dfdfdf"},
-    uploader: "#282828"
+    uploader: "#282828",
+    chip: "#353535"
 }
 
 export const lightTheme = {
+    themeName: "Light",
     bg:"#f9f9f9",
     bgLighter:"#fffffff8",
     bgDarker:"#ffffff",
@@ -29,5 +32,6 @@ export const lightTheme = {
     scroll: "#717171",
     subscription: {bg:"rgba(0,0,0,0.08)", color: "#585858" },
     warning: {bg: "#ffffff", color: "#030303"},
-    uploader: "#fdfdfd"
+    uploader: "#fdfdfd",
+    chip: "#f5f5f5"
 }

@@ -14,7 +14,7 @@ import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
 import PolicyOutlinedIcon from "@mui/icons-material/PolicyOutlined";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { logout } from "../../../redux/userSlice";
+import { changeCountry, changeLanguage, logout } from "../../../redux/userSlice";
 import { signOut } from "firebase/auth";
 import { auth } from "../../../firebase.config";
 import { Link } from "react-router-dom";
@@ -22,6 +22,8 @@ import { Selector } from "./Selector";
 import { Countries } from "./Countries";
 import { Languages } from "./Languages";
 import ProfileImg from "../../../utils/constants/ProfileImg";
+import SwitchAccount from "./SwitchAccount";
+import Appearance from "./Appearance";
 
 const Screen = styled.div`
 	position: fixed;
@@ -46,14 +48,13 @@ const MenuContainer = styled.div`
 	background: ${({ theme }) => theme.dropDown.item};
 	box-shadow: 0 3px 2px 0 #00000022;
 	border-top: transparent;
-	transition: all 0.5s ease-in-out;
 `;
 
 const Menu = styled.section`
 	width: 300px;
 	height: 100%;
-	@media (max-height: 650px) {
-		height: calc(100vh - 60px);
+	@media (max-height: 680px) {
+		max-height: calc(100vh - 100px);
 	}
 	display: flex;
 	flex-direction: column;
@@ -62,7 +63,6 @@ const Menu = styled.section`
 `;
 
 const Header = styled.header`
-	transition: all 0.5s ease-in-out;
 	z-index: 15;
 	display: flex;
 	align-items: center;
@@ -92,14 +92,12 @@ const Container = styled.div`
 		}
 	}
 	position: relative;
-	transition: all 0.5s ease-in-out;
 `;
 
 const Wrapper = styled.div`
 	width: 300px;
 	height: 100%;
 	padding: 8px 0 16px 0;
-	transition: all 0.5s ease-in-out;
 `;
 
 const Title = styled.h2`
@@ -109,7 +107,7 @@ const Title = styled.h2`
 	text-transform: capitalize;
 `;
 
-const Item = styled.div`
+export const Item = styled.div`
 	height: 40px;
 	display: flex;
 	align-items: center;
@@ -141,11 +139,12 @@ const Span = styled.div`
 `;
 
 const DropDown = forwardRef((props, ref) => {
-	const [country, setCountry] = useState(undefined);
-	const [language, setLanguage] = useState(undefined);
 	const [submenu, setSubmenu] = useState(undefined);
 	const user = useSelector((state) => state.user.currentUser);
 	const dispatch = useDispatch();
+	const {themeName} = useSelector((state) => state.user.theme)
+	const {country} = useSelector((state) => state.user)
+	const {language} = useSelector((state) => state.user)
 
 	const handleSignout = () => {
 		//document.cookie = 'access_token=null; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
@@ -170,7 +169,8 @@ const DropDown = forwardRef((props, ref) => {
 									onClick={() => setSubmenu(undefined)}
 									cursor="pointer"
 								/>
-								Choose Your {submenu}
+								{(submenu === "Location" || submenu === "Language") && "Choose Your" + {submenu} }
+								{submenu}								
 							</>
 						)}
 						{user && submenu === undefined && (
@@ -185,15 +185,16 @@ const DropDown = forwardRef((props, ref) => {
 									<Item>
 										<PortraitOutlinedIcon /> Your channel
 									</Item>
-								</Link>
-								<Link to="/">
-									<Item style={{ justifyContent: "space-between" }}>
-										<Span>
-											<SwitchAccountOutlinedIcon /> Swicth account
-										</Span>
-										<ChevronRightIcon style={{ float: "right" }} />
-									</Item>
-								</Link>
+								</Link> 
+								<Item 
+									style={{ justifyContent: "space-between" }}
+									onClick={() => setSubmenu("Accounts")}
+								>
+									<Span>
+										<SwitchAccountOutlinedIcon /> Swicth account
+									</Span>
+									<ChevronRightIcon style={{ float: "right" }} />
+								</Item>
 								{user && (
 									<Item onClick={handleSignout}>
 										<LogoutOutlinedIcon /> Sign out
@@ -209,9 +210,12 @@ const DropDown = forwardRef((props, ref) => {
 									Your data in YouTube
 								</Item>
 								<Hr />
-								<Item style={{ justifyContent: "space-between" }}>
+								<Item 
+									style={{ justifyContent: "space-between" }}
+									onClick={() => setSubmenu("Appearance")}
+									>
 									<Span>
-										<Brightness3OutlinedIcon /> Appearance:
+										<Brightness3OutlinedIcon /> Appearance: {themeName}
 									</Span>
 									<ChevronRightIcon />
 								</Item>
@@ -249,14 +253,22 @@ const DropDown = forwardRef((props, ref) => {
 							</Wrapper>
 						)}
 					</Container>
-					{submenu !== undefined && (
+					{(submenu === "Location" || submenu === "Language") && (
 						<Selector
-							setter={submenu === "Location" ? setCountry : setLanguage}
+							setter={submenu === "Location" ? changeCountry : changeLanguage}
 							data={submenu === "Location" ? Countries : Languages}
 							submenu={submenu}
 							setSubmenu={setSubmenu}
 						/>
 					)}
+					{submenu === "Accounts" && (
+						<SwitchAccount
+							user={user}
+							setSubmenu={setSubmenu}
+							handleSignout={handleSignout}
+						/>
+					)}
+					{submenu === "Appearance" && (<Appearance />)}
 				</Menu>
 			</MenuContainer>
 		</Screen>

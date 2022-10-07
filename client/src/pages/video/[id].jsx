@@ -47,7 +47,6 @@ const Content = styled.section`
 const VideoWrapper = styled.div`
 	display: grid;
 	place-content: center;
-	background: #050505;
 	width: 100%;
 `;
 
@@ -144,6 +143,7 @@ const Video = () => {
 	const [secondCheck, setSecondCheck] = useState(false);
 	const [darkEffect, setDarkEffect] = useState(false);
 	const [time, setTime] = useState(0);
+	const [narrowScreen,setNarrowScreen] = useState(false)
 	const { currentVideo } = useSelector((state) => state.video);
 	const dispatch = useDispatch();
 	const videoId = useParams().id;
@@ -246,6 +246,22 @@ const Video = () => {
 		}
 	}, [time, currentVideo?._id, dispatch]);
 
+	useEffect(() => {
+		const handleLayout = () => {
+			if(window.innerWidth < 1106) {
+				setNarrowScreen(true)
+			} else {
+				setNarrowScreen(false)
+			}
+		}
+		window.addEventListener("resize", handleLayout)
+		window.addEventListener("load", handleLayout)
+		return () => {
+			window.removeEventListener("resize", handleLayout)
+			window.removeEventListener("load", handleLayout)
+		}
+	}, [])
+
 	return (
 		<Container>
 			<Content>
@@ -262,7 +278,7 @@ const Video = () => {
 								? handleViews
 								: undefined
 						}
-						autoPlay
+						//autoPlay
 						ref={videoRef}
 					/>
 				</VideoWrapper>
@@ -274,7 +290,7 @@ const Video = () => {
 						currentVideo?.title?.slice(1)}
 				</Title>
 				<Details>
-					<Info>
+					<Info style={{placeSelf: "center"}} >
 						{currentVideo?.views}
 						{" views"} &bull; {format(currentVideo?.createdAt)}{" "}
 					</Info>
@@ -325,9 +341,17 @@ const Video = () => {
 					</ChannelLine>
 					<DescRenderer text={currentVideo?.desc} tags={currentVideo?.tags} />
 				</Details>
-				<Comments channelId={currentVideo?.userId} />
+				{narrowScreen ? (
+					<Recommendations tags={currentVideo?.tags} />
+				) : (
+					<Comments channelId={currentVideo?.userId} />
+				)}
 			</Content>
-			<Recommendations tags={currentVideo?.tags} />
+			{narrowScreen ? (
+				<Comments channelId={currentVideo?.userId} />
+				) : (
+				<Recommendations tags={currentVideo?.tags} />
+			)}
 			{darkEffect && <Darkness status={secondCheck} />}
 		</Container>
 	);

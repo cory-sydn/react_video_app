@@ -6,14 +6,23 @@ import { useSelector } from 'react-redux'
 import EmptySubscriptions from './EmptySubscriptions'
 import SkeletonCard from '../../components/videoCard/SkeletonCard'
 import uuid from "react-uuid"
+import Chips from './chips/Chips'
+
+const Container = styled.div`
+  display: grid;
+  width: 100%;
+  height: 100%;
+  margin: 0 0 0 72px;
+  @media (max-width:660px){
+    margin:0 0 0 0;
+  };
+  overflow: hidden;
+`
 
 export const GridContainer = styled.section`
   width: 100%;
   height: 100%;
-  margin: 20px 30px 50px 102px;
-  @media (max-width:660px){
-    margin: 20px 30px 50px 30px;
-  };
+  padding: 76px 30px 50px 30px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, max-content));
   @media (min-width:1050px){
@@ -52,17 +61,20 @@ const Home = ({type}) => {
   }, [videos.length])
 
   return (
-    <GridContainer>
-      {videoLoading && Array.from(Array(12), (_, i) =>  <SkeletonCard key={uuid()} /> )}
-      {videos.map((video)=>(
-        <Card video={video} key={video._id} videoLoading={videoLoading} />
-      ))}
-      {type === "sub" && (
-        !currentUser && (
-          <EmptySubscriptions />
-        )
-      )}
-    </GridContainer>
+    <Container>
+      <Chips setVideos={setVideos} />
+      <GridContainer>
+        {videoLoading && Array.from(Array(12), (_, i) =>  <SkeletonCard key={uuid()} /> )}
+        {videos.map((video)=>(
+          <Card video={video} key={video._id} videoLoading={videoLoading} />
+        ))}
+        {type === "sub" && (
+          !currentUser && (
+            <EmptySubscriptions />
+          )
+        )}
+      </GridContainer>
+    </Container>
   )
 }
 

@@ -56,14 +56,16 @@ const Navbar = ({ setSidebar }) => {
 	const [disappear, setDisappear] = useState(false);
 
 	const handleDisappear = useCallback((e) => {
-		if (e.target.innerWidth < 530) return setDisappear(true);
+		if (window.innerWidth < 530) return setDisappear(true);
 		setDisappear(false);
 	}, []);
 
 	useEffect(() => {
 		window.addEventListener("resize", handleDisappear);
+		window.addEventListener("load", handleDisappear);
 		return () => {
 			window.removeEventListener("resize", handleDisappear);
+			window.removeEventListener("load", handleDisappear);
 		};
 	});
 

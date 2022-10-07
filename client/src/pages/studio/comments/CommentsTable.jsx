@@ -1,28 +1,30 @@
-import React, { useEffect, useState } from "react";
-// import axios from "axios";
-// import styled from "styled-components";
-// import { useSelector } from "react-redux";
-import TableBody from "./TableBody";
+import React, { useState } from "react";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import { Table, Thead, Tbody, Tr, Th } from "./VideosTable";
+import { Table, Thead, Tbody, Tr, Th } from "../videos/VideosTable";
+import CommentTBody from "./CommentTBody";
+import { Hr } from "../Studio";
+import SearchBox from "../SearchBox";
 
-const CommentsTable = ({ videos }) => {
-	//const [comments, setComments] = useState([]);
+const CommentsTable = ({ videos, comments }) => {
 	const [selected, setSelected] = useState(false);
+	const [search, setSearch] = useState("")
 
 	const handleSelectAll = () => {
 		setSelected(!selected);
 	};
 
 	return (
+		<>
+		<SearchBox search={ search } setSearch={ setSearch } />
+		<Hr />
 		<Table>
 			<Thead>
 				<Tr>
 					<Th style={{ height: 50 }} onClick={handleSelectAll}>
 						{selected ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
 					</Th>
-					<Th style={{ width: 300 }}>Video</Th>
+					<Th style={{ width: 310 }}>Video</Th>
 					<Th>Comment</Th>
 					<Th>Date</Th>
 					<Th>Replies</Th>
@@ -31,10 +33,12 @@ const CommentsTable = ({ videos }) => {
 			</Thead>
 			<Tbody>
 				{videos.map((video) => (
-					<TableBody key={video._id} video={video} />
+					<CommentTBody key={video._id} video={video} comments={comments} search={ search } />
 				))}
 			</Tbody>
 		</Table>
+		</>
+		
 	);
 };
 

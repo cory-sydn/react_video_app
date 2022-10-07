@@ -1,8 +1,10 @@
 import { useState } from "react";
 import styled from "styled-components";
-import TableBody from "./TableBody";
+import VideoTableBody from "./VideoTableBody";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import SearchBox from "../SearchBox";
+import { Hr } from "../Studio";
 
 export const Table = styled.table`
 	width: 100%;
@@ -34,33 +36,38 @@ export const Th = styled.th`
 	width: max-content;
 `;
 
-const VideosTable = ({ videos }) => {
+const VideosTable = ({ videos, comments }) => {
 	const [selected, setSelected] = useState(false);
+	const [search, setSearch] = useState("")
 
 	const handleSelectAll = () => {
 		setSelected(!selected);
 	};
 
 	return (
-		<Table>
-			<Thead>
-				<Tr>
-					<Th style={{ height: 50 }} onClick={handleSelectAll}>
-						{selected ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
-					</Th>
-					<Th style={{ width: 310 }}>Video</Th>
-					<Th>Date</Th>
-					<Th>Views</Th>
-					<Th>Comments</Th>
-					<Th>Likes/ Dislikes</Th>
-				</Tr>
-			</Thead>
-			<Tbody>
-				{videos.map((video) => (
-					<TableBody key={video._id} video={video} />
-				))}
-			</Tbody>
-		</Table>
+		<>
+			<SearchBox search={ search } setSearch={ setSearch } />
+			<Hr />
+			<Table>
+				<Thead>
+					<Tr>
+						<Th style={{ height: 50 }} onClick={handleSelectAll}>
+							{selected ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
+						</Th>
+						<Th style={{ width: 310 }}>Video</Th>
+						<Th>Date</Th>
+						<Th>Views</Th>
+						<Th>Comments</Th>
+						<Th>Likes/ Dislikes</Th>
+					</Tr>
+				</Thead>
+				<Tbody>
+					{videos.filter((el) => (el.title.toLowerCase().match(search.toLowerCase()))).map((video) => (
+						<VideoTableBody key={video._id} video={video} comments={comments}/>
+					))}
+				</Tbody>
+			</Table>
+		</>
 	);
 };
 

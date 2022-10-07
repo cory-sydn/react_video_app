@@ -144,18 +144,16 @@ const Options = ({
 						</>
 					) : currentVideo?.userId === currentUser?._id ? (
 						<>
-							<Option onClick={handleDelete}>
+							<Option onClick={() => setSecondCheck(true)}>
 								<MdiLightDelete style={{ marginRight: 10 }} /> Delete
 							</Option>
 							<Option>
-								<IonFlagOutline style={{ marginRight: 10 }} />
-								Report
+								<IonFlagOutline style={{ marginRight: 10 }} /> Report
 							</Option>
 						</>
 					) : (
 						<Option>
-							<IonFlagOutline style={{ marginRight: 10 }} />
-							Report
+							<IonFlagOutline style={{ marginRight: 10 }} /> Report
 						</Option>
 					)}
 				</OptionsContainer>

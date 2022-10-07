@@ -7,6 +7,7 @@ import TeenyiconsMoreVerticalOutline from "../../icons/TeenyiconsMoreVerticalOut
 import ProfileImg from "../../utils/constants/ProfileImg.jsx";
 import Options from "./Options.jsx";
 import Skeleton from '@mui/material/Skeleton'
+import FormatSeconds from "./FormatSeconds.jsx";
 
 const Container = styled.div`
 	width: 100%;
@@ -22,7 +23,7 @@ const Container = styled.div`
 		transform: ${(props) => (props.play ? "scale(1.18)" : "scale(1)")};
 		transition: all 0.5s ease;
 		background: ${(props) => (props.play ? "#88888840" : "")};
-		mask-image: linear-gradient(#363636f4 90%, #4c4c4c20);
+		mask-image: ${(props) => (props.type === "sm" ? "none" : "linear-gradient(#363636f4 90%, #4c4c4c20)")};
 		border-radius: 0 0 5px 5px;
 		z-index: 20;
 	}
@@ -45,6 +46,7 @@ const VideoLink = styled(Link)`
 		&::after {
 			content: "Keep hovering to play";
 			display: ${(props) => (props.play ? "none" : "flex")};
+			visibility:  ${(props) => (props.type === "sm" ? "hidden" : "visible")};
 			background: ${({ theme }) => theme.bgDarker};
 			font-size: 12px;
 			padding: 6px 10px;
@@ -105,9 +107,9 @@ const VideoFrame = styled.video`
 	width: 100%;
 	min-height: 130px;
 	max-height: 160px;
-	background: ${(props)=> !props.dataProps && "#313131"};
 	flex: 1;
 	object-fit: cover;
+	position: relative;
 `;
 
 const OptionArea = styled.div`
@@ -138,6 +140,19 @@ const ThreeDotsContainer = styled.div`
 	}
 `;
 
+const VideoDuration = styled.span`
+	background: ${({ theme }) => theme.bgDarker};
+	opacity: 0.7;
+	font-size: 12px;
+	padding: 2px 4px;
+	border-radius: 3px;
+	position: absolute;
+	right: 6px;
+	bottom: 6px;
+	z-index: 16;
+	display: ${(props) => (props.play ? "none" : "flex")};
+`;
+
 const Card = ({ type, video }) => {
 	const [loading, setLoading] = useState(true);
 	const [channel, setChannel] = useState([]);
@@ -146,8 +161,10 @@ const Card = ({ type, video }) => {
 	const [glow, setGlow] = useState(false);
 	const [threeDots, setThreeDots] = useState(false);
 	const [openOptions, setOpenOptions] = useState(false);
+	const [duration, setDuration] = useState(0)
 	const optionRef = useRef();
 	const buttonRef = useRef();
+	const videoRef = useRef()
 
 	useEffect(() => {
 		setLoading(true)
@@ -212,6 +229,11 @@ const Card = ({ type, video }) => {
 		};
 	}, [optionRef, buttonRef]);
 
+	const getDuration = () => {
+		const time = FormatSeconds(videoRef.current.duration)
+		time && setDuration(time)		
+	}
+
 	return (
 		<>
 			 <Container
@@ -222,17 +244,25 @@ const Card = ({ type, video }) => {
 			>
 				<VideoLink to={`/video/${video?._id}`} play={play} type={type}>
 					{type ? (
-						<Img src={video?.imgUrl} type={type} />
+						<>
+							<Img src={video?.imgUrl} type={type} />
+							<video style={{display:"none"}} ref={videoRef} src={video?.videoUrl} onLoadedMetadata={getDuration} />
+							<VideoDuration play={play}>{duration}</VideoDuration>
+						</>
 					) : (
-						<VideoFrame
-							poster={video?.imgUrl}
-							src={video?.videoUrl}
-							play={play}
-							muted
-							onMouseEnter={playVid}
-							onMouseOut={stop}
-							dataProps={video?.imgUrl}
-						/>
+						<>
+							<VideoFrame
+								poster={video?.imgUrl}
+								src={video?.videoUrl}
+								play={play}
+								ref={videoRef}
+								muted
+								onMouseEnter={playVid}
+								onMouseOut={stop}
+								onLoadedMetadata={getDuration}
+							/>
+							<VideoDuration play={play}>{duration}</VideoDuration>
+						</>
 					)}
 				</VideoLink>
 				<Context>

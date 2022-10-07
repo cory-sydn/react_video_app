@@ -57,7 +57,7 @@ const NameLine = styled.div`
 `;
 
 const Name = styled.span`
-	background:  ${(props) => (props.isChannelMessage ? "#595959": "transparent")};
+	background:  ${(props) => (props.isChannelMessage ? "#595959cc": "transparent")};
 	padding:  ${(props) => (props.isChannelMessage ? "4px 6px": 0)};
 	border-radius: 15px;
 `;

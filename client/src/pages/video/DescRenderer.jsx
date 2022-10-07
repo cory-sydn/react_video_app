@@ -79,6 +79,7 @@ const DescRenderer = ({ text, tags }) => {
 
 		return () => {
 			window.removeEventListener("resize", checkButtonState);
+			setShowMore(false)
 		};
 	}, [text, textRef]);
 

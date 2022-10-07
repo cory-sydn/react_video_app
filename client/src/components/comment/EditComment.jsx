@@ -48,14 +48,20 @@ const NewComment = ({ oldComment, setEditOpen }) => {
 		};
 	}, [comment]);
 
-	const handleFocus = () => {
+	const expandTextarea = (e) => {
+		if (e.target.style.height === e.target.scrollHeight + 2 + "px") return;
+		e.target.style.removeProperty("height");
+		e.target.style.height = e.target.scrollHeight + 2 + "px";
+	}
+
+	const handleFocus = (e) => {
 		setFocus({ ready: true, line: true });
+		expandTextarea(e)
 	};
 
 	const handleInput = (e) => {
 		setComment(e.target.value);
-		e.target.style.removeProperty("height");
-		e.target.style.height = e.target.scrollHeight + 2 + "px";
+		expandTextarea(e)
 	};
 
 	const handleCancelBtn = (e) => {
@@ -74,7 +80,6 @@ const NewComment = ({ oldComment, setEditOpen }) => {
 				},
 				{ withCredentials: true }
 			);
-			console.log(res);
 			dispatch(editComment(res.data));
 			setEditOpen(false);
 			setFocus({ ready: false, line: false });

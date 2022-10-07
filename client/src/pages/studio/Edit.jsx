@@ -45,6 +45,7 @@ import { Uploader } from "../../utils/functions/Uploader";
 const Container = styled.div``;
 
 const EditWrapper = styled(Wrapper)`
+	height: calc(100% + 50px);
 	z-index: 40;
 	top: 0;
 	right: 0;
@@ -107,7 +108,7 @@ const Edit = ({ openEdit, setOpenEdit }) => {
 		e.target.style.height = e.target.scrollHeight + 2 + "px";
 	};
 
-	const handleClickTextarea = (e) => {
+	const handleExpandTextarea = (e) => {
 		if (e.target.style.height === e.target.scrollHeight + 2 + "px") return;
 		e.target.style.removeProperty("height");
 		e.target.style.height = e.target.scrollHeight + 2 + "px";
@@ -295,7 +296,7 @@ const Edit = ({ openEdit, setOpenEdit }) => {
 										type="text"
 										placeholder="Tell viewers about your video"
 										onChange={handleInput}
-										onClick={handleClickTextarea}
+										onFocus={handleExpandTextarea}
 									/>
 									<Title4>Thumbnail</Title4>
 									<ItemExplain>

@@ -24,6 +24,7 @@ import { Languages } from "./Languages";
 import ProfileImg from "../../../utils/constants/ProfileImg";
 import SwitchAccount from "./SwitchAccount";
 import Appearance from "./Appearance";
+import StudioIcon from "../../../icons/StudioIcon";
 
 const Screen = styled.div`
 	position: fixed;
@@ -31,7 +32,7 @@ const Screen = styled.div`
 	right: 0;
 	width: calc(100vw - 8px);
 	height: 100vh;
-	z-index: 10;
+	z-index: 40;
 `;
 
 const MenuContainer = styled.div`
@@ -43,7 +44,7 @@ const MenuContainer = styled.div`
 	display: flex;
 	flex-wrap: wrap;
 	flex-direction: column;
-	z-index: 15;
+	z-index: 45;
 	color: ${({ theme }) => theme.text};
 	background: ${({ theme }) => theme.dropDown.item};
 	box-shadow: 0 3px 2px 0 #00000022;
@@ -58,12 +59,12 @@ const Menu = styled.section`
 	}
 	display: flex;
 	flex-direction: column;
-	z-index: 15;
+	z-index: 45;
 	transition: all 0.5s ease-in-out;
 `;
 
 const Header = styled.header`
-	z-index: 15;
+	z-index: 45;
 	display: flex;
 	align-items: center;
 	padding: 15px 20px 15px;
@@ -185,6 +186,11 @@ const DropDown = forwardRef((props, ref) => {
 									<Item>
 										<PortraitOutlinedIcon /> Your channel
 									</Item>
+								</Link>
+								<Link to={`/channel/studio/${user._id}`}>
+									<Item>
+										<StudioIcon /> YouTube studio
+									</Item>
 								</Link> 
 								<Item 
 									style={{ justifyContent: "space-between" }}
@@ -268,7 +274,7 @@ const DropDown = forwardRef((props, ref) => {
 							handleSignout={handleSignout}
 						/>
 					)}
-					{submenu === "Appearance" && (<Appearance />)}
+					{submenu === "Appearance" && (<Appearance theme={themeName} />)}
 				</Menu>
 			</MenuContainer>
 		</Screen>

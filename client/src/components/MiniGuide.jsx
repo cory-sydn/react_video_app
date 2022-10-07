@@ -27,13 +27,22 @@ const Container = styled.section`
 `;
 
 const Item = styled.div`
-	display: grid;
+	display: flex;
+	flex-direction: column;
 	place-content: center center;
+	align-items: center;
+	justify-content: center;
 	width: 72px;
-	height: 40px;
+	height: 74px;
+	padding: 8px 0 24px;
 	&:hover {
 		background: ${({ theme }) => theme.soft};
 	}
+`;
+
+const Text = styled.p`
+	padding-top: 4px;
+	font-size: 10px;
 `;
 
 const MiniGuide = () => {
@@ -44,21 +53,25 @@ const MiniGuide = () => {
 			<Link to="/">
 				<Item>
 					<HomeOutlinedIcon />
+					<Text>Home </Text>
 				</Item>
 			</Link>
 			<Link to="trends">
 				<Item>
 					<ExploreOutlinedIcon />
+					<Text>Explore </Text>
 				</Item>
 			</Link>
 			<Link to="subscriptions">
 				<Item>
 					<SubscriptionsOutlinedIcon />
+					<Text>Subscriptions </Text>
 				</Item>
 			</Link>
 			<Link to={`channel/${currentUser?._id}/playlist`}>
 				<Item>
 					<VideoLibraryOutlinedIcon />
+					<Text>Library </Text>
 				</Item>
 			</Link>
 		</Container>

@@ -48,13 +48,13 @@ const Home = ({type}) => {
     type !== "nosub" && setVideoLoading(true)
     const fecthVideos = async()=>{
       try {
-        const res = await axiosInstance.get( `/videos/${type}`, 
+        const res = await axiosInstance.get( `/videos/${type}`,
           { withCredentials: true},
           { cancelToken: cancelToken.token }
         )
         setVideos(res.data)
       } catch (err) {
-        if (axios.isCancel(err)) return console.log("cancelled!");
+        if (axios.isCancel(err)) return
         console.log(err);
       }
     }

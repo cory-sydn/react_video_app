@@ -44,7 +44,7 @@ const Comments = ({channelId}) => {
 				});
 				setComments(res.data.reverse());
 			} catch (err) {
-				if (axios.isCancel(err)) return console.log("cancelled!");
+				if (axios.isCancel(err)) return
 				console.log(err);
 			}
 		};

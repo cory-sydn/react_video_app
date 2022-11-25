@@ -138,6 +138,7 @@ const PlayIcon = styled(PlayCircleFilledIcon)`
 	width: 100%;
 	height: 100%;
 	opacity: 0.9;
+	color: white;
 `;
 
 const VLink = styled.div`
@@ -159,7 +160,7 @@ const CommentCard = ({ comment, userComments, setUserComments }) => {
 				);
 				setVideo(videoRes.data);
 			} catch (err) {
-				if (axios.isCancel(err)) return console.log("cancelled!");
+				if (axios.isCancel(err)) return
 				console.log(err);
 			}
 		};

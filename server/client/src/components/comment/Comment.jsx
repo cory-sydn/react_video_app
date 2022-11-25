@@ -13,12 +13,12 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { dislike, like } from "../../redux/commentSlice";
-import unknown from "../../img/unnamed.jpg";
 import NewComment from "./NewComment";
 import { muiTheme } from "../../utils/muiTheme";
 import Options from "./Options.jsx";
 import EditComment from "./EditComment";
 import { axiosInstance } from "../../apiConfig.js";
+import ProfileImg from "../../utils/constants/ProfileImg.jsx";
 
 const Container = styled.div`
 	display: flex;
@@ -34,13 +34,7 @@ const Wrapper = styled.div`
 const AvatarWrapper = styled.div`
 	width: ${(props) => (props.isChild ? "40px" : "56px")};
 	height: 100%;
-`;
-
-const Avatar = styled.img`
-	width: ${(props) => (props.isChild ? "24px" : "40px")};
-	height: ${(props) => (props.isChild ? "24px" : "40px")};
-	margin-right: 16px;
-	border-radius: 50%;
+	padding-right: 16px;
 `;
 
 const Details = styled.div`
@@ -224,7 +218,7 @@ const Comment = ({ channelId, comment, currentUser, isChild }) => {
 				);
 				setCommenAuthor(res.data);
 			} catch (err) {
-				if (axios.isCancel(err)) return console.log("cancelled!");
+				if (axios.isCancel(err)) return
 				console.log(err);
 			}
 		};
@@ -242,7 +236,7 @@ const Comment = ({ channelId, comment, currentUser, isChild }) => {
 				{},
 				{ withCredentials: true }
 			);
-			dispatch(like(currentUser._id));
+			dispatch(like({comment: comment, userId: currentUser._id }));
 		} catch (err) {
 			console.log(err);
 		}
@@ -256,7 +250,7 @@ const Comment = ({ channelId, comment, currentUser, isChild }) => {
 				{},
 				{ withCredentials: true }
 			);
-			dispatch(dislike(currentUser._id));
+			dispatch(dislike({comment: comment, userId: currentUser._id }));
 		} catch (err) {
 			console.log(err);
 		}
@@ -272,7 +266,7 @@ const Comment = ({ channelId, comment, currentUser, isChild }) => {
 				});
 				setReplies(res.data.reverse());
 			} catch (err) {
-				if (axios.isCancel(err)) return console.log("cancelled!");
+				if (axios.isCancel(err)) return
 				//console.log(err);
 			}
 		};
@@ -324,10 +318,11 @@ const Comment = ({ channelId, comment, currentUser, isChild }) => {
 		<Container isChild={isChild}>
 			<AvatarWrapper isChild={isChild}>
 				<Link to={`/channel/${commentAuthor?._id}`}>
-					<Avatar
-						src={commentAuthor?.img === "" ? unknown : commentAuthor.img}
-						isChild={isChild}
-					></Avatar>
+					<ProfileImg
+						size={isChild ? 24 : 40}
+						img={commentAuthor?.img}
+						name={commentAuthor?.name}
+					/>
 				</Link>
 			</AvatarWrapper>
 			{editOpen ? (
@@ -341,7 +336,7 @@ const Comment = ({ channelId, comment, currentUser, isChild }) => {
 						<Left>
 							<NameLine>
 								<Name
-									isChannelMessage={channelId === commentAuthor._id ? true : false} 
+									isChannelMessage={channelId === commentAuthor._id ? true : false}
 								>
 									{commentAuthor.name}
 								</Name>

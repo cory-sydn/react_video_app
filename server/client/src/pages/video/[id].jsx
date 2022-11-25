@@ -175,7 +175,7 @@ const Video = () => {
 				dispatch(fetchSuccessful(videoRes.data));
 				document.title = videoRes.data.title;
 			} catch (err) {
-				if (axios.isCancel(err)) return console.log("cancelled!");
+				if (axios.isCancel(err)) return
 				console.log(err.message);
 			}
 		};

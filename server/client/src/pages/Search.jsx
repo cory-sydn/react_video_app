@@ -29,7 +29,7 @@ const Search = () => {
 			};
 			fecthVideos();
 		} catch (err) {
-			if (axios.isCancel(err)) return console.log("cancelled!");
+			if (axios.isCancel(err)) return
 			console.log(err);
 		}
 		return () => {

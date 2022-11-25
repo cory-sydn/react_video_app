@@ -81,7 +81,7 @@ const About = ({ channel }) => {
 				);
 				setUserComments(commentRes.data.reverse());
 			} catch (err) {
-				if (axios.isCancel(err)) return console.log("cancelled!");
+				if (axios.isCancel(err)) return
 				console.log(err);
 			}
 		};

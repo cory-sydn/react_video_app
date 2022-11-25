@@ -75,7 +75,7 @@ const ChannelHome = () => {
 				);
 				setVideos(videosRes.data);
 			} catch (err) {
-				if (axios.isCancel(err)) return console.log("cancelled!");
+				if (axios.isCancel(err)) return
 				console.log(err);
 			}
 		};

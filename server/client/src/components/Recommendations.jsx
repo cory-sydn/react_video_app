@@ -26,14 +26,14 @@ const Recommendations = ({ tags }) => {
 				const res = await axiosInstance.get(
 					`/videos/recommend/tags?tags=${tags}`,
 					{ cancelToken: cancelToken.token }
-				);					
+				);
 				setVideos(res.data);
 			} catch (err) {
-				if (axios.isCancel(err)) return console.log("cancelled!");
+				if (axios.isCancel(err)) return
 			}
 		};
 		fetchVideos();
-		
+
 		return () => {
 			cancelToken.cancel();
 		};

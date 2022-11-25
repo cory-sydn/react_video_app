@@ -93,12 +93,12 @@ const Studio = () => {
 					async function fetchComments (videosRes) {
 						videosRes.map( async(video) => {
 							try {
-								const res = await axiosInstance.get(`/comments/${video._id}`, 
+								const res = await axiosInstance.get(`/comments/${video._id}`,
 									{ cancelToken: cancelToken.token }
-								);	
+								);
 								dispatch(fetchCommentsSuccessful(res.data));
 							} catch (err) {
-								if (axios.isCancel(err)) return console.log("cancelled!");
+								if (axios.isCancel(err)) return
 							}
 						})
 					}
@@ -108,7 +108,7 @@ const Studio = () => {
 			fetch()
 			return () => {
 				cancelToken.cancel();
-			};	
+			};
 	}, [currentUser, dispatch]);
 
 	useEffect(() => {

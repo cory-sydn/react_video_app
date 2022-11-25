@@ -177,9 +177,9 @@ const Card = ({ type, video }) => {
 				);
 				setChannel(res.data);
 			} catch (err) {
-				if (axios.isCancel(err)) return console.log("cancelled!");
+				if (axios.isCancel(err)) return
 				console.error(err);
-			}	
+			}
 		};
 		fetchChannel();
 		return () => {
@@ -237,7 +237,7 @@ const Card = ({ type, video }) => {
 
 	const getDuration = () => {
 		const time = FormatSeconds(videoRef.current.duration)
-		time && setDuration(time)		
+		time && setDuration(time)
 	}
 
 	return (
@@ -272,7 +272,7 @@ const Card = ({ type, video }) => {
 					)}
 				</VideoLink>
 				<Context>
-					<Details type={type} play={play} >					
+					<Details type={type} play={play} >
 						<Link to={`/channel/${channel?._id}`}>
 							{loading ? (
 								<Skeleton variant="circular" width={40} height={40} sx={{background: "#313131"}} />

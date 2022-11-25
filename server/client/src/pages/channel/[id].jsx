@@ -112,7 +112,7 @@ const Channel = () => {
 				setChannel(channelRes.data);
 				document.title = channelRes.data.name;
 			} catch (err) {
-				if (axios.isCancel(err)) return console.log("cancelled!");
+				if (axios.isCancel(err)) return
 				console.log(err);
 			}
 		};

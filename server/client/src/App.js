@@ -39,7 +39,7 @@ function App() {
 	return (
 		<ThemeProvider theme={theme ? theme : darkTheme}>
 			<Container className="App">
-				<BrowserRouter>
+				<BrowserRouter basename="/">
 					{sidebar && (
 						<Menu
 							setSidebar={setSidebar}

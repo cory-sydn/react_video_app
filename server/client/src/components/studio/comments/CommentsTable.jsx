@@ -72,7 +72,7 @@ const CommentsTable = () => {
 			channelComments?.map((el) => (ids = [...ids, el?._id]));
 			dispatch(filterComment(ids));
 		}
-	}, [dispatch, channelComments, searchGuide]);
+	}, [dispatch, channelComments, searchGuide]);  // eslint-disable-next-line
 
 	return (
 		<>

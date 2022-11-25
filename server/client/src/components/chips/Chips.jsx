@@ -146,7 +146,7 @@ const Chips = ({ setVideos }) => {
 		</Container>
 		{chipSelected && 
 			<Darkness status={chipSelected}
-				positioning={{top:"0", right:"-72px", z:"10"}}
+				positioning={{top:"0", left:"72px", z:"10"}}
 			/>
 		}
 		</>

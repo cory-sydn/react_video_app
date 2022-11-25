@@ -98,7 +98,7 @@ const VideosTable = () => {
 			channelVideos?.map((el) => (ids = [...ids, el._id]));
 			dispatch(filterVideos(ids));
 		}
-	}, [searchGuide, channelVideos, searchFrom, setOptions, dispatch]);
+	}, [searchGuide, channelVideos, searchFrom, setOptions, dispatch]); // eslint-disable-next-line
 
 	return (
 		<>

@@ -361,6 +361,7 @@ export const CancelButton = styled(ConfirmButton)`
 	border: 1px solid red;
 	color: #c0c0c0;
 	margin-right: 25px;
+	cursor: pointer;
 `;
 
 export const VideoFrame = styled.video`

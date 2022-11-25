@@ -95,14 +95,14 @@ const SearchBox = ({ options, setSearchFrom, searchFrom }) => {
 		if (!searchFrom && setSearchFrom) {
 			setSearchFrom(options.at(0));
 		}
-	}, [handleAddChip]);
+	}, [handleAddChip, setSearchFrom, options]); // eslint-disable-line
 
 	const handleEnterSearch = useCallback(
 		(value) => {
 			dispatch({ type: ACTION_TYPES.ENTER_SEARCH, payload: value });
 			sliceDispatcher(updateSearchGuide({ key: searchFrom, param: value }));
 		},
-		[dispatch, sliceDispatcher, setSearchFrom, state.searchFrom]
+		[dispatch, sliceDispatcher, searchFrom]
 	);
 
 	useEffect(() => {
@@ -196,6 +196,7 @@ const SearchBox = ({ options, setSearchFrom, searchFrom }) => {
 					value={state?.rawSearch}
 					onClick={handleClick}
 					onChange={handleWritingSearch}
+					autoFocus
 				/>
 				{state?.openOptions && (
 					<OptionsMenu ref={menuRef}>

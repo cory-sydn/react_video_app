@@ -71,7 +71,7 @@ export const deleteComment = async(req, res, next) => {
       if(comment.childs.length) {
         const foundParents = [];
         const removeChilds = async(parent) => {
-          await Promise.all( 
+          await Promise.all(
             parent.childs.map(async(childId)=>{
               const child = await Comment.findById(childId)
               if (child.childs.length > 0) {
@@ -83,7 +83,7 @@ export const deleteComment = async(req, res, next) => {
             }),
             await Comment.findByIdAndDelete(parent._id)
           );
-          foundParents.length && removeChilds(foundParents.shift()) 
+          foundParents.length && removeChilds(foundParents.shift())
         }
         removeChilds(comment)
       } else {
@@ -107,11 +107,19 @@ export const likeComment = async(req, res, next) => {
   try {
     const userId = req.user.id
     const {commentId}  = req.params
-    const likedCom = await Comment.findByIdAndUpdate(commentId, {
-      $addToSet:{likes: userId},
-      $pull: {dislikes: userId}
-    }, {new:true})
-    res.status(200).json(likedCom)
+    const comment = await Comment.findById(commentId);
+    if (comment.likes.includes(userId)) {
+      const likedCom = await Comment.findByIdAndUpdate(commentId, {
+        $pull:{likes: userId},
+      }, {new:true})
+      res.status(200).json(likedCom)
+    } else {
+      const likedCom = await Comment.findByIdAndUpdate(commentId, {
+        $addToSet:{likes: userId},
+        $pull: {dislikes: userId}
+      }, {new:true})
+      res.status(200).json(likedCom)
+    }
   } catch (err) {
     next(err)
   }
@@ -121,11 +129,19 @@ export const dislikeComment = async(req, res, next) => {
   try {
     const userId = req.user.id
     const {commentId}  = req.params
-    const dislikedCom = await Comment.findByIdAndUpdate(commentId, {
-      $addToSet:{dislikes: userId},
-      $pull: {likes: userId}
-    }, {new:true})
-    res.status(200).json(dislikedCom)
+    const comment = await Comment.findById(commentId);
+    if (comment.dislikes.includes(userId)) {
+      const dislikedCom = await Comment.findByIdAndUpdate(commentId, {
+        $pull:{dislikes: userId},
+      }, {new:true})
+      res.status(200).json(dislikedCom)
+    } else {
+      const dislikedCom = await Comment.findByIdAndUpdate(commentId, {
+        $addToSet:{dislikes: userId},
+        $pull: {likes: userId}
+      }, {new:true})
+      res.status(200).json(dislikedCom)
+    }
   } catch (err) {
     next(err)
   }

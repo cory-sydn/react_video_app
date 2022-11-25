@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { Uploader } from "../functions/Uploader";
 import ProfileImg from "./ProfileImg";
-import { ProcessDisplay } from "../constants/Upload";
+import { ProcessDisplay } from "./Upload";
 import { changeImg } from "../../redux/userSlice";
 import { axiosInstance } from "../../apiConfig";
 
@@ -88,11 +88,11 @@ const ChannelProfil = ({channel}) => {
         <>
           <ProfilUploaderLabel htmlFor="profile" onMouseEnter={() => setIcon(true)}  onMouseLeave={() => setIcon(false)} state={percentage} >
             {icon && <FileUploadIcon sx={{fontSize: 60, color: "#3ea5ff",}} />}
-            {uploadTask._state === "running" && percentage > 0 && ( 
-              <ProcessDisplay percentage={Math.round(percentage)} style={{transform: "scale(0.8)"}} ></ProcessDisplay> 
+            {uploadTask._state === "running" && percentage > 0 && (
+              <ProcessDisplay percentage={Math.round(percentage)} style={{transform: "scale(0.8)"}} ></ProcessDisplay>
             )}
           </ProfilUploaderLabel>
-          <HiddenInput 
+          <HiddenInput
             id="profile"
             type="file"
             name='profile'

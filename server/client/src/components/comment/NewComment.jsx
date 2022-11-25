@@ -3,8 +3,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { commentFailed, commentSuccessful } from "../../redux/commentSlice";
-import unknown from "../../img/unnamed.jpg";
 import { axiosInstance } from "../../apiConfig";
+import ProfileImg from "../../utils/constants/ProfileImg";
 
 const Container = styled.div`
 	width: 100%;
@@ -16,15 +16,9 @@ const Container = styled.div`
 
 const AvatarWrapper = styled.div`
 	width: ${(props) => (props.reply ? "40px" : "56px")};
-	height: 100%;
+	height: ${(props) => (props.reply ? "24px" : "40px")};
 	display: grid;
 	place-items: left;
-`;
-
-const Avatar = styled.img`
-	min-width: ${(props) => (props.reply ? "24px" : "40px")};
-	height: ${(props) => (props.reply ? "24px" : "40px")};
-	border-radius: 50%;
 `;
 
 const InputArea = styled.form`
@@ -216,9 +210,10 @@ const NewComment = ({ currentUser, videoId, reply, setReply, parent }) => {
 	return (
 		<Container reply={reply}>
 			<AvatarWrapper reply={reply}>
-				<Avatar
-					src={currentUser?.img === undefined ? unknown : currentUser?.img}
-					reply={reply}
+				<ProfileImg
+					size={reply ? 24 : 40}
+					img={currentUser?.img}
+					name={currentUser?.name}
 				/>
 			</AvatarWrapper>
 			<InputArea onSubmit={(e) => e.preventDefault()} reply={reply}>

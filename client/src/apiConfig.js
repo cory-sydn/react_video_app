@@ -5,5 +5,5 @@ import axios from "axios"
 //   : 'http://localhost:8800/api';
 
 export const axiosInstance = axios.create({
-  baseURL : "https://react-video-app-cory-sydn.vercel.app/api"
+  baseURL : `${window.location.origin}/api`
 })

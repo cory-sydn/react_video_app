@@ -10,7 +10,6 @@ import {
 	fetchSuccessful,
 	incrementView,
 } from "../../redux/videoSlice";
-import { format } from "timeago.js";
 import LikeBtn from "./LikeBtn";
 import DislikeBtn from "./DislikeBtn";
 import SaveBtn from "./SaveBtn";
@@ -22,6 +21,7 @@ import Options from "./Options";
 import ShareBtn from "./ShareBtn";
 import ProfileImg from "../../utils/constants/ProfileImg";
 import { axiosInstance } from "../../apiConfig";
+import timeAgo from "../../utils/functions/timeAgo";
 
 const Container = styled.div`
 	width: 100%;
@@ -296,7 +296,7 @@ const Video = () => {
 				<Details>
 					<Info style={{placeSelf: "center"}} >
 						{currentVideo?.views}
-						{" views"} &bull; {format(currentVideo?.createdAt)}{" "}
+						{" views"} &bull; {timeAgo(currentVideo?.createdAt)}{" "}
 					</Info>
 					<Buttons>
 						<LikeBtn />

@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { axiosInstance } from "../../apiConfig.js";
 import MdiLightMessageText from "../../icons/MdiLightMessageText.jsx";
+import formatDate from "../../utils/functions/formatDate.js";
 import CommentCard from "./CommentCard.jsx";
 
 const Container = styled.div`
@@ -112,7 +113,7 @@ const About = ({ channel }) => {
 				<Title>Stats</Title>
 				<Hr />
 				<Text1>{channel?.name}</Text1>
-				<Text1>Joined {channel?.createdAt?.split("T")[0]}</Text1>
+				<Text1>Joined { formatDate(channel?.createdAt?.split("T")[0])}</Text1>
 				{currentUser?._id === channel?._id && userComments?.length > 0 && (
 					<CommentsLink onClick={() => setOpen(!open)}>
 						<CommentIcon />

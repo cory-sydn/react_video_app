@@ -9,6 +9,7 @@ import { DeleteComment } from "../../components/comment/DeleteComment";
 import { Link } from "react-router-dom";
 import { green } from "@mui/material/colors";
 import { axiosInstance } from "../../apiConfig.js";
+import formatDate from "../../utils/functions/formatDate.js";
 
 const Item = styled.div`
 	justify-content: flex-start;
@@ -196,7 +197,7 @@ const CommentCard = ({ comment, userComments, setUserComments }) => {
 
 	return (
 		<Item>
-			<Date>{comment.createdAt.split("T")[0]}</Date>
+			<Date>{ formatDate(comment.createdAt.split("T")[0])}</Date>
 			<DeleteSection>
 				{message.msg !== null && (
 					<Message>

@@ -6,6 +6,7 @@ import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import VideoTd from "../VideoTd";
 import { useDispatch, useSelector } from "react-redux";
 import { selectVideo } from "../../../redux/studioSlice";
+import formatDate from "../../../utils/functions/formatDate";
 
 export const Tr = styled.tr`
 	position: relative;
@@ -57,7 +58,7 @@ const VideoTableBody = ({ video }) => {
 			<Td onClick={openEditing}>
 				<VideoTd img={video?.imgUrl} title={video?.title} videoId={video?._id} type="video" />
 			</Td>
-			<Td onClick={openEditing}>{video?.createdAt.split("T")[0]}</Td>
+			<Td onClick={openEditing}>{ formatDate(video?.createdAt.split("T")[0])}</Td>
 			<Td onClick={openEditing}>{video?.views} </Td>
 			<Td onClick={openEditing}>{commentCount} </Td>
 			<Td onClick={openEditing}>

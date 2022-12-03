@@ -12,6 +12,7 @@ import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import ProfileImg from "../../../utils/constants/ProfileImg";
 import { selectComment } from "../../../redux/studioSlice";
+import formatDate from "../../../utils/functions/formatDate";
 
 const ProfileLink = styled(Link)`
 	display: grid;
@@ -128,7 +129,7 @@ const CommentRow = ({ comment, video }) => {
 				</ProfileLink>
 				<div style={{ marginLeft: 12 }}>{comment?.desc} </div>
 			</Td>
-			<Td>{comment?.createdAt?.split("T")[0]}</Td>
+			<Td>{ formatDate(comment?.createdAt?.split("T")[0])}</Td>
 			<Td>{comment?.childs?.length} </Td>
 			<Td>
 				{`${comment?.likes?.length}` /

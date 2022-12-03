@@ -8,7 +8,6 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import TeenyiconsMoreVerticalOutline from "../../icons/TeenyiconsMoreVerticalOutline.jsx";
 import { ThemeProvider } from "@mui/material";
-import { format } from "timeago.js";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -19,6 +18,7 @@ import Options from "./Options.jsx";
 import EditComment from "./EditComment";
 import { axiosInstance } from "../../apiConfig.js";
 import ProfileImg from "../../utils/constants/ProfileImg.jsx";
+import timeAgo from "../../utils/functions/timeAgo.js";
 
 const Container = styled.div`
 	display: flex;
@@ -340,7 +340,7 @@ const Comment = ({ channelId, comment, currentUser, isChild }) => {
 								>
 									{commentAuthor.name}
 								</Name>
-								<Date>{format(comment?.createdAt)} </Date>
+								<Date>{timeAgo(comment?.createdAt)} </Date>
 							</NameLine>
 							<Text>
 								{comment?.desc?.length < 356

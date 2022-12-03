@@ -2,13 +2,13 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { format } from "timeago.js";
 import TeenyiconsMoreVerticalOutline from "../../icons/TeenyiconsMoreVerticalOutline.jsx";
 import ProfileImg from "../../utils/constants/ProfileImg.jsx";
 import Options from "./Options.jsx";
 import Skeleton from '@mui/material/Skeleton'
-import FormatSeconds from "./FormatSeconds.jsx";
+import formatSeconds from "../../utils/functions/formatSeconds.js";
 import { axiosInstance } from "../../apiConfig.js";
+import timeAgo from "../../utils/functions/timeAgo.js";
 
 const Container = styled.div`
 	width: 100%;
@@ -236,7 +236,7 @@ const Card = ({ type, video }) => {
 	}, [optionRef, buttonRef]);
 
 	const getDuration = () => {
-		const time = FormatSeconds(videoRef.current.duration)
+		const time = formatSeconds(videoRef.current.duration)
 		time && setDuration(time)
 	}
 
@@ -295,7 +295,7 @@ const Card = ({ type, video }) => {
 							</Link>
 							<Info>
 								{" "}
-								{video?.views} &bull; {format(video?.createdAt)}{" "}
+								{video?.views} &bull; {timeAgo(video?.createdAt)}{" "}
 							</Info>
 						</Texts>
 					</Details>
